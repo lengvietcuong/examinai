@@ -1,0 +1,56 @@
+.textInputContainer {
+    position: sticky;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: 0;
+    width: 100%;
+    min-height: 10vh;
+    background-color: var(--background-color);
+}
+
+.textInputForm {
+    position: relative;
+    display: block;
+    width: 70%;
+    max-width: 900px;
+    padding-right: 5vw;
+}
+
+.textarea {
+    width: 100%;
+    max-height: 12rem;
+    overflow: auto;
+    padding-right: 3rem;
+    border-radius: 1rem;
+	background-color: var(--background-color);
+}
+
+.textarea:focus {
+    outline: none;
+    border: 1px solid var(--secondary-foreground-color);
+}
+
+.textarea::placeholder {
+    color: var(--secondary-foreground-color);
+}
+
+.sendButton {
+    position: absolute;
+    top: 0.875rem;
+    right: 1rem;
+    padding: 0;
+    padding-right: inherit;
+    background-color: transparent;
+}
+
+.sendButton:hover .sendIcon {
+    stroke: var(--accent-color);
+}
+
+.sendIcon {
+    stroke: var(--foreground-color);
+    width: 1.5rem;
+    height: 1.5rem;
+    transition: 0.3s ease;
+}

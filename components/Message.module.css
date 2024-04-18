@@ -1,0 +1,51 @@
+.message {
+    display: flex;
+    max-width: 75%;
+    gap: 0.5rem;
+}
+
+.message.alignRight {
+    margin-right: 3rem;
+    margin-left: auto;
+    flex-direction: row-reverse;
+}
+
+.message.alignRight .sender {
+    right: 0;
+}
+
+.avatarContainer {
+    align-self: start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: fit-content;
+    height: var(--width);
+    border: 1px solid var(--secondary-foreground-color);
+}
+
+.svgAvatar {
+    fill: var(--foreground-color);
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.messageString {
+    position: relative;
+}
+
+.sender {
+    position: absolute;
+    top: -1.5rem;
+    color: var(--secondary-foreground-color);
+    font-weight: bold;
+}
+
+.content {
+    margin: 0;
+    padding: 1rem 1.35rem;
+    border-radius: 0.5rem;
+    background-color: var(--secondary-background-color);
+}

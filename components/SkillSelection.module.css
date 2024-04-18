@@ -1,0 +1,61 @@
+.skillsContainer {
+    margin-top: 1.25rem;
+    margin-left: 3.25rem;
+    width: fit-content;
+}
+
+.skillInput {
+    display: none;
+}
+
+.labelsContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: auto;
+    gap: 0.75rem;
+}
+
+.label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--secondary-background-color);
+    transition: 0.3s ease;
+}
+
+.label:hover {
+    background-color: var(--tertiary-background-color);
+}
+
+.skillIcon {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-right: 0.5rem;
+    fill: var(--secondary-color);
+    transition: 0.3s ease;
+}
+
+.label.selected {
+    cursor: auto;
+    background-color: var(--accent-color);
+}
+
+.label.selected .skillIcon {
+    fill: var(--foreground-color);
+}
+
+.label.unselected {
+    cursor: auto;
+    color: var(--tertiary-background-color);
+}
+
+.label.unselected:hover {
+    background-color: var(--secondary-background-color);
+}
+
+.label.unselected .skillIcon {
+    fill: var(--tertiary-background-color);
+}

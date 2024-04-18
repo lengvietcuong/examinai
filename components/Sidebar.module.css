@@ -1,0 +1,79 @@
+.sidebarContainer {
+    position: sticky;
+    top: 0;
+    display: flex;
+    height: 100vh;
+    overflow: visible;
+}
+
+.toggler {
+    align-self: center;
+    cursor: pointer;
+    min-width: 5vw;
+    height: fit-content;
+    font-size: 3rem;
+    text-align: left;
+    color: var(--tertiary-background-color);
+    background-color: transparent;
+    transition: color 0.3s ease;
+}
+
+.toggler:hover {
+    color: var(--foreground-color);
+}
+
+.sidebarContent {
+    width: 15vw;
+    margin: 0;
+    padding: 2rem 1.25rem;
+    background-color: var(--secondary-background-color);
+    transition: 0.3s ease;
+}
+
+.closed {
+    width: 0;
+    padding: 2rem 0;
+    pointer-events: none;
+}
+
+.conversation {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+
+.conversation:hover {
+    background-color: var(--tertiary-background-color);
+}
+
+.conversationName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trashcanIcon {
+    display: none;
+    vertical-align: middle;
+    width: 1.15rem;
+    height: 1.15rem;
+    stroke: var(--secondary-foreground-color);
+    transition: 0.3s ease;
+    flex-shrink: 0;
+}
+
+.conversation:hover .trashcanIcon {
+    display: inline;
+}
+
+.trashcanIcon:hover {
+    stroke: var(--secondary-color);
+}
+
+.closed .conversation .trashcanIcon {
+    display: none;
+}

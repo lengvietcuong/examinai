@@ -3,6 +3,10 @@
     display: none;
 }
 
+.overlay {
+    transition: background-color 0.3s ease;
+}
+
 @media only screen and (max-width: 768px) {
     .sidebarContainer {
         position: fixed;
@@ -33,7 +37,8 @@
     }
 
     .closed~.overlay {
-        display: none;
+        background-color: rgba(0, 0, 0, 0);
+        pointer-events: none;
     }
 
     .closeButton {

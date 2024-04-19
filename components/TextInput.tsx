@@ -10,7 +10,7 @@ import styles from './TextInput.module.css';
 const inter = Inter({ subsets: ["latin"] });
 
 const TextInput: React.FC = () => {
-    const { setUserMessage } = useUserMessageStore();
+    const { userMessage, setUserMessage } = useUserMessageStore();
     const { selectedSkill } = useSkillStore();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [input, setInput] = useState<string>('');
@@ -30,12 +30,14 @@ const TextInput: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (input.trim()) {
-            setUserMessage(input.trim());
-            setInput('');
-            if (textareaRef.current) {
-                textareaRef.current.style.height = 'inherit';
-            }
+
+        // Check if a previous message is processing or if the input is empty
+        if (userMessage || !input.trim()) return;
+
+        setUserMessage(input.trim());
+        setInput('');
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'inherit';
         }
     };
 

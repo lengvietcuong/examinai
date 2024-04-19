@@ -17,14 +17,15 @@ const Conversation: React.FC = () => {
 
     async function onUserMessage(userMessage: string) {
         setMessages(prevMessages => [...prevMessages, { sender: 'You', content: userMessage }]);
-        setUserMessage('');
-
+        
         const chatCompletion = await getGroqChatCompletion(userMessage);
         const exmainaiMessage = {
             sender: 'Examinai',
             content: chatCompletion.choices[0].message.content,
         };
         setMessages(prevMessages => [...prevMessages, exmainaiMessage]);
+        
+        setUserMessage('');
     }
 
     useEffect(() => {

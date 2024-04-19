@@ -1,11 +1,10 @@
 .message {
     display: flex;
-    max-width: 75%;
+    max-width: 70%;
     gap: 0.5rem;
 }
 
 .message.alignRight {
-    margin-right: 3rem;
     margin-left: auto;
     flex-direction: row-reverse;
 }
@@ -48,4 +47,15 @@
     padding: 1rem 1.35rem;
     border-radius: 0.5rem;
     background-color: var(--secondary-background-color);
+}
+
+@media only screen and (max-width: 768px) {
+    .message {
+        max-width: 100%;
+    }
+    .svgAvatar {
+        fill: var(--foreground-color);
+        width: 1.5rem;
+        height: 1.5rem;
+    }
 }

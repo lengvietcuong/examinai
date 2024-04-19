@@ -14,7 +14,6 @@
     display: block;
     width: 70%;
     max-width: 900px;
-    padding-right: 5vw;
 }
 
 .textarea {
@@ -40,7 +39,6 @@
     top: 0.875rem;
     right: 1rem;
     padding: 0;
-    padding-right: inherit;
     background-color: transparent;
 }
 
@@ -53,4 +51,15 @@
     width: 1.5rem;
     height: 1.5rem;
     transition: 0.3s ease;
+}
+
+@media only screen and (max-width: 768px) {
+    .textInputForm {
+        width: 100%;
+        padding: 0 4vw;
+    }
+
+    .sendButton {
+        right: 2rem;
+    }
 }

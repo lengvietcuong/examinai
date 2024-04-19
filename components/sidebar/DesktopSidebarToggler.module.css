@@ -1,0 +1,19 @@
+.toggler {
+    position: sticky;
+    top: 50vh;
+    font-size: 3rem;
+    margin-top: calc(-100%);
+    color: var(--tertiary-background-color);
+    background-color: transparent;
+    transition: color 0.3s ease;
+}
+
+.toggler:hover {
+    color: var(--foreground-color);
+}
+
+@media only screen and (max-width: 768px) {
+    .toggler {
+        display: none;
+    }
+}

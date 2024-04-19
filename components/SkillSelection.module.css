@@ -59,3 +59,12 @@
 .label.unselected .skillIcon {
     fill: var(--tertiary-background-color);
 }
+
+@media only screen and (max-width: 768px) {
+    .skillsContainer {
+        margin-top: 0.75rem;
+    }
+    .labelsContainer {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

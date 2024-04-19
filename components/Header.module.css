@@ -3,10 +3,10 @@
     top: 0;
     z-index: 1;
     display: flex;
-    justify-content: space-between;
+    gap: 0.5rem;
     align-items: center;
     height: 12vh;
-    padding-right: 5vw;
+    padding: 0 5vw;
     background-color: var(--background-color);
 }
 
@@ -15,48 +15,18 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: 2.5rem;
-    padding-right: inherit;
 }
 
 .accentText {
     color: var(--accent-color);
 }
 
-.pillButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1.5rem;
-    border-radius: 1.5rem;
-    transition: background-color 0.3s ease;
-}
+@media only screen and (max-width: 768px) {
+    .header {
+        padding: 0 4vw;
+    }
 
-.newChatButton {
-    background-color: var(--secondary-background-color);
-}
-
-.newChatButton:hover {
-    background-color: var(--tertiary-background-color);
-}
-
-.buttonIcon {
-    fill: #FF8B8B;
-    width: 1.15rem;
-    height: 1.15rem;
-}
-
-.buttonText {
-    margin-left: 0.25rem;
-    font-size: 1.15rem;
-    color: var(--foreground-color);
-}
-
-.signInButton {
-    background-color: transparent;
-    border: 2px solid var(--tertiary-background-color);
-    transition: border-color 0.3s ease;
-}
-
-.signInButton:hover {
-    border-color: var(--foreground-color);
+    .heading {
+        font-size: 2rem;
+    }
 }

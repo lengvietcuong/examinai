@@ -1,39 +1,6 @@
-.sidebarContainer {
-    position: sticky;
-    top: 0;
-    display: flex;
-    height: 100vh;
-    overflow: visible;
-}
-
-.toggler {
-    align-self: center;
-    cursor: pointer;
-    min-width: 5vw;
-    height: fit-content;
-    font-size: 3rem;
-    text-align: left;
-    color: var(--tertiary-background-color);
-    background-color: transparent;
-    transition: color 0.3s ease;
-}
-
-.toggler:hover {
-    color: var(--foreground-color);
-}
-
-.sidebarContent {
-    width: 15vw;
+.conversationHistory {
     margin: 0;
     padding: 2rem 1.25rem;
-    background-color: var(--secondary-background-color);
-    transition: 0.3s ease;
-}
-
-.closed {
-    width: 0;
-    padding: 2rem 0;
-    pointer-events: none;
 }
 
 .conversation {
@@ -44,7 +11,6 @@
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
 }
-
 
 .conversation:hover {
     background-color: var(--tertiary-background-color);
@@ -74,6 +40,12 @@
     stroke: var(--secondary-color);
 }
 
-.closed .conversation .trashcanIcon {
-    display: none;
+@media only screen and (max-width: 768px) {
+    .conversationHistory {
+        padding: 1rem 1.25rem;
+    }
+    
+    .trashcanIcon {
+        display: inline;
+    }
 }

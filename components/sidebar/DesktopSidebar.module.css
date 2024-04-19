@@ -1,0 +1,18 @@
+.sidebarContainer {
+    position: sticky;
+    top: 0;
+    width: 18vw;
+    height: 100vh;
+    background-color: var(--secondary-background-color);
+    transition: 0.3s ease;
+}
+
+.closed {
+    width: 0;
+}
+
+@media only screen and (max-width: 768px) {
+    .sidebarContainer {
+        display: none;
+    }
+}

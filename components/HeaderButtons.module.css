@@ -1,0 +1,60 @@
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.buttonIcon {
+    fill: var(--secondary-color);
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.buttonText {
+    margin-left: 0.25rem;
+    font-size: 1.15rem;
+    color: var(--foreground-color);
+}
+
+.newChatButton,
+.hamburgerMenuButton {
+    background-color: var(--secondary-background-color);
+}
+
+.newChatButton:hover,
+.hamburgerMenuButton:hover {
+    background-color: var(--tertiary-background-color);
+}
+
+.hamburgerMenuButton {
+    display: none;
+}
+
+.signInButton {
+    margin-left: auto;
+    background-color: transparent;
+    border: 2px solid var(--tertiary-background-color);
+    transition: border-color 0.3s ease;
+}
+
+.signInButton:hover {
+    border-color: var(--foreground-color);
+}
+
+@media only screen and (max-width: 768px) {
+    .buttonText {
+        display: none;
+    }
+
+    .buttonContainer {
+        padding: 0.75rem;
+        border-radius: 50%;
+    }
+
+    .hamburgerMenuButton {
+        display: inline;
+    }
+}

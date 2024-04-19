@@ -19,10 +19,7 @@ export default function Home() {
 					<div className={styles.chat}>
 						<Message
 							sender="Examinai"
-							content={`Hi! I'm your IELTS examiner, here to help you prepare for your test.
-							I'm powered by AI, so mistakes are possible.
-							
-							To get started, select the skill you'd like to practice:`}
+							content={`Hi! I'm your IELTS examiner, here to help you prepare for your test.\nI'm an AI, so mistakes are possible.\n\nPlease select the skill you'd like to practice:`}
 						/>
 						<Conversation />
 					</div>

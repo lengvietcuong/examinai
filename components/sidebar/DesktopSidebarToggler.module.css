@@ -5,11 +5,21 @@
     margin-top: calc(-100%);
     color: var(--tertiary-background-color);
     background-color: transparent;
-    transition: color 0.3s ease;
 }
 
-.toggler:hover {
-    color: var(--foreground-color);
+.togglerIcon {
+    fill: var(--tertiary-background-color);
+    width: 1.75rem;
+    height: 1.75rem;
+    transition: fill 0.3s ease;
+}
+
+.flipped {
+    transform: rotate(180deg);
+}
+
+.toggler:hover .togglerIcon {
+    fill: var(--foreground-color);
 }
 
 @media only screen and (max-width: 768px) {

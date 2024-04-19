@@ -24,6 +24,7 @@ body {
 	margin: 0;
 	color: var(--foreground-color);
 	background: var(--background-color);
+	font-family: Arial, sans-serif;
 }
 
 a {

@@ -64,7 +64,18 @@
     .skillsContainer {
         margin-top: 0.75rem;
     }
+
     .labelsContainer {
         grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    .label.selected {
+        color: var(--background-color);
+    }
+
+    .label.selected .skillIcon {
+        fill: var(--background-color);
     }
 }

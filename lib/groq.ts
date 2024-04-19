@@ -6,14 +6,9 @@ const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
 });
 
-async function getGroqChatCompletion(userInput: string) {
+async function getGroqChatCompletion(messages: { role: string, content: string }[]) {
     return groq.chat.completions.create({
-        messages: [
-            {
-                role: "user",
-                content: userInput
-            }
-        ],
+        messages: messages,
         model: "mixtral-8x7b-32768"
     });
 }

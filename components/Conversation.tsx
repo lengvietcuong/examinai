@@ -16,15 +16,23 @@ const Conversation: React.FC = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     async function onUserMessage(userMessage: string) {
-        setMessages(prevMessages => [...prevMessages, { sender: 'You', content: userMessage }]);
-        
-        const chatCompletion = await getGroqChatCompletion(userMessage);
+        const updatedMessages = [...messages, { sender: 'You', content: userMessage }];
+        setMessages(updatedMessages);
+
+        const conversation = updatedMessages.map(message => {
+            return {
+                role: message.sender === 'You' ? 'user' : 'assistant',
+                content: message.content
+            };
+        });
+
+        const chatCompletion = await getGroqChatCompletion(conversation);
         const exmainaiMessage = {
             sender: 'Examinai',
             content: chatCompletion.choices[0].message.content,
         };
         setMessages(prevMessages => [...prevMessages, exmainaiMessage]);
-        
+
         setUserMessage('');
     }
 

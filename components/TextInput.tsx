@@ -20,7 +20,7 @@ const TextInput: React.FC = () => {
             textareaRef.current.style.height = 'inherit';
             textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
         }
-    }, []);
+    }, [selectedSkill]);
 
     const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInput(e.target.value);

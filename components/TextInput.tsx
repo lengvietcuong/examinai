@@ -10,7 +10,7 @@ import styles from './TextInput.module.css';
 const inter = Inter({ subsets: ["latin"] });
 
 const TextInput: React.FC = () => {
-    const { userMessage, setUserMessage } = useUserMessageStore();
+    const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
     const { selectedSkill } = useSkillStore();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [input, setInput] = useState<string>('');

@@ -7,7 +7,7 @@ import useSidebarStore from '@/stores/sidebarStore';
 import styles from './MobileSidebar.module.css';
 
 const MobileSidebar = () => {
-    const { isOpenMobile, setIsOpenMobile } = useSidebarStore();
+    const { isOpenMobile, setIsOpenMobile } = useSidebarStore((state) => ({ isOpenMobile: state.isOpenMobile, setIsOpenMobile: state.setIsOpenMobile }));
 
     return (
         <>

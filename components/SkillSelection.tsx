@@ -11,7 +11,7 @@ import styles from './SkillSelection.module.css';
 
 
 const SkillSelection: React.FC = () => {
-    const { selectedSkill, setSelectedSkill } = useSkillStore();
+    const { selectedSkill, setSelectedSkill } = useSkillStore((state) => ({ selectedSkill: state.selectedSkill, setSelectedSkill: state.setSelectedSkill }));
     const handleTabChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!selectedSkill) {
             setSelectedSkill(event.target.value);

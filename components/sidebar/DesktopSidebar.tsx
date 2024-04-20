@@ -6,7 +6,7 @@ import useSidebarStore from '@/stores/sidebarStore';
 import styles from './DesktopSidebar.module.css';
 
 const DesktopSidebar = () => {
-    const { isOpenDesktop } = useSidebarStore();
+    const isOpenDesktop = useSidebarStore((state) => state.isOpenDesktop);
 
     return (
         <div className={`${styles.sidebarContainer} ${isOpenDesktop ? '' : styles.closed}`}>

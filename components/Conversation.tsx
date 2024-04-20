@@ -10,7 +10,7 @@ import { useSkillStore } from '@/stores/skillStore';
 import styles from './Conversation.module.css';
 
 const Conversation: React.FC = () => {
-    const { selectedSkill, setSelectedSkill } = useSkillStore();
+    const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [messages, setMessages] = useState<MessageProps[]>([]);
     const { userMessage, setUserMessage } = useUserMessageStore();
     const messagesEndRef = useRef<HTMLDivElement>(null);

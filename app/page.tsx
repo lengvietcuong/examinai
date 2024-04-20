@@ -19,7 +19,7 @@ export default function Home() {
 					<div className={styles.chat}>
 						<Message
 							role="assistant"
-							content={`Hi! I'm your IELTS examiner, here to help you prepare for your test.\nI'm an AI, so mistakes are possible.\n\nPlease select the skill you'd like to practice:`}
+							content={`Hi! I'm your IELTS examiner, here to help you prepare for your test.\nI'm an AI, so mistakes are possible.\n\nPlease select what you'd like to practice:`}
 						/>
 						<Conversation />
 					</div>

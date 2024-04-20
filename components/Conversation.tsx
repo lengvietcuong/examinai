@@ -24,8 +24,7 @@ const Conversation: React.FC = () => {
             role: 'assistant' as 'user' | 'assistant',
             content: chatCompletion.choices[0].message.content,
         };
-        updatedMessages.push(exmainaiMessage);
-        setMessages(updatedMessages);
+        setMessages(prevMessages => [...prevMessages, exmainaiMessage]);
 
         setUserMessage('');
     }

@@ -4,17 +4,17 @@ import ExaminaiIcon from './icons/ExaminaiIcon';
 import ProfileIcon from './icons/ProfileIcon';
 
 export interface MessageProps {
-    sender: string;
+    role: 'user' | 'assistant';
     content: string;
 }
 
-const Message: React.FC<MessageProps> = ({ sender, content }) => {
+const Message: React.FC<MessageProps> = ({ role, content }) => {
     const formattedContent = content.split('\n').map((item, key) => {
         return <React.Fragment key={key}>{item}<br /></React.Fragment>
     });
 
     const renderSenderAvatar = () => {
-        if (sender === 'Examinai') {
+        if (role === 'assistant') {
             return <ExaminaiIcon className={styles.svgAvatar} />;
         }
         if (userAvatar) {
@@ -25,13 +25,15 @@ const Message: React.FC<MessageProps> = ({ sender, content }) => {
 
     const userAvatar = null;
 
+    const displayName = role === 'user' ? 'You' : 'Examinai';
+
     return (
-        <div className={`${styles.message} ${sender !== 'Examinai' ? styles.alignRight : ''}`}>
+        <div className={`${styles.message} ${role !== 'assistant' ? styles.alignRight : ''}`}>
             <div className={styles.avatarContainer}>
                 {renderSenderAvatar()}
             </div>
             <div className={styles.messageString}>
-                <span className={styles.sender}>{sender}</span>
+                <span className={styles.sender}>{displayName}</span>
                 <p className={styles.content}>{formattedContent}</p>
             </div>
         </div>

@@ -12,26 +12,20 @@ import styles from './Conversation.module.css';
 const Conversation: React.FC = () => {
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [messages, setMessages] = useState<MessageProps[]>([]);
-    const { userMessage, setUserMessage } = useUserMessageStore();
+    const { userMessage, setUserMessage } = useUserMessageStore((state) => ({userMessage: state.userMessage, setUserMessage: state.setUserMessage}));
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     async function onUserMessage(userMessage: string) {
-        const updatedMessages = [...messages, { sender: 'You', content: userMessage }];
+        const updatedMessages = [...messages, { role: 'user' as 'user' | 'assistant', content: userMessage }];
         setMessages(updatedMessages);
 
-        const conversation = updatedMessages.map(message => {
-            return {
-                role: message.sender === 'You' ? 'user' : 'assistant',
-                content: message.content
-            };
-        });
-
-        const chatCompletion = await getGroqChatCompletion(conversation);
+        const chatCompletion = await getGroqChatCompletion(updatedMessages);
         const exmainaiMessage = {
-            sender: 'Examinai',
+            role: 'assistant' as 'user' | 'assistant',
             content: chatCompletion.choices[0].message.content,
         };
-        setMessages(prevMessages => [...prevMessages, exmainaiMessage]);
+        updatedMessages.push(exmainaiMessage);
+        setMessages(updatedMessages);
 
         setUserMessage('');
     }
@@ -50,7 +44,7 @@ const Conversation: React.FC = () => {
         <div className={styles.conversation}>
             <SkillSelection />
             {messages.map((message, index) => (
-                <Message key={index} sender={message.sender} content={message.content} />
+                <Message key={index} role={message.role} content={message.content} />
             ))}
             <div ref={messagesEndRef} />
         </div>

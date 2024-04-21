@@ -1,6 +1,5 @@
 .message {
     display: flex;
-    max-width: 70%;
     gap: 0.5rem;
 }
 
@@ -31,7 +30,7 @@
     height: 1.75rem;
 }
 
-.messageString {
+.messageInfo {
     position: relative;
 }
 
@@ -42,7 +41,7 @@
     font-weight: bold;
 }
 
-.content {
+.messageContent {
     margin: 0;
     padding: 1rem 1.35rem;
     border-radius: 0.5rem;

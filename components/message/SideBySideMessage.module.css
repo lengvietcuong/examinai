@@ -1,0 +1,36 @@
+.sideBySideContainer {
+    display: flex;
+    border-radius: 0.5rem;
+    background-color: var(--secondary-background-color);
+}
+
+.content {
+    flex: 1;
+    margin: 0;
+    padding: 1rem 1.35rem;
+    white-space: pre-wrap;
+}
+
+.separator {
+    width: 1px;
+    border: none;
+    background-color: var(--secondary-foreground-color);
+}
+
+.mistake {
+    background-color: #f28585;
+}
+
+.correction {
+    background-color: #b7e5b4;
+}
+
+@media (prefers-color-scheme: dark) {
+    .mistake {
+        background-color: #803939;
+    }
+    
+    .correction {
+        background-color: #336638;
+    }
+}

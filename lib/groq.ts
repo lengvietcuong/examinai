@@ -26,19 +26,19 @@ async function handleUserMessage(messages: { role: string, content: string }[], 
 }
 
 async function handleSpeakingPart1(messages: { role: string, content: string }[]) {
-    return "Coming soon!";
+    return [];
 }
 
 async function handleSpeakingPart2(messages: { role: string, content: string }[]) {
-    return "Coming soon!";
+    return [];
 }
 
 async function handleSpeakingPart3(messages: { role: string, content: string }[]) {
-    return "Coming soon!";
+    return [];
 }
 
 async function handleWritingTask1(messages: { role: string, content: string }[]) {
-    return "Coming soon!";
+    return [];
 }
 
 async function handleWritingTask2(messages: { role: string, content: string }[]) {
@@ -68,7 +68,12 @@ async function handleWritingTask2(messages: { role: string, content: string }[])
         return '';
     }).join('').replace(/\* \*/g, ' ');
 
-    return highlightedMistakes + '\n\n' + highlightedCorrections;
+    return [{
+        role: 'assistant' as 'user' | 'assistant',
+        type: 'sideBySide' as 'text' | 'sideBySide' | 'grade',
+        leftContent: highlightedMistakes,
+        rightContent: highlightedCorrections
+    }];
 }
 
 async function getGroqChatCompletion(messages: { role: string, content: string }[]) {

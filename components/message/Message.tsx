@@ -23,7 +23,7 @@ const Message: React.FC<MessageProps> = ({ role, children }) => {
     const displayName = role === 'user' ? 'You' : 'Examinai';
 
     return (
-        <div className={`${styles.message} ${role !== 'assistant' ? styles.alignRight : ''}`}>
+        <div className={styles.message}>
             <div className={styles.avatarContainer}>
                 {renderSenderAvatar()}
             </div>

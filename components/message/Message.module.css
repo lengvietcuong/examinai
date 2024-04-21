@@ -3,15 +3,6 @@
     gap: 0.5rem;
 }
 
-.message.alignRight {
-    margin-left: auto;
-    flex-direction: row-reverse;
-}
-
-.message.alignRight .sender {
-    right: 0;
-}
-
 .avatarContainer {
     align-self: start;
     display: flex;

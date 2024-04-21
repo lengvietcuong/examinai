@@ -79,7 +79,8 @@ async function handleWritingTask2(messages: { role: string, content: string }[])
 async function getGroqChatCompletion(messages: { role: string, content: string }[]) {
     const completion = await groq.chat.completions.create({
         messages: messages,
-        model: "mixtral-8x7b-32768"
+        model: "mixtral-8x7b-32768",
+        temperature: 0.3
     });
     return completion.choices[0].message.content;
 }

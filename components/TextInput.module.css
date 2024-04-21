@@ -43,7 +43,7 @@
 }
 
 .sendButton:hover .sendIcon {
-    stroke: var(--accent-color);
+    stroke: var(--secondary-color);
 }
 
 .sendIcon {

@@ -1,7 +1,4 @@
 .content {
     margin: 0;
-    padding: 1rem 1.35rem;
-    border-radius: 0.5rem;
-    background-color: var(--secondary-background-color);
     white-space: pre-wrap;
 }

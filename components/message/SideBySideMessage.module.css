@@ -1,20 +1,18 @@
 .sideBySideContainer {
     display: flex;
-    border-radius: 0.5rem;
-    background-color: var(--secondary-background-color);
 }
 
 .content {
     flex: 1;
     margin: 0;
-    padding: 1rem 1.35rem;
     white-space: pre-wrap;
 }
 
 .separator {
     width: 1px;
+    margin: 0 2rem;
     border: none;
-    background-color: var(--secondary-foreground-color);
+    background-color: var(--tertiary-background-color);
 }
 
 .mistake {
@@ -23,6 +21,18 @@
 
 .correction {
     background-color: #b7e5b4;
+}
+
+@media only screen and (max-width: 768px) {
+    .sideBySideContainer {
+        flex-direction: column;
+    }
+
+    .separator {
+        width: auto;
+        height: 1px;
+        margin: 2rem 0;
+    }
 }
 
 @media (prefers-color-scheme: dark) {

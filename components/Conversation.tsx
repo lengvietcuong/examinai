@@ -4,9 +4,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import SkillSelection from "@/components/SkillSelection";
 import Message from "@/components/Message";
 import { MessageProps } from '@/components/Message';
-import getGroqChatCompletion from '@/lib/groq';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
+import handleUserMessage from '@/lib/groq';
 import styles from './Conversation.module.css';
 
 const Conversation: React.FC = () => {
@@ -19,10 +19,10 @@ const Conversation: React.FC = () => {
         const updatedMessages = [...messages, { role: 'user' as 'user' | 'assistant', content: userMessage }];
         setMessages(updatedMessages);
 
-        const chatCompletion = await getGroqChatCompletion(updatedMessages);
+        const chatCompletion = await handleUserMessage(updatedMessages, selectedSkill);
         const exmainaiMessage = {
             role: 'assistant' as 'user' | 'assistant',
-            content: chatCompletion.choices[0].message.content,
+            content: chatCompletion,
         };
         setMessages(prevMessages => [...prevMessages, exmainaiMessage]);
 

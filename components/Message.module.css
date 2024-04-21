@@ -50,13 +50,32 @@
     white-space: pre-wrap;
 }
 
+.mistake {
+    background-color: #F28585;
+}
+
+.correction {
+    background-color: #B7E5B4;
+}
+
 @media only screen and (max-width: 768px) {
     .message {
         max-width: 100%;
     }
+
     .svgAvatar {
         fill: var(--foreground-color);
         width: 1.5rem;
         height: 1.5rem;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .mistake {
+        background-color: #803939;
+    }
+    
+    .correction {
+        background-color: #336638;
     }
 }

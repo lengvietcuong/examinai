@@ -1,16 +1,82 @@
 'use server';
 
 import Groq from "groq-sdk";
+import { diffWords } from 'diff';
+
 
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
 });
 
+async function handleUserMessage(messages: { role: string, content: string }[], skill: string) {
+    switch (skill) {
+        case "Speaking Part 1":
+            return handleSpeakingPart1(messages);
+        case "Speaking Part 2":
+            return handleSpeakingPart2(messages);
+        case "Speaking Part 3":
+            return handleSpeakingPart3(messages);
+        case "Writing Task 1":
+            return handleWritingTask1(messages);
+        case "Writing Task 2":
+            return handleWritingTask2(messages);
+        default:
+            throw new Error(`Invalid skill: ${skill}`);
+    }
+}
+
+async function handleSpeakingPart1(messages: { role: string, content: string }[]) {
+    return "Coming soon!";
+}
+
+async function handleSpeakingPart2(messages: { role: string, content: string }[]) {
+    return "Coming soon!";
+}
+
+async function handleSpeakingPart3(messages: { role: string, content: string }[]) {
+    return "Coming soon!";
+}
+
+async function handleWritingTask1(messages: { role: string, content: string }[]) {
+    return "Coming soon!";
+}
+
+async function handleWritingTask2(messages: { role: string, content: string }[]) {
+    const questionAndEssay = messages[messages.length - 1].content;
+
+    const correctionPrompt = `Rewrite the following essay with all language mistakes corrected (grammar, word choice, awkward phrasing, spelling). You must only correct actual mistakes and must not change anything else or paraphrase when there's nothing wrong with the original.\n\n${questionAndEssay}`;
+    const correctedEssay = await getGroqChatCompletion([{ role: "user", content: correctionPrompt }]);
+
+    const changes = diffWords(questionAndEssay, correctedEssay);
+    const highlightedMistakes = changes.map(change => {
+        if (change.removed) {
+            return `#${change.value}#`;
+        }
+        if (!change.added) {
+            return change.value;
+        }
+        return '';
+    }).join('').replace(/# #/g, ' ');
+
+    const highlightedCorrections = changes.map(change => {
+        if (change.added) {
+            return `*${change.value}*`;
+        }
+        if (!change.removed) {
+            return change.value;
+        }
+        return '';
+    }).join('').replace(/\* \*/g, ' ');
+
+    return highlightedMistakes + '\n\n' + highlightedCorrections;
+}
+
 async function getGroqChatCompletion(messages: { role: string, content: string }[]) {
-    return groq.chat.completions.create({
+    const completion = await groq.chat.completions.create({
         messages: messages,
         model: "mixtral-8x7b-32768"
     });
+    return completion.choices[0].message.content;
 }
 
-export default getGroqChatCompletion;
+export default handleUserMessage;

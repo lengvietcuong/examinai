@@ -34,7 +34,7 @@ const TextInput: React.FC = () => {
         // Check if a previous message is processing or if the input is empty
         if (userMessage || !input.trim()) return;
 
-        setUserMessage(input.trim());
+        setUserMessage(input.trim().replace(/’/g, "'"));
         setInput('');
         if (textareaRef.current) {
             textareaRef.current.style.height = 'inherit';

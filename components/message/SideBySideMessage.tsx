@@ -40,10 +40,11 @@ const SideBySideMessage: React.FC<SideBySideMessageProps> = ({ role, leftContent
         <Message role={role}>
             <div className={styles.sideBySideContainer}>
                 <p className={styles.content}>{formatContent(leftContent)}</p>
-                <hr className={styles.separator}/>
+                <hr className={styles.separator} />
                 <p className={styles.content}>{formatContent(rightContent)}</p>
             </div>
         </Message>
-    );};
+    );
+};
 
 export default SideBySideMessage;

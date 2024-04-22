@@ -44,7 +44,7 @@ async function handleWritingTask1(messages: { role: string, content: string }[])
 async function handleWritingTask2(messages: { role: string, content: string }[]) {
     const questionAndEssay = messages[messages.length - 1].content;
 
-    const correctionPrompt = `Rewrite the following essay with all language mistakes corrected (grammar, word choice, awkward phrasing, spelling). You must only correct actual mistakes and must not change anything else or paraphrase when there's nothing wrong with the original.\n\n${questionAndEssay}`;
+    const correctionPrompt = `Rewrite the following essay with all language mistakes corrected (grammar, word choice, awkward phrasing, spelling). Avoid unnecessary modifications at all costs. You must only correct actual mistakes and must not change anything else or paraphrase when there's nothing wrong with the original.\n\n${questionAndEssay}`;
     const correctedEssay = await getGroqChatCompletion([{ role: "user", content: correctionPrompt }]);
 
     const changes = diffWords(questionAndEssay, correctedEssay);

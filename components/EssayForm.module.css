@@ -10,8 +10,8 @@
 }
 
 .icon {
-    width: 1rem;
-    height: 1rem;
+    width: 1.15rem;
+    height: 1.15rem;
     margin-right: 0.35rem;
     vertical-align: middle;
 }
@@ -23,10 +23,6 @@
 .stroke {
     stroke: var(--secondary-color);
     transition: stroke 0.3s ease;
-}
-
-.submitButton:hover .stroke {
-    stroke: var(--foreground-color);
 }
 
 .textarea {
@@ -41,22 +37,13 @@
     align-items: center;
     justify-content: center;
     padding: 0.75rem 1.25rem;
-    border-radius: 0.5rem;
+    border-radius: 1.5rem;
+    font-weight: 500;
     color: var(--foreground-color);
     background-color: var(--secondary-background-color);
     transition: 0.3s ease;
 }
 
 .submitButton:hover {
-    background-color: var(--accent-color);
-}
-
-@media (prefers-color-scheme: light) {
-    .submitButton:hover {
-        color: var(--background-color);
-    }
-    
-    .submitButton:hover .stroke {
-        stroke: var(--background-color);
-    }
+    background-color: var(--tertiary-background-color);
 }

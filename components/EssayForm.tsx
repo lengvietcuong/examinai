@@ -6,6 +6,7 @@ import EssayIcon from './icons/EssayIcon';
 import SendIcon from './icons/SendIcon';
 import { useSkillStore } from '@/stores/skillStore';
 import { useUserMessageStore } from '@/stores/userMessageStore';
+import { montserrat } from '@/fonts/fonts';
 import styles from './EssayForm.module.css';
 
 const EssayForm: React.FC = () => {
@@ -52,7 +53,7 @@ const EssayForm: React.FC = () => {
             <div>
                 <label className={styles.label} htmlFor="question">
                     <QuestionIcon className={`${styles.icon} ${styles.fill}`} />
-                    Question
+                    Essay question
                 </label>
                 <textarea
                     ref={questionRef}
@@ -60,13 +61,13 @@ const EssayForm: React.FC = () => {
                     id="question"
                     value={question}
                     onChange={handleQuestionChange}
-                    placeholder="Enter the question..."
+                    placeholder="Enter the essay question..."
                 />
             </div>
             <div>
                 <label className={styles.label} htmlFor="essay">
                     <EssayIcon className={`${styles.icon} ${styles.fill}`} />
-                    Essay
+                    Your essay
                 </label>
                 <textarea
                     ref={essayRef}
@@ -77,7 +78,7 @@ const EssayForm: React.FC = () => {
                     placeholder="Enter your essay..."
                 />
             </div>
-            <button type="submit" className={styles.submitButton}>
+            <button type="submit" className={`${styles.submitButton} ${montserrat.className}`}>
                 <SendIcon className={`${styles.icon} ${styles.stroke}`} />
                 Submit
             </button>

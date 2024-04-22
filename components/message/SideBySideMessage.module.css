@@ -16,6 +16,7 @@
 .content {
     margin: 0;
     white-space: pre-wrap;
+    color: var(--secondary-foreground-color);
 }
 
 .separator {
@@ -25,12 +26,17 @@
     background-color: var(--tertiary-background-color);
 }
 
+.mistake,
+.correction {
+    color: var(--foreground-color);
+}
+
 .mistake {
-    background-color: #f28585;
+    background-color: #ffb2b2;
 }
 
 .correction {
-    background-color: #b7e5b4;
+    background-color: #c2f2c2;
 }
 
 @media only screen and (max-width: 768px) {
@@ -47,10 +53,10 @@
 
 @media (prefers-color-scheme: dark) {
     .mistake {
-        background-color: #803939;
+        background-color: #662e2e;
     }
     
     .correction {
-        background-color: #336638;
+        background-color: #315935;
     }
 }

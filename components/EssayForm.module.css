@@ -7,7 +7,6 @@
 
 .label {
     font-weight: bold;
-    color: var(--secondary-foreground-color);
 }
 
 .icon {
@@ -45,9 +44,19 @@
     border-radius: 0.5rem;
     color: var(--foreground-color);
     background-color: var(--secondary-background-color);
-    transition: background-color 0.3s ease;
+    transition: 0.3s ease;
 }
 
 .submitButton:hover {
     background-color: var(--accent-color);
+}
+
+@media (prefers-color-scheme: light) {
+    .submitButton:hover {
+        color: var(--background-color);
+    }
+    
+    .submitButton:hover .stroke {
+        stroke: var(--background-color);
+    }
 }

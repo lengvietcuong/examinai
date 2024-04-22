@@ -8,7 +8,7 @@ import styles from './TextInput.module.css';
 
 const TextInput: React.FC = () => {
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
-    const { selectedSkill } = useSkillStore();
+    const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [input, setInput] = useState<string>('');
 
@@ -45,7 +45,7 @@ const TextInput: React.FC = () => {
         }
     };
 
-    return selectedSkill && (
+    return selectedSkill && selectedSkill !== "Writing Task 1" && selectedSkill !== "Writing Task 2" && (
         <div className={styles.textInputContainer}>
             <form className={styles.textInputForm} onSubmit={handleSubmit}>
                 <textarea

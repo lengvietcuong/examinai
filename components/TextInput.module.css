@@ -25,15 +25,6 @@
 	background-color: var(--background-color);
 }
 
-.textarea:focus {
-    outline: none;
-    border: 1px solid var(--secondary-foreground-color);
-}
-
-.textarea::placeholder {
-    color: var(--secondary-foreground-color);
-}
-
 .sendButton {
     position: absolute;
     top: 0.875rem;

@@ -6,6 +6,7 @@ import EssayIcon from './icons/EssayIcon';
 import SendIcon from './icons/SendIcon';
 import { useSkillStore } from '@/stores/skillStore';
 import { useUserMessageStore } from '@/stores/userMessageStore';
+import sanitize from '@/utils/sanitize';
 import { montserrat } from '@/fonts/fonts';
 import styles from './EssayForm.module.css';
 
@@ -42,9 +43,7 @@ const EssayForm: React.FC = () => {
         event.preventDefault();
         if (!question.trim() || !essay.trim()) return;
 
-        const cleanedQuestion = question.trim().replace(/’/g, "'");
-        const cleanedEssay = essay.trim().replace(/’/g, "'");
-        setUserMessage(`${cleanedQuestion}~~~${cleanedEssay}`);
+        setUserMessage({ type: 'essaySubmission', essayQuestion: sanitize(question), essay: sanitize(essay) });
         setIsVisible(false);
     };
 

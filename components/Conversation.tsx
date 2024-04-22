@@ -1,43 +1,55 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Message from '@/types/message';
 import TextMessage from "@/components/message/TextMessage";
+import EssaySubmissionMessage from './message/EssaySubmissionMessage';
 import SideBySideMessage from "@/components/message/SideBySideMessage";
 import GradeMessage from "@/components/message/GradeMessage";
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
-import handleUserMessage from '@/lib/groq';
+import { handleSpeakingPart1, handleSpeakingPart2, handleSpeakingPart3, handleWritingTask1, handleWritingTask2 } from '@/lib/groq';
 import styles from './Conversation.module.css';
-
-interface MessageProps {
-    role: 'user' | 'assistant';
-    type: 'text' | 'sideBySide' | 'grade';
-    content?: string;
-    leftContent?: string;
-    rightContent?: string;
-    bandScores?: { criterion: string, score: number }[];
-}
 
 const Conversation: React.FC = () => {
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
-    const [messages, setMessages] = useState<MessageProps[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    async function onUserMessage(userMessage: string) {
-        const updatedMessages = [...messages, { role: 'user' as 'user' | 'assistant', type: 'text' as 'text' | 'sideBySide' | 'grade', content: userMessage }];
-        console.log(updatedMessages);
+    async function onUserMessage(userMessage: Message) {
+        const updatedMessages = [...messages, userMessage];
         setMessages(updatedMessages);
 
-        const textMessages = updatedMessages
-            .filter((message: MessageProps) => message.type === 'text')
-            .map(({ role, content }) => ({ role, content: content || '' }));
-        const chatCompletion = await handleUserMessage(textMessages, selectedSkill);
-        chatCompletion.forEach((message: MessageProps) => {
-            setMessages(prevMessages => [...prevMessages, { ...message }]);
-        });
+        let responseMessages: Message[] = [];
+        switch (selectedSkill) {
+            case 'Speaking Part 1':
+            case 'Speaking Part 2':
+            case 'Speaking Part 3': {
+                const textMessages = updatedMessages
+                    .filter(message => message.type === 'text')
+                    .map(({ role, content }) => ({ role, content: content || '' }));
+                if (selectedSkill === 'Speaking Part 1') {
+                    responseMessages = await handleSpeakingPart1(textMessages);
+                } else if (selectedSkill === 'Speaking Part 2') {
+                    responseMessages = await handleSpeakingPart2(textMessages);
+                } else {
+                    responseMessages = await handleSpeakingPart3(textMessages);
+                }
+                break;
+            }
+            case 'Writing Task 1':
+                responseMessages = await handleWritingTask1(userMessage.essayQuestion || '', userMessage.essay || '');
+                break;
+            case 'Writing Task 2':
+                responseMessages = await handleWritingTask2(userMessage.essayQuestion || '', userMessage.essay || '');
+                break;
+            default:
+                break;
+        }
+         setMessages(prevMessages => [...prevMessages, ...responseMessages ]);
 
-        setUserMessage('');
+        setUserMessage(null);
     }
 
     useEffect(() => {
@@ -56,10 +68,12 @@ const Conversation: React.FC = () => {
                 switch (message.type) {
                     case 'text':
                         return <TextMessage key={index} role={message.role} content={message.content || ''} />;
+                    case 'essaySubmission':
+                        return <EssaySubmissionMessage key={index} essayQuestion={message.essayQuestion || ''} essay={message.essay || ''} />;
                     case 'sideBySide':
-                        return <SideBySideMessage key={index} role={message.role} leftContent={message.leftContent || ''} rightContent={message.rightContent || ''} />;
+                        return <SideBySideMessage key={index} leftContent={message.leftContent || ''} rightContent={message.rightContent || ''} />;
                     case 'grade':
-                        return <GradeMessage key={index} role={message.role} bandScores={message.bandScores || []} />;
+                        return <GradeMessage key={index} bandScores={message.bandScores || []} />;
                     default:
                         return null;
                 }

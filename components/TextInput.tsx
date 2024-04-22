@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import SendIcon from './icons/SendIcon';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
+import sanitize from '@/utils/sanitize';
 import styles from './TextInput.module.css';
 
 const TextInput: React.FC = () => {
@@ -31,7 +32,7 @@ const TextInput: React.FC = () => {
         // Check if a previous message is processing or if the input is empty
         if (userMessage || !input.trim()) return;
 
-        setUserMessage(input.trim().replace(/’/g, "'"));
+        setUserMessage({type: 'text', content: sanitize(input)});
         setInput('');
         if (textareaRef.current) {
             textareaRef.current.style.height = 'inherit';

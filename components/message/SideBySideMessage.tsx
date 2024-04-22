@@ -4,12 +4,11 @@ import { montserrat } from '@/fonts/fonts';
 import styles from './SideBySideMessage.module.css';
 
 export interface SideBySideMessageProps {
-    role: 'user' | 'assistant';
     leftContent: string;
     rightContent: string;
 }
 
-const SideBySideMessage: React.FC<SideBySideMessageProps> = ({ role, leftContent, rightContent }) => {
+const SideBySideMessage: React.FC<SideBySideMessageProps> = ({ leftContent, rightContent }) => {
     const applyStyles = (text: string) => {
         const regex = /(\*[^*]+\*)|(\#[^#]+\#)|([^\*#]+)/g;
         let match;
@@ -38,7 +37,7 @@ const SideBySideMessage: React.FC<SideBySideMessageProps> = ({ role, leftContent
     }
 
     return (
-        <Message role={role}>
+        <Message role='assistant'>
             <div className={styles.sideBySideContainer}>
                 <div>
                     <h2 className={`${styles.title} ${montserrat.className}`}>Original</h2>

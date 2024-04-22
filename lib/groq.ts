@@ -2,28 +2,12 @@
 
 import Groq from "groq-sdk";
 import { diffWords } from 'diff';
+import Message from "@/types/message";
 
 
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
 });
-
-async function handleUserMessage(messages: { role: string, content: string }[], skill: string) {
-    switch (skill) {
-        case "Speaking Part 1":
-            return handleSpeakingPart1(messages);
-        case "Speaking Part 2":
-            return handleSpeakingPart2(messages);
-        case "Speaking Part 3":
-            return handleSpeakingPart3(messages);
-        case "Writing Task 1":
-            return handleWritingTask1(messages);
-        case "Writing Task 2":
-            return handleWritingTask2(messages);
-        default:
-            throw new Error(`Invalid skill: ${skill}`);
-    }
-}
 
 async function handleSpeakingPart1(messages: { role: string, content: string }[]) {
     return [];
@@ -37,14 +21,11 @@ async function handleSpeakingPart3(messages: { role: string, content: string }[]
     return [];
 }
 
-async function handleWritingTask1(messages: { role: string, content: string }[]) {
+async function handleWritingTask1(essayQuestion: string, essay: string) {
     return [];
 }
 
-async function handleWritingTask2(messages: { role: string, content: string }[]) {
-    const questionAndEssay = messages[messages.length - 1].content;
-    const essay = questionAndEssay.split('~~~')[1];
-
+async function handleWritingTask2(essayQuestion: string, essay: string) {
     const correctionPrompt = `Rewrite the following essay with all language mistakes corrected (grammar, word choice, awkward phrasing, spelling). Avoid unnecessary modifications at all costs. You must only correct actual mistakes and must not change anything else or paraphrase when there's nothing wrong with the original.\n\n${essay}`;
     const correctedEssay = await getGroqChatCompletion([{ role: "user", content: correctionPrompt }]);
 
@@ -71,7 +52,7 @@ async function handleWritingTask2(messages: { role: string, content: string }[])
 
     return [{
         role: 'assistant' as 'user' | 'assistant',
-        type: 'sideBySide' as 'text' | 'sideBySide' | 'grade',
+        type: 'sideBySide' as 'text' | 'essaySubmission' | 'sideBySide' | 'grade',
         leftContent: highlightedMistakes,
         rightContent: highlightedCorrections
     }];
@@ -86,4 +67,10 @@ async function getGroqChatCompletion(messages: { role: string, content: string }
     return completion.choices[0].message.content;
 }
 
-export default handleUserMessage;
+export {
+    handleSpeakingPart1,
+    handleSpeakingPart2,
+    handleSpeakingPart3,
+    handleWritingTask1,
+    handleWritingTask2
+};

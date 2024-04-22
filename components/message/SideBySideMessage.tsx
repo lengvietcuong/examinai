@@ -1,5 +1,6 @@
 import React from 'react';
 import Message from './Message';
+import { montserrat } from '@/fonts/fonts';
 import styles from './SideBySideMessage.module.css';
 
 export interface SideBySideMessageProps {
@@ -39,9 +40,15 @@ const SideBySideMessage: React.FC<SideBySideMessageProps> = ({ role, leftContent
     return (
         <Message role={role}>
             <div className={styles.sideBySideContainer}>
-                <p className={styles.content}>{formatContent(leftContent)}</p>
+                <div>
+                    <h2 className={`${styles.title} ${montserrat.className}`}>Original</h2>
+                    <p className={styles.content}>{formatContent(leftContent)}</p>
+                </div>
                 <hr className={styles.separator} />
-                <p className={styles.content}>{formatContent(rightContent)}</p>
+                <div>
+                    <h2 className={`${styles.title} ${montserrat.className}`}>Corrected</h2>
+                    <p className={styles.content}>{formatContent(rightContent)}</p>
+                </div>
             </div>
         </Message>
     );

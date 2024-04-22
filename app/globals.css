@@ -41,6 +41,7 @@ button {
 }
 
 textarea {
+	font-family: Arial, sans-serif;
 	resize: none;
     border: 1px solid var(--tertiary-background-color);
     border-radius: 0.5rem;

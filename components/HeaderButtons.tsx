@@ -5,6 +5,7 @@ import PlusIcon from './icons/PlusIcon';
 import ProfileIcon from './icons/ProfileIcon';
 import HamburgerMenuIcon from './icons/HamburgerMenuIcon';
 import useSidebarStore from '@/stores/sidebarStore';
+import { montserrat } from '@/fonts/fonts';
 import styles from './HeaderButtons.module.css';
 
 const HeaderButtons: React.FC = () => {
@@ -16,11 +17,11 @@ const HeaderButtons: React.FC = () => {
             </button>
             <button className={`${styles.newChatButton} ${styles.buttonContainer}`}>
                 <PlusIcon className={styles.buttonIcon} />
-                <span className={styles.buttonText}>New chat</span>
+                <span className={`${styles.buttonText} ${montserrat.className}`}>New chat</span>
             </button>
             <button className={`${styles.signInButton} ${styles.buttonContainer}`}>
                 <ProfileIcon className={styles.buttonIcon} />
-                <span className={styles.buttonText}>Sign in</span>
+                <span className={`${styles.buttonText} ${montserrat.className}`}>Sign in</span>
             </button>
         </>
     );

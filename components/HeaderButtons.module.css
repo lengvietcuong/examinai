@@ -14,7 +14,7 @@
 }
 
 .buttonText {
-    font-weight: bold;
+    font-weight: 500;
     margin-left: 0.25rem;
     font-size: 1rem;
     color: var(--foreground-color);

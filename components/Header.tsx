@@ -1,9 +1,8 @@
 import React from 'react';
-import { Comfortaa } from 'next/font/google';
+import { comfortaa } from '@/fonts/fonts';
 import HeaderButtons from './HeaderButtons';
 import styles from './Header.module.css';
 
-const comfortaa = Comfortaa({subsets: ['latin'], weight: ['700']});
 
 const Header: React.FC = () => {
     return (

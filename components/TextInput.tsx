@@ -1,13 +1,10 @@
-'use client'
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Inter } from "next/font/google";
 import SendIcon from './icons/SendIcon';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
 import styles from './TextInput.module.css';
-
-const inter = Inter({ subsets: ["latin"] });
 
 const TextInput: React.FC = () => {
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
@@ -54,7 +51,7 @@ const TextInput: React.FC = () => {
                 <textarea
                     ref={textareaRef}
                     id="textInput"
-                    className={`${styles.textarea} ${inter.className}`}
+                    className={`${styles.textarea}`}
                     placeholder='Message Examinai...'
                     onInput={handleInput}
                     onKeyDown={handleKeyDown}

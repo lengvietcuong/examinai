@@ -2,15 +2,25 @@
     display: flex;
 }
 
-.content {
+.sideBySideContainer > div {
     flex: 1;
+}
+
+.title {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-top: 0;
+
+}
+
+.content {
     margin: 0;
     white-space: pre-wrap;
 }
 
 .separator {
     width: 1px;
-    margin: 0 2rem;
+    margin: 0 2.5rem;
     border: none;
     background-color: var(--tertiary-background-color);
 }

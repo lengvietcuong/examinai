@@ -1,6 +1,6 @@
 export default interface Message {
     role: 'user' | 'assistant';
-    type: 'text' | 'essaySubmission' | 'sideBySide' | 'grade';
+    type: 'text' | 'essaySubmission' | 'sideBySide' | 'grade' | 'displayHidden';
     content?: string;
     essayQuestion?: string;
     essay?: string;

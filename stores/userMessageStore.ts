@@ -5,7 +5,7 @@ type UserMessageState = {
     userMessage: Message | null;
     setUserMessage: (
         message: {
-            type: 'text' | 'essaySubmission',
+            type: 'text' | 'essaySubmission' | 'displayHidden',
             content?: string,
             essayQuestion?: string,
             essay?: string

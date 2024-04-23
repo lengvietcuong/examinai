@@ -7,7 +7,6 @@ import SkillSelection from "@/components/SkillSelection";
 import Conversation from "@/components/Conversation";
 import TextInput from "@/components/TextInput";
 import styles from "./page.module.css";
-import EssayForm from "@/components/EssayForm";
 
 export default function Home() {
 	return (
@@ -23,7 +22,6 @@ export default function Home() {
 							role="assistant"
 							content={`Hi! I'm your IELTS examiner, here to help you prepare for your test.\nI'm an AI, so mistakes are possible.\n\nPlease select what you'd like to practice:`} />
 						<SkillSelection />
-						<EssayForm />
 						<Conversation />
 					</div>
 				</div>

@@ -29,6 +29,13 @@ body {
 
 a {
 	text-decoration: none;
+	color: var(--secondary-color);
+	font-style: italic;
+	transition: color 0.3s ease;
+}
+
+a:hover {
+	color: var(--accent-color);
 }
 
 p {

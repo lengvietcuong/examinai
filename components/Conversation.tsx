@@ -6,6 +6,7 @@ import TextMessage from "@/components/message/TextMessage";
 import EssaySubmissionMessage from './message/EssaySubmissionMessage';
 import SideBySideMessage from "@/components/message/SideBySideMessage";
 import GradeMessage from "@/components/message/GradeMessage";
+import EssayForm from './EssayForm';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
 import { handleSpeakingPart1, handleSpeakingPart2, handleSpeakingPart3, handleWritingTask1, handleWritingTask2 } from '@/lib/groq';
@@ -13,6 +14,7 @@ import styles from './Conversation.module.css';
 
 const Conversation: React.FC = () => {
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
+    const [showEssayForm, setShowEssayForm] = useState<boolean>(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -26,8 +28,9 @@ const Conversation: React.FC = () => {
             case 'Speaking Part 1':
             case 'Speaking Part 2':
             case 'Speaking Part 3': {
+                console.log(updatedMessages);
                 const textMessages = updatedMessages
-                    .filter(message => message.type === 'text')
+                    .filter(message => message.type === 'text' || message.type === 'displayHidden')
                     .map(({ role, content }) => ({ role, content: content || '' }));
                 if (selectedSkill === 'Speaking Part 1') {
                     responseMessages = await handleSpeakingPart1(textMessages);
@@ -47,10 +50,22 @@ const Conversation: React.FC = () => {
             default:
                 break;
         }
-         setMessages(prevMessages => [...prevMessages, ...responseMessages ]);
+        setMessages(prevMessages => [...prevMessages, ...responseMessages]);
 
         setUserMessage(null);
     }
+
+    useEffect(() => {
+        if (!selectedSkill) return;
+        if (selectedSkill.startsWith('Speaking')) {
+            setUserMessage({
+                type: 'displayHidden',
+                content: `Act as an IELTS Speaking examiner. Ask me one random ${selectedSkill} question, and when I'm finished answering, ask me another one and repeat this process.`,
+            });
+        } else if (selectedSkill.startsWith('Writing')) {
+            setShowEssayForm(true);
+        }
+    }, [selectedSkill]);
 
     useEffect(() => {
         if (userMessage) {
@@ -64,6 +79,7 @@ const Conversation: React.FC = () => {
 
     return (
         <div className={styles.conversation}>
+            {showEssayForm && <EssayForm />}
             {messages.map((message, index) => {
                 switch (message.type) {
                     case 'text':

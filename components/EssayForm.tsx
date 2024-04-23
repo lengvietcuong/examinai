@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Message from './message/Message';
 import QuestionIcon from './icons/QuestionIcon';
 import EssayIcon from './icons/EssayIcon';
 import SendIcon from './icons/SendIcon';
@@ -48,40 +49,50 @@ const EssayForm: React.FC = () => {
     };
 
     return isVisible && (selectedSkill === 'Writing Task 1' || selectedSkill === 'Writing Task 2') && (
-        <form onSubmit={handleSubmit} className={styles.essayForm}>
-            <div>
-                <label className={styles.label} htmlFor="question">
-                    <QuestionIcon className={`${styles.icon} ${styles.fill}`} />
-                    Essay question
-                </label>
-                <textarea
-                    ref={questionRef}
-                    className={styles.textarea}
-                    id="question"
-                    value={question}
-                    onChange={handleQuestionChange}
-                    placeholder="Enter the essay question..."
-                />
-            </div>
-            <div>
-                <label className={styles.label} htmlFor="essay">
-                    <EssayIcon className={`${styles.icon} ${styles.fill}`} />
-                    Your essay
-                </label>
-                <textarea
-                    ref={essayRef}
-                    className={styles.textarea}
-                    id="essay"
-                    value={essay}
-                    onChange={handleEssayChange}
-                    placeholder="Enter your essay..."
-                />
-            </div>
-            <button type="submit" className={`${styles.submitButton} ${montserrat.className}`}>
-                <SendIcon className={`${styles.icon} ${styles.stroke}`} />
-                Submit
-            </button>
-        </form>
+        <>
+            <Message role="assistant">
+                <p className={styles.instruction}>
+                    Please submit the essay question and your essay. I will assess it and provide detailed feedback.
+                    <br />
+                    <br />
+                    Don't have a question to write about? Visit <a href="https://study4.com/tests/?term=IELTS+Writing" target="_blank" rel="noopener noreferrer">Study4</a> to find one.
+                </p>
+            </Message>
+            <form onSubmit={handleSubmit} className={styles.essayForm}>
+                <div>
+                    <label className={styles.label} htmlFor="question">
+                        <QuestionIcon className={`${styles.icon} ${styles.fill}`} />
+                        Essay question
+                    </label>
+                    <textarea
+                        ref={questionRef}
+                        className={styles.textarea}
+                        id="question"
+                        value={question}
+                        onChange={handleQuestionChange}
+                        placeholder="Enter the essay question..."
+                    />
+                </div>
+                <div>
+                    <label className={styles.label} htmlFor="essay">
+                        <EssayIcon className={`${styles.icon} ${styles.fill}`} />
+                        Your essay
+                    </label>
+                    <textarea
+                        ref={essayRef}
+                        className={styles.textarea}
+                        id="essay"
+                        value={essay}
+                        onChange={handleEssayChange}
+                        placeholder="Enter your essay..."
+                    />
+                </div>
+                <button type="submit" className={`${styles.submitButton} ${montserrat.className}`}>
+                    <SendIcon className={`${styles.icon} ${styles.stroke}`} />
+                    Submit
+                </button>
+            </form>
+        </>
     );
 };
 

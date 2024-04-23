@@ -76,7 +76,7 @@ const Conversation: React.FC = () => {
 
     return (
         <>
-            {(selectedSkill === 'Writing Task 1' || selectedSkill === 'Writing Task 2') &&
+            {messages.length === 0 && (selectedSkill === 'Writing Task 1' || selectedSkill === 'Writing Task 2') &&
                 <>
                     <Message role="assistant">
                         <p className={styles.instruction}>

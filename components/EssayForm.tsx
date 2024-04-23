@@ -13,7 +13,6 @@ const EssayForm: React.FC = () => {
     const setUserMessage = useUserMessageStore((state) => state.setUserMessage);
     const [question, setQuestion] = useState('');
     const [essay, setEssay] = useState('');
-    const [submitted, setSubmitted] = useState(false);
     const questionRef = useRef(null);
     const essayRef = useRef(null);
 
@@ -42,10 +41,9 @@ const EssayForm: React.FC = () => {
         if (!question.trim() || !essay.trim()) return;
 
         setUserMessage({ type: 'essaySubmission', essayQuestion: sanitize(question), essay: sanitize(essay) });
-        setSubmitted(true);
     };
 
-    return !submitted && (
+    return (
         <form onSubmit={handleSubmit} className={styles.essayForm}>
             <div>
                 <label className={styles.label} htmlFor="question">

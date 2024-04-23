@@ -13,22 +13,38 @@ import { useSkillStore } from '@/stores/skillStore';
 import { handleSpeakingPart1, handleSpeakingPart2, handleSpeakingPart3, handleWritingTask1, handleWritingTask2 } from '@/lib/groq';
 import styles from './Conversation.module.css';
 
+const LoadingMessage: React.FC = () => {
+    const [dots, setDots] = useState('');
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setDots(dots => dots.length < 3 ? dots + '.' : '');
+        }, 250);
+        return () => clearInterval(interval);
+    }, []);
+    return (
+        <Message role="assistant">
+            <p>Just a second{dots}</p>
+        </Message>
+    );
+};
+
 const Conversation: React.FC = () => {
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [messages, setMessages] = useState<MessageType[]>([]);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     async function onUserMessage(userMessage: MessageType) {
         const updatedMessages = [...messages, userMessage];
         setMessages(updatedMessages);
 
+        setIsLoading(true);
         let responseMessages: MessageType[] = [];
         switch (selectedSkill) {
             case 'Speaking Part 1':
             case 'Speaking Part 2':
             case 'Speaking Part 3': {
-                console.log(updatedMessages);
                 const textMessages = updatedMessages
                     .filter(message => message.type === 'text' || message.type === 'displayHidden')
                     .map(({ role, content }) => ({ role, content: content || '' }));
@@ -53,6 +69,7 @@ const Conversation: React.FC = () => {
         setMessages(prevMessages => [...prevMessages, ...responseMessages]);
 
         setUserMessage(null);
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -104,6 +121,7 @@ const Conversation: React.FC = () => {
                             return null;
                     }
                 })}
+                {isLoading && <LoadingMessage />}
                 <div ref={messagesEndRef} />
             </div>
         </>

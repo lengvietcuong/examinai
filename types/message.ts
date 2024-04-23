@@ -1,4 +1,4 @@
-export default interface Message {
+export default interface MessageType {
     role: 'user' | 'assistant';
     type: 'text' | 'essaySubmission' | 'sideBySide' | 'grade' | 'displayHidden';
     content?: string;

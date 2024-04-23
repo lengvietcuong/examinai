@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import Message from '@/types/message';
+import MessageType from '@/types/message';
 
 type UserMessageState = {
-    userMessage: Message | null;
+    userMessage: MessageType | null;
     setUserMessage: (
         message: {
             type: 'text' | 'essaySubmission' | 'displayHidden',

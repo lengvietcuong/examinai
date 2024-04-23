@@ -3,3 +3,8 @@
     flex-direction: column;
     gap: 4rem;
 }
+
+.instruction {
+    margin: 0;
+    white-space: pre-wrap;
+}

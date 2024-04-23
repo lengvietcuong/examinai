@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Message from '@/types/message';
+import Message from './message/Message';
+import MessageType from '@/types/message';
 import TextMessage from "@/components/message/TextMessage";
 import EssaySubmissionMessage from './message/EssaySubmissionMessage';
 import SideBySideMessage from "@/components/message/SideBySideMessage";
@@ -14,16 +15,15 @@ import styles from './Conversation.module.css';
 
 const Conversation: React.FC = () => {
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
-    const [showEssayForm, setShowEssayForm] = useState<boolean>(false);
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<MessageType[]>([]);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    async function onUserMessage(userMessage: Message) {
+    async function onUserMessage(userMessage: MessageType) {
         const updatedMessages = [...messages, userMessage];
         setMessages(updatedMessages);
 
-        let responseMessages: Message[] = [];
+        let responseMessages: MessageType[] = [];
         switch (selectedSkill) {
             case 'Speaking Part 1':
             case 'Speaking Part 2':
@@ -56,14 +56,11 @@ const Conversation: React.FC = () => {
     }
 
     useEffect(() => {
-        if (!selectedSkill) return;
-        if (selectedSkill.startsWith('Speaking')) {
+        if (selectedSkill && selectedSkill.startsWith('Speaking')) {
             setUserMessage({
                 type: 'displayHidden',
                 content: `Act as an IELTS Speaking examiner. Ask me one random ${selectedSkill} question, and when I'm finished answering, ask me another one and repeat this process.`,
             });
-        } else if (selectedSkill.startsWith('Writing')) {
-            setShowEssayForm(true);
         }
     }, [selectedSkill]);
 
@@ -78,24 +75,38 @@ const Conversation: React.FC = () => {
     }, [messages]);
 
     return (
-        <div className={styles.conversation}>
-            {showEssayForm && <EssayForm />}
-            {messages.map((message, index) => {
-                switch (message.type) {
-                    case 'text':
-                        return <TextMessage key={index} role={message.role} content={message.content || ''} />;
-                    case 'essaySubmission':
-                        return <EssaySubmissionMessage key={index} essayQuestion={message.essayQuestion || ''} essay={message.essay || ''} />;
-                    case 'sideBySide':
-                        return <SideBySideMessage key={index} leftContent={message.leftContent || ''} rightContent={message.rightContent || ''} />;
-                    case 'grade':
-                        return <GradeMessage key={index} bandScores={message.bandScores || []} />;
-                    default:
-                        return null;
-                }
-            })}
-            <div ref={messagesEndRef} />
-        </div>
+        <>
+            {(selectedSkill === 'Writing Task 1' || selectedSkill === 'Writing Task 2') &&
+                <>
+                    <Message role="assistant">
+                        <p className={styles.instruction}>
+                            Please submit the essay question and your essay. I will assess it and provide detailed feedback.
+                            <br />
+                            <br />
+                            Don't know where to find {selectedSkill} questions? Check out <a href="https://study4.com/tests/?term=IELTS+Writing" target="_blank" rel="noopener noreferrer">Study4</a>.
+                        </p>
+                    </Message>
+                    <EssayForm />
+                </>
+            }
+            <div className={styles.conversation}>
+                {messages.map((message, index) => {
+                    switch (message.type) {
+                        case 'text':
+                            return <TextMessage key={index} role={message.role} content={message.content || ''} />;
+                        case 'essaySubmission':
+                            return <EssaySubmissionMessage key={index} essayQuestion={message.essayQuestion || ''} essay={message.essay || ''} />;
+                        case 'sideBySide':
+                            return <SideBySideMessage key={index} leftContent={message.leftContent || ''} rightContent={message.rightContent || ''} />;
+                        case 'grade':
+                            return <GradeMessage key={index} bandScores={message.bandScores || []} />;
+                        default:
+                            return null;
+                    }
+                })}
+                <div ref={messagesEndRef} />
+            </div>
+        </>
     );
 };
 

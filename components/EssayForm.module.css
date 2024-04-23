@@ -1,14 +1,9 @@
-.instruction {
-    margin: 0;
-    white-space: pre-wrap;
-}
-
 .essayForm {
     border: 1px solid var(--tertiary-background-color);
     border-radius: 0.5rem;
     background-color: transparent;
     padding: 1.5rem;
-    margin-top: -2rem;
+    margin-top: 0.75rem;
 }
 
 .label {

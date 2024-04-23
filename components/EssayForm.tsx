@@ -38,9 +38,11 @@ const EssayForm: React.FC = () => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (!question.trim() || !essay.trim()) return;
+        const sanitizedQuestion = sanitize(question);
+        const sanitizedEssay = sanitize(essay);
+        if (!sanitizedQuestion || !sanitizedEssay) return;
 
-        setUserMessage({ type: 'essaySubmission', essayQuestion: sanitize(question), essay: sanitize(essay) });
+        setUserMessage({ type: 'essaySubmission', essayQuestion: sanitizedQuestion, essay: sanitizedEssay});
     };
 
     return (

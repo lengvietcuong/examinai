@@ -2,8 +2,6 @@
 
 import Groq from "groq-sdk";
 import { diffWords } from 'diff';
-import Message from "@/types/message";
-
 
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
@@ -26,25 +24,25 @@ async function handleWritingTask1(essayQuestion: string, essay: string) {
 }
 
 async function handleWritingTask2(essayQuestion: string, essay: string) {
-    const correctionPrompt = `Rewrite the following essay with all language mistakes corrected (grammar, word choice, awkward phrasing, spelling). Output the corrected version only (do not include "Here is the corrected essay:").\n\n${essay}`;
+    const correctionPrompt = `Rewrite the following essay with all language mistakes corrected (grammar, word choice, awkward phrasing, spelling). Avoid making unncessary changes. Only output the corrected version (do not include "Here is the corrected essay:").\n\n${essay}`;
     const correctedEssay = await getGroqChatCompletion([{ role: "user", content: correctionPrompt }]);
 
     const changes = diffWords(essay, correctedEssay);
     const highlightedMistakes = changes.map(change => {
-        if (change.removed) {
+        if (change.removed && change.value !== '\n') {
             return `#${change.value}#`;
         }
-        if (!change.added) {
+        if (!change.added && change.value !== '\n') {
             return change.value;
         }
         return '';
     }).join('').replace(/# #/g, ' ');
 
     const highlightedCorrections = changes.map(change => {
-        if (change.added) {
+        if (change.added && change.value !== '\n') {
             return `*${change.value}*`;
         }
-        if (!change.removed) {
+        if (!change.removed && change.value !== '\n') {
             return change.value;
         }
         return '';

@@ -10,7 +10,7 @@ export interface SideBySideCorrectionProps {
 }
 
 const SideBySideCorrection: React.FC<SideBySideCorrectionProps> = ({ leftContent, rightContent }) => {
-    const applyStyles = (text: string) => {
+    const highlightChanges = (text: string) => {
         const regex = /(\*[^*]+\*)|(\#[^#]+\#)|([^\*#]+)/g;
         let match;
         let result = [];
@@ -33,7 +33,7 @@ const SideBySideCorrection: React.FC<SideBySideCorrectionProps> = ({ leftContent
 
     function formatContent(content: string) {
         return content.split('\n').map((item, key) => {
-            return <React.Fragment key={key}>{applyStyles(item)}<br /></React.Fragment>
+            return <React.Fragment key={key}>{highlightChanges(item)}<br /></React.Fragment>
         });
     }
 

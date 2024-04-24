@@ -68,6 +68,19 @@
         height: 1px;
         margin: 2rem 0;
     }
+
+    .icon {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.25rem;
+    }
+
+    .labelContainer {
+        margin-bottom: 1rem;
+    }
 }
 
 @media (prefers-color-scheme: dark) {

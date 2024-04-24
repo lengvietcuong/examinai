@@ -4,7 +4,42 @@
     gap: 4rem;
 }
 
-.instruction {
+.content {
     margin: 0;
     white-space: pre-wrap;
+}
+
+.dot {
+    display: inline-block;
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 50%;
+    background-color: var(--foreground-color);
+    margin-left: 0.15rem;
+    animation: wave 1s linear infinite;
+}
+
+.dot:first-child {
+    animation-delay: -0.9s;
+}
+
+.dot:nth-child(2) {
+    animation-delay: -0.7s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: -0.6s;
+}
+
+@keyframes wave {
+
+    0%,
+    60%,
+    100% {
+        transform: initial;
+    }
+
+    30% {
+        transform: translateY(-0.35rem);
+    }
 }

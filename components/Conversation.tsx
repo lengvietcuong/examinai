@@ -13,21 +13,6 @@ import { useSkillStore } from '@/stores/skillStore';
 import { handleSpeakingPart1, handleSpeakingPart2, handleSpeakingPart3, handleWritingTask1, handleWritingTask2 } from '@/lib/groq';
 import styles from './Conversation.module.css';
 
-const LoadingMessage: React.FC = () => {
-    const [dots, setDots] = useState('');
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDots(dots => dots.length < 3 ? dots + '.' : '');
-        }, 250);
-        return () => clearInterval(interval);
-    }, []);
-    return (
-        <Message role="assistant">
-            <p>Just a second{dots}</p>
-        </Message>
-    );
-};
-
 const Conversation: React.FC = () => {
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [messages, setMessages] = useState<MessageType[]>([]);
@@ -96,7 +81,7 @@ const Conversation: React.FC = () => {
             {messages.length === 0 && (selectedSkill === 'Writing Task 1' || selectedSkill === 'Writing Task 2') &&
                 <>
                     <Message role="assistant">
-                        <p className={styles.instruction}>
+                        <p className={styles.content}>
                             Please submit the essay question and your essay. I will assess it and provide detailed feedback.
                             <br />
                             <br />
@@ -121,7 +106,16 @@ const Conversation: React.FC = () => {
                             return null;
                     }
                 })}
-                {isLoading && <LoadingMessage />}
+                {isLoading &&
+                    <Message role="assistant">
+                        <p className={styles.content}>
+                            Just a second
+                            <span className={styles.dot}></span>
+                            <span className={styles.dot}></span>
+                            <span className={styles.dot}></span>
+                        </p>
+                    </Message>
+                }
                 <div ref={messagesEndRef} />
             </div>
         </>

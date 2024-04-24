@@ -4,9 +4,30 @@
     gap: 4rem;
 }
 
-.content {
+.headingContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.35rem;
+    margin-bottom: 1.5rem;
+}
+
+.assessmentHeading {
+    font-size: 1.75rem;
     margin: 0;
-    white-space: pre-wrap;
+}
+
+.assessmentIcon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.fill {
+    fill: var(--foreground-color);
+}
+
+.stroke {
+    stroke: var(--foreground-color);
 }
 
 .dot {

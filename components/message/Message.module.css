@@ -25,6 +25,11 @@
     position: relative;
 }
 
+.messageInfo p {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
 .sender {
     position: absolute;
     top: -1.5rem;

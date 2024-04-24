@@ -1,16 +1,15 @@
 import React from 'react';
-import Message from './Message';
 import OriginalEssayIcon from '../icons/OriginalEssayIcon';
 import CorrectedEssayIcon from '../icons/CorrectedEssayIcon';
 import { montserrat } from '@/fonts/fonts';
-import styles from './SideBySideMessage.module.css';
+import styles from './SideBySideCorrection.module.css';
 
-export interface SideBySideMessageProps {
+export interface SideBySideCorrectionProps {
     leftContent: string;
     rightContent: string;
 }
 
-const SideBySideMessage: React.FC<SideBySideMessageProps> = ({ leftContent, rightContent }) => {
+const SideBySideCorrection: React.FC<SideBySideCorrectionProps> = ({ leftContent, rightContent }) => {
     const applyStyles = (text: string) => {
         const regex = /(\*[^*]+\*)|(\#[^#]+\#)|([^\*#]+)/g;
         let match;
@@ -39,26 +38,24 @@ const SideBySideMessage: React.FC<SideBySideMessageProps> = ({ leftContent, righ
     }
 
     return (
-        <Message role='assistant'>
-            <div className={styles.sideBySideContainer}>
-                <div>
-                    <div className={styles.labelContainer}>
-                        <OriginalEssayIcon className={`${styles.icon} ${styles.stroke}`} />
-                        <h2 className={`${styles.title} ${montserrat.className}`}>Original</h2>
-                    </div>
-                    <p className={styles.content}>{formatContent(leftContent)}</p>
+        <div className={styles.sideBySideContainer}>
+            <div>
+                <div className={styles.labelContainer}>
+                    <OriginalEssayIcon className={`${styles.icon} ${styles.stroke}`} />
+                    <h3 className={`${styles.title} ${montserrat.className}`}>Original</h3>
                 </div>
-                <hr className={styles.separator} />
-                <div>
-                    <div className={styles.labelContainer}>
-                        <CorrectedEssayIcon className={`${styles.icon} ${styles.fill}`} />
-                        <h2 className={`${styles.title} ${montserrat.className}`}>Corrected</h2>
-                    </div>
-                    <p className={styles.content}>{formatContent(rightContent)}</p>
-                </div>
+                <p className={styles.content}>{formatContent(leftContent)}</p>
             </div>
-        </Message>
+            <hr className={styles.separator} />
+            <div>
+                <div className={styles.labelContainer}>
+                    <CorrectedEssayIcon className={`${styles.icon} ${styles.fill}`} />
+                    <h3 className={`${styles.title} ${montserrat.className}`}>Corrected</h3>
+                </div>
+                <p className={styles.content}>{formatContent(rightContent)}</p>
+            </div>
+        </div>
     );
 };
 
-export default SideBySideMessage;
+export default SideBySideCorrection;

@@ -1,12 +1,12 @@
 import React from 'react';
 import Message from './Message';
-import styles from './GradeMessage.module.css';
+import styles from './BandScores.module.css';
 
-export interface GradeMessageProps {
+export interface BandScoresProps {
     bandScores: { criterion: string, score: number }[];
 }
 
-const GradeMessage: React.FC<GradeMessageProps> = ({ bandScores }) => {
+const BandScores: React.FC<BandScoresProps> = ({ bandScores }) => {
     return (
         <Message role='assistant'>
             
@@ -14,4 +14,4 @@ const GradeMessage: React.FC<GradeMessageProps> = ({ bandScores }) => {
     );
 };
 
-export default GradeMessage;
+export default BandScores;

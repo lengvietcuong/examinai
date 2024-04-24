@@ -35,8 +35,6 @@
 }
 
 .content {
-    margin: 0;
-    white-space: pre-wrap;
     color: var(--secondary-foreground-color);
 }
 

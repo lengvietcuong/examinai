@@ -7,18 +7,28 @@ const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
 });
 
+function stripRedundantPhrase(text: string) {
+    if (text.startsWith('Here')) {
+        const lines = text.split('\n\n').slice(1);
+        return lines.join('\n\n');
+    }
+    return text;
+}
+
 async function getWritingAssessment(essayQuestion: string, essay: string) {
-    return {};
+    const assessmentPrompt = `Grade the following IELTS Writing essay based on 4 criteria: Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy.\n\n${essayQuestion}\n\n${essay}`;
+    const bandScores = stripRedundantPhrase(await getGroqChatCompletion([{ role: "user", content: assessmentPrompt }]));
+
+    return {
+        role: 'assistant' as 'assistant',
+        type: 'bandScores' as 'bandScores',
+        content: bandScores
+    };
 }
 
 async function getWritingCorrection(essay: string) {
     const correctionPrompt = `Rewrite the following essay with all language mistakes corrected (grammar, word choice, awkward phrasing, spelling, etc.). Avoid making redundant changes. Only output the corrected version (do not include "Here is the corrected essay:").\n\n${essay}`;
-
-    let correctedEssay = await getGroqChatCompletion([{ role: "user", content: correctionPrompt }]);
-    if (correctedEssay.startsWith('Here is')) {
-        const lines = correctedEssay.split('\n\n').slice(1);
-        correctedEssay = lines.join('\n\n');
-    }
+    const correctedEssay = stripRedundantPhrase(await getGroqChatCompletion([{ role: "user", content: correctionPrompt }]));
 
     const changes = diffWords(essay, correctedEssay);
     const highlightedMistakes = changes.map(change => {
@@ -42,19 +52,33 @@ async function getWritingCorrection(essay: string) {
     }).join('').replace(/\* \*/g, ' ');
 
     return {
-        role: 'assistant' as 'user' | 'assistant',
-        type: 'sideBySide' as 'text' | 'essaySubmission' | 'sideBySide' | 'grade',
+        role: 'assistant' as 'assistant',
+        type: 'sideBySideCorrection' as 'sideBySideCorrection',
         leftContent: highlightedMistakes,
         rightContent: highlightedCorrections
     };
 }
 
 async function getWritingSuggestions(essayQuestion: string, essay: string) {
-    return {};
+    const suggestionPrompt = `Provide a comprehensive list of potential ideas to expand and strengthen the arguments in the following essay.\n\n${essayQuestion}\n\n${essay}`;
+    const ideaSuggestions = stripRedundantPhrase(await getGroqChatCompletion([{ role: "user", content: suggestionPrompt }]));
+
+    return {
+        role: 'assistant' as 'assistant',
+        type: 'ideaSuggestions' as 'ideaSuggestions',
+        content: ideaSuggestions
+    };
 }
 
 async function getWritingImprovedVersion(essay: string) {
-    return {};
+    const improvementPrompt = `Write an improved version of the following essay and briefly explain the more advanced vocabularies or phrases used. Only output the improved version and explanations (do not include "Here is the corrected essay:").\n\n${essay}`;
+    const improvedVersion = stripRedundantPhrase(await getGroqChatCompletion([{ role: "user", content: improvementPrompt }]));
+
+    return {
+        role: 'assistant' as 'assistant',
+        type: 'improvedVersion' as 'improvedVersion',
+        content: improvedVersion
+    };
 }
 
 async function handleSpeakingPart1(messages: { role: string, content: string }[]) {
@@ -74,13 +98,12 @@ async function handleWritingTask1(essayQuestion: string, essay: string) {
 }
 
 async function handleWritingTask2(essayQuestion: string, essay: string) {
-    return [await getWritingCorrection(essay)];
-    // return Promise.all([
-    //     getWritingAssessment(essayQuestion, essay),
-    //     getWritingCorrection(essay),
-    //     getWritingSuggestions(essayQuestion, essay),
-    //     getWritingImprovedVersion(essay)
-    // ]);
+    return Promise.all([
+        getWritingAssessment(essayQuestion, essay),
+        getWritingCorrection(essay),
+        getWritingSuggestions(essayQuestion, essay),
+        getWritingImprovedVersion(essay)
+    ]);
 }
 
 async function getGroqChatCompletion(messages: { role: string, content: string }[]) {

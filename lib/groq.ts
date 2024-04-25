@@ -71,7 +71,7 @@ async function getWritingSuggestions(essayQuestion: string, essay: string) {
 }
 
 async function getWritingImprovedVersion(essay: string) {
-    const improvementPrompt = `Write an improved version of the following essay and briefly explain the more advanced vocabularies or phrases used. Only output the improved version and explanations (do not include "Here is the corrected essay:").\n\n${essay}`;
+    const improvementPrompt = `Write an improved version of the following academic essay by using more sophisticated language and expanding on existing ideas. Then, provide a comprehensive list of brief definitions for all the advanced vocabularies and phrases used. Only output the improved version and explanations (do not include "Here is the corrected essay:").\n\n${essay}`;
     const improvedVersion = stripRedundantPhrase(await getGroqChatCompletion([{ role: "user", content: improvementPrompt }]));
 
     return {
@@ -99,9 +99,9 @@ async function handleWritingTask1(essayQuestion: string, essay: string) {
 
 async function handleWritingTask2(essayQuestion: string, essay: string) {
     return Promise.all([
-        getWritingAssessment(essayQuestion, essay),
-        getWritingCorrection(essay),
-        getWritingSuggestions(essayQuestion, essay),
+        // getWritingAssessment(essayQuestion, essay),
+        // getWritingCorrection(essay),
+        // getWritingSuggestions(essayQuestion, essay),
         getWritingImprovedVersion(essay)
     ]);
 }

@@ -23,11 +23,11 @@
 }
 
 .fill {
-    fill: var(--foreground-color);
+    fill: var(--secondary-color);
 }
 
 .stroke {
-    stroke: var(--foreground-color);
+    stroke: var(--secondary-color);
 }
 
 .dot {

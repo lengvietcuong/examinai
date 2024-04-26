@@ -2,6 +2,7 @@
 
 import Groq from "groq-sdk";
 import { diffWords } from 'diff';
+import getBandDescriptorsString from "@/utils/formatBandDescriptors";
 
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
@@ -15,8 +16,9 @@ function stripRedundantPhrase(text: string) {
     return text;
 }
 
-async function getWritingAssessment(essayQuestion: string, essay: string) {
-    const assessmentPrompt = `Grade the following IELTS Writing essay based on 4 criteria: Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy.\n\n${essayQuestion}\n\n${essay}`;
+async function getWritingAssessment(taskType: 'task_2', essayQuestion: string, essay: string) {
+    const taskNumber = taskType.charAt(taskType.length - 1);
+    const assessmentPrompt = `Assess the following IELTS Writing Task ${taskNumber} essay using these 4 criteria:\n\n${getBandDescriptorsString('writing', taskType)}Only provide the band scores for the 4 criteria, nothing else is required. Here is the essay question:\n${essayQuestion}\n\nAnd here is the essay:\n${essay}`;
     const bandScores = stripRedundantPhrase(await getGroqChatCompletion([{ role: "user", content: assessmentPrompt }]));
 
     return {
@@ -27,7 +29,7 @@ async function getWritingAssessment(essayQuestion: string, essay: string) {
 }
 
 async function getWritingCorrection(essay: string) {
-    const correctionPrompt = `Rewrite the following essay with all language mistakes corrected (grammar, word choice, awkward phrasing, spelling, etc.). Avoid making redundant changes. Only output the corrected version (do not include "Here is the corrected essay:").\n\n${essay}`;
+    const correctionPrompt = `Rewrite the following academic essay with all language mistakes corrected (grammar, word choice, awkward phrasing, spelling, etc.). You must not make unnecessary changes, i.e. do not change something if the original is perfectly fine.\n\n${essay}`;
     const correctedEssay = stripRedundantPhrase(await getGroqChatCompletion([{ role: "user", content: correctionPrompt }]));
 
     const changes = diffWords(essay, correctedEssay);
@@ -60,7 +62,7 @@ async function getWritingCorrection(essay: string) {
 }
 
 async function getWritingSuggestions(essayQuestion: string, essay: string) {
-    const suggestionPrompt = `Provide a comprehensive list of potential ideas to expand and strengthen the arguments in the following essay.\n\n${essayQuestion}\n\n${essay}`;
+    const suggestionPrompt = `List 5 thoughtful and specific ideas to strengthen the main arguments in the following essay. Expand vertically and not horizontally, meaning you should go deeper into existing ideas and should not create different ones. Each suggestion should have a bold title and a sample sentence below incorporating it, and nothing else. Do not recommend studies, statistics, or generic ideas.\n\n${essayQuestion}\n\n${essay}`;
     const ideaSuggestions = stripRedundantPhrase(await getGroqChatCompletion([{ role: "user", content: suggestionPrompt }]));
 
     return {
@@ -71,7 +73,7 @@ async function getWritingSuggestions(essayQuestion: string, essay: string) {
 }
 
 async function getWritingImprovedVersion(essay: string) {
-    const improvementPrompt = `Write an improved version of the following academic essay by using more sophisticated language and expanding on existing ideas. Then, provide a comprehensive list of brief definitions for all the advanced vocabularies and phrases used. Only output the improved version and explanations (do not include "Here is the corrected essay:").\n\n${essay}`;
+    const improvementPrompt = `Write an improved version of the following academic essay by using more sophisticated language and adding more supporting ideas to make the main arguments longer. You should maintain the original structure. Finally, provide a comprehensive list of brief definitions for all the advanced vocabularies and phrases used. Only output the improved version and explanations, and nothing else (like notes).\n\n${essay}`;
     const improvedVersion = stripRedundantPhrase(await getGroqChatCompletion([{ role: "user", content: improvementPrompt }]));
 
     return {
@@ -99,9 +101,9 @@ async function handleWritingTask1(essayQuestion: string, essay: string) {
 
 async function handleWritingTask2(essayQuestion: string, essay: string) {
     return Promise.all([
-        // getWritingAssessment(essayQuestion, essay),
-        // getWritingCorrection(essay),
-        // getWritingSuggestions(essayQuestion, essay),
+        getWritingAssessment('task_2', essayQuestion, essay),
+        getWritingCorrection(essay),
+        getWritingSuggestions(essayQuestion, essay),
         getWritingImprovedVersion(essay)
     ]);
 }
@@ -110,7 +112,7 @@ async function getGroqChatCompletion(messages: { role: string, content: string }
     const completion = await groq.chat.completions.create({
         messages: messages,
         model: "llama3-70b-8192",
-        temperature: 0.3
+        temperature: 0
     });
     return completion.choices[0].message.content;
 }

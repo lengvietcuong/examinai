@@ -62,7 +62,7 @@ async function getWritingCorrection(essay: string) {
 }
 
 async function getWritingSuggestions(essayQuestion: string, essay: string) {
-    const suggestionPrompt = `List 5 thoughtful and specific ideas to strengthen the main arguments in the following essay. Expand vertically and not horizontally, meaning you should go deeper into existing ideas and should not create different ones. Each suggestion should have a bold title and a sample sentence below incorporating it, and nothing else. Do not recommend studies, statistics, or generic ideas.\n\n${essayQuestion}\n\n${essay}`;
+    const suggestionPrompt = `List 5 thoughtful and specific ideas to strengthen the main arguments in the following essay. Expand vertically and not horizontally, meaning you should go deeper into existing ideas and explore what has not been mentioned, and should not create completely different ones. Each suggestion should have a bold, direct title and a sample sentence below to show how the idea can be incorporated into the essay, and nothing else. Do not recommend studies, statistics, or generic ideas.\n\n${essayQuestion}\n\n${essay}`;
     const ideaSuggestions = stripRedundantPhrase(await getGroqChatCompletion([{ role: "user", content: suggestionPrompt }]));
 
     return {

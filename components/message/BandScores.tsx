@@ -4,6 +4,7 @@ import StructureIcon from '../icons/StructureIcon';
 import BookIcon from '../icons/BookIcon';
 import LinkIcon from '../icons/LinkIcon';
 import SigmaIcon from '../icons/SigmaIcon';
+import QuestionIcon from '../icons/QuestionIcon';
 import { montserrat } from '@/fonts/fonts';
 import styles from './BandScores.module.css';
 
@@ -55,6 +56,9 @@ const BandScores: React.FC<BandScoresProps> = ({ bandScores }) => {
                         ) : null}
                         <h3 className={styles.title}>{criterion}</h3>
                         <span className={styles.score}>{scores[criterion].toFixed(1)}</span>
+                        <a href="https://takeielts.britishcouncil.org/sites/default/files/ielts_writing_band_descriptors.pdf" target="_blank" rel="noopener noreferrer">
+                            <QuestionIcon className={`${styles.icon} ${styles.questionIcon} ${styles.fill}`} />
+                        </a>
                     </div>
                 ))}
             </div>
@@ -63,6 +67,9 @@ const BandScores: React.FC<BandScoresProps> = ({ bandScores }) => {
                 <SigmaIcon className={`${styles.icon} ${styles.fill}`} />
                 <h3 className={styles.title}>Overall</h3>
                 <span className={styles.score}>{overallScore.toFixed(1)}</span>
+                <a href="https://www.youtube.com/watch?v=IiPMWo4Z9Qs" target="_blank" rel="noopener noreferrer">
+                    <QuestionIcon className={`${styles.icon} ${styles.questionIcon} ${styles.fill}`} />
+                </a>
             </div>
         </div>
     );

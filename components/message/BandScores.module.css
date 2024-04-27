@@ -27,6 +27,18 @@
     height: 1.25rem;
 }
 
+.questionIcon {
+    top: auto;
+    left: auto;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    transition: 0.3s ease;
+}
+
+.questionIcon:hover.fill {
+    fill: var(--secondary-foreground-color);
+}
+
 .title {
     text-align: center;
     font-size: 1rem;;

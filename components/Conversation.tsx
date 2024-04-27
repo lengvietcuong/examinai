@@ -136,35 +136,29 @@ const Conversation: React.FC = () => {
                                 <BandScores bandScores={message.bandScores || ''} />
                             </Message>
                         case 'sideBySideCorrection':
-                            return <>
-                                <Message key={index} role='assistant'>
+                            return <Message key={index} role='assistant'>
                                     <div className={styles.headingContainer}>
                                         <ToolsIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
                                         <h2 className={styles.assessmentHeading}>Corrections</h2>
                                     </div>
                                     <SideBySideCorrection key={index} leftContent={message.leftContent || ''} rightContent={message.rightContent || ''} />
                                 </Message>
-                            </>
                         case 'ideaSuggestions':
-                            return <>
-                                <Message key={index} role='assistant'>
+                            return <Message key={index} role='assistant'>
                                     <div className={styles.headingContainer}>
                                         <LightBulbIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
                                         <h2 className={styles.assessmentHeading}>Idea Suggestions</h2>
                                     </div>
                                     <p>{stylize(message.content || '')}</p>
                                 </Message>
-                            </>
                         case 'improvedVersion':
-                            return <>
-                                <Message key={index} role='assistant'>
+                            return <Message key={index} role='assistant'>
                                     <div className={styles.headingContainer}>
                                         <SparklesIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.stroke}`} />
                                         <h2 className={styles.assessmentHeading}>Improved Version</h2>
                                     </div>
                                     <p>{stylize(message.content || '')}</p>
                                 </Message>
-                            </>
                         default:
                             return null;
                     }

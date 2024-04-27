@@ -24,7 +24,7 @@ async function getWritingAssessment(taskType: 'task_2', essayQuestion: string, e
     return {
         role: 'assistant' as 'assistant',
         type: 'bandScores' as 'bandScores',
-        content: bandScores
+        bandScores: bandScores
     };
 }
 

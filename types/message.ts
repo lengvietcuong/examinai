@@ -6,5 +6,5 @@ export default interface MessageType {
     essay?: string;
     leftContent?: string;
     rightContent?: string;
-    bandScores?: { criterion: string, score: number }[]
+    bandScores?: string;
 }

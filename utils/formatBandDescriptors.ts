@@ -12,7 +12,7 @@ export default function getBandDescriptorsString(skill: 'writing', taskType: 'ta
     let formattedString = "";
 
     for (const [criterion, bands] of Object.entries(skillCriteria)) {
-        formattedString += `${toTitleCase(criterion)}:`;
+        formattedString += `${toTitleCase(criterion.replace('and', '&'))}:`;
         for (const [band, description] of Object.entries(bands)) {
             formattedString += `\n${toTitleCase(band)}\n${description}:`;
         }

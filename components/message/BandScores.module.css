@@ -1,0 +1,94 @@
+.bandScoresContainer {
+    display: flex;
+}
+
+.criteria {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.criterion {
+    position: relative;
+    width: 14rem;
+    height: 9rem;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    background-color: var(--secondary-background-color);
+}
+
+.icon {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.title {
+    text-align: center;
+    font-size: 1rem;;
+    font-weight: 500;
+    min-height: 50%;
+    margin: 0;
+}
+
+.score {
+    text-align: center;
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+.fill {
+    fill: var(--tertiary-background-color);
+}
+
+.stroke {
+    stroke: var(--tertiary-background-color);
+}
+
+.separator {
+    width: 1px;
+    margin: 0 1.5rem;
+    border: none;
+    background-color: var(--tertiary-background-color);
+}
+
+@media only screen and (max-width: 768px) {
+    .bandScoresContainer {
+        flex-direction: column;
+    }
+
+    .criteria {
+        gap: 0.75rem;
+    }
+
+    .criterion {
+        width: 9rem;
+        height: 9rem;
+    }
+
+    .title {
+        min-height: 70%;
+    }
+
+    .icon {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .score {
+        font-size: 1.5rem;
+    }
+
+    .separator {
+        width: auto;
+        height: 1px;
+        margin: 1rem 0;
+    }
+
+}

@@ -46,7 +46,7 @@ const Conversation: React.FC = () => {
         const regex = /(\*\*[^*]+\*\*)|(_[^_]+_)|([^\*_]+)/g;
         let match;
         let result = [];
-    
+
         while ((match = regex.exec(text)) !== null) {
             let segment = match[0];
             if (segment.startsWith('**') && segment.endsWith('**')) {
@@ -59,7 +59,7 @@ const Conversation: React.FC = () => {
                 result.push(segment);
             }
         }
-    
+
         return result;
     };
 
@@ -150,15 +150,13 @@ const Conversation: React.FC = () => {
                                 </p>
                             </Message>
                         case 'bandScores':
-                            return <>
-                                <Message key={index} role='assistant'>
-                                    <div className={styles.headingContainer}>
-                                        <CheckListIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
-                                        <h2 className={styles.assessmentHeading}>Band Scores</h2>
-                                    </div>
-                                    <p>{stylize(message.content || '')}</p>
-                                </Message>
-                            </>
+                            return <Message key={index} role='assistant'>
+                                <div className={styles.headingContainer}>
+                                    <CheckListIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
+                                    <h2 className={styles.assessmentHeading}>Band Scores</h2>
+                                </div>
+                                <BandScores bandScores={message.bandScores || ''} />
+                            </Message>
                         case 'sideBySideCorrection':
                             return <>
                                 <Message key={index} role='assistant'>

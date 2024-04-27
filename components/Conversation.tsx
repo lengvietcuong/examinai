@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Message from './message/Message';
+import LoadingMessage from './message/LoadingMessage';
+import EssaySubmissionInstruction from './message/EssaySubmissionInstruction';
 import MessageType from '@/types/message';
 import SideBySideCorrection from "@/components/message/SideBySideCorrection";
 import EssayForm from './EssayForm';
@@ -17,31 +19,6 @@ import { montserrat } from '@/fonts/fonts';
 import styles from './Conversation.module.css';
 
 const Conversation: React.FC = () => {
-    const EssaySubmissionInstruction: React.FC = () => {
-        return (
-            <Message role="assistant">
-                <p>
-                    Please submit the essay question and your essay. I will assess it and provide detailed feedback.
-                    <br />
-                    <br />
-                    Don't know where to find {selectedSkill} questions? Check out <a href="https://study4.com/tests/?term=IELTS+Writing" target="_blank" rel="noopener noreferrer">Study4</a>.
-                </p>
-            </Message>
-        );
-    }
-    const LoadingMessage: React.FC = () => {
-        return (
-            <Message role="assistant">
-                <p>
-                    Just a second
-                    <span className={styles.dot}></span>
-                    <span className={styles.dot}></span>
-                    <span className={styles.dot}></span>
-                </p>
-            </Message>
-        );
-    }
-
     const stylize = (text: string) => {
         const regex = /(\*\*[^*]+\*\*)|(_[^_]+_)|([^\*_]+)/g;
         let match;
@@ -100,7 +77,8 @@ const Conversation: React.FC = () => {
             default:
                 break;
         }
-        setMessages(prevMessages => [...prevMessages, ...responseMessages]);
+        updatedMessages.push(...responseMessages);
+        setMessages(updatedMessages);
 
         setUserMessage(null);
         setIsLoading(false);
@@ -129,7 +107,7 @@ const Conversation: React.FC = () => {
         <>
             {messages.length === 0 && (selectedSkill === 'Writing Task 1' || selectedSkill === 'Writing Task 2') &&
                 <>
-                    <EssaySubmissionInstruction />
+                    <EssaySubmissionInstruction taskType={selectedSkill}/>
                     <EssayForm />
                 </>
             }

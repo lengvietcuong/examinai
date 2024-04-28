@@ -30,6 +30,11 @@
     stroke: var(--secondary-color);
 }
 
+.messagesEndRef {
+    position: relative;
+    top: -12vh;
+}
+
 @media only screen and (max-width: 768px) {
     .assessmentIcon {
         width: 1.75rem;

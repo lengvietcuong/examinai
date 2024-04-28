@@ -77,8 +77,7 @@ const Conversation: React.FC = () => {
             default:
                 break;
         }
-        updatedMessages.push(...responseMessages);
-        setMessages(updatedMessages);
+        setMessages(prevMessages => [...prevMessages, ...responseMessages]);
 
         setUserMessage(null);
         setIsLoading(false);
@@ -129,6 +128,7 @@ const Conversation: React.FC = () => {
                             </Message>
                         case 'bandScores':
                             return <Message key={index} role='assistant'>
+                                <div ref={messagesEndRef} className={styles.messagesEndRef}/>
                                 <div className={styles.headingContainer}>
                                     <CheckListIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
                                     <h2 className={styles.assessmentHeading}>Band Scores</h2>

@@ -15,7 +15,8 @@ const EssayForm: React.FC = () => {
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [question, setQuestion] = useState('');
     const [essay, setEssay] = useState('');
-    const [wordCount, setWordCount] = useState(0);
+    const [essayWordCount, setEssayWordCount] = useState(0);
+    const [questionWordCount, setQuestionWordCount] = useState(0);
     const questionRef = useRef(null);
     const essayRef = useRef(null);
 
@@ -33,11 +34,12 @@ const EssayForm: React.FC = () => {
 
     const handleQuestionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setQuestion(event.target.value);
+        setQuestionWordCount(event.target.value.split(/\s+/).filter((word) => word).length);
     };
 
     const handleEssayChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setEssay(event.target.value);
-        setWordCount(event.target.value.split(/\s+/).filter((word) => word).length); // Update word count
+        setEssayWordCount(event.target.value.split(/\s+/).filter((word) => word).length);
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -46,17 +48,24 @@ const EssayForm: React.FC = () => {
         const sanitizedEssay = sanitize(essay);
         if (!sanitizedQuestion || !sanitizedEssay) return;
 
-        // Check word count based on selected skill
-        const minWordCount = selectedSkill === 'Writing Task 1' ? 150 : selectedSkill === 'Writing Task 2' ? 250 : 0;
-        if (wordCount < minWordCount) {
-            const taskNumber = selectedSkill?.charAt(selectedSkill.length - 1);
-            alert(`Your essay is too short. You must write at least ${minWordCount} words for Task ${taskNumber}.`);
+        // Check if question word count exceeds maximum limit
+        const maxQuestionWordCount = 100;
+        if (questionWordCount > maxQuestionWordCount) {
+            alert('The essay question is too long. It must be at most 100 words.');
             return;
         }
 
-        // Check if word count exceeds maximum limit
-        const maxWordCount = 500;
-        if (wordCount > maxWordCount) {
+        // Check word count based on selected skill
+        const minEssayWordCount = selectedSkill === 'Writing Task 1' ? 150 : selectedSkill === 'Writing Task 2' ? 250 : 0;
+        if (essayWordCount < minEssayWordCount) {
+            const taskNumber = selectedSkill?.charAt(selectedSkill.length - 1);
+            alert(`Your essay is too short. You must write at least ${minEssayWordCount} words for Task ${taskNumber}.`);
+            return;
+        }
+
+        // Check if essay word count exceeds maximum limit
+        const maxEssayWordCount = 500;
+        if (essayWordCount > maxEssayWordCount) {
             alert('Your essay is too long. Please write at most 500 words.');
             return;
         }
@@ -93,7 +102,7 @@ const EssayForm: React.FC = () => {
                     onChange={handleEssayChange}
                     placeholder="Enter your essay..."
                 />
-                {wordCount > 0 && <p className={styles.wordCount}>Word count: {wordCount}</p>}
+                {essayWordCount > 0 && <p className={styles.wordCount}>Word count: {essayWordCount}</p>}
             </div>
             <button type="submit" className={`${styles.submitButton} ${montserrat.className}`}>
                 <SendIcon className={`${styles.icon} ${styles.stroke}`} />

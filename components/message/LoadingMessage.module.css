@@ -1,10 +1,18 @@
+.loadingMessage {
+    background-color: var(--tertiary-background-color);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 1.5rem;
+}
+
 .dot {
+    vertical-align: middle;
     display: inline-block;
     width: 0.25rem;
     height: 0.25rem;
     border-radius: 50%;
     background-color: var(--foreground-color);
-    margin-left: 0.15rem;
+    margin-left: 0.25rem;
     animation: wave 1s linear infinite;
 }
 
@@ -13,11 +21,11 @@
 }
 
 .dot:nth-child(2) {
-    animation-delay: -0.7s;
+    animation-delay: -0.775s;
 }
 
 .dot:nth-child(3) {
-    animation-delay: -0.6s;
+    animation-delay: -0.65s;
 }
 
 @keyframes wave {

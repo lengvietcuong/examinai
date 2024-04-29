@@ -7,7 +7,7 @@ function toTitleCase(str: string): string {
         .join(' ');
 }
 
-export default function getBandDescriptorsString(skill: 'writing', taskType: 'task_2'): string {
+export default function getBandDescriptorsString(skill: 'writing', taskType: 'task_1' | 'task_2'): string {
     const skillCriteria = bandDescriptors[skill][taskType];
     let formattedString = "";
 

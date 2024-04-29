@@ -17,7 +17,7 @@ const BandScores: React.FC<BandScoresProps> = ({ bandScores }) => {
         const result: { [key: string]: number } = {};
         const lines = input.split('\n');
         for (let line of lines) {
-            const match = line.match(/^[^a-zA-Z]*(.*): Band (\d)\D*$/);
+            const match = line.match(/^[^a-zA-Z]*(.*): (?:Band )?(\d)\D*$/);
             if (match) {
                 const criterion = match[1].trim();
                 const score = parseInt(match[2]);

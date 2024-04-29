@@ -35,6 +35,11 @@
     top: -12vh;
 }
 
+.errorMessage {
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
 @media only screen and (max-width: 768px) {
     .assessmentIcon {
         width: 1.75rem;

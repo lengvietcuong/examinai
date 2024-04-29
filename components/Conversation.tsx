@@ -57,7 +57,7 @@ const Conversation: React.FC = () => {
                 </Message>
             case 'bandScores':
                 return <Message key={index} role='assistant'>
-                    <div ref={messagesEndRef} className={styles.messagesEndRef}/>
+                    <div ref={messagesEndRef} className={styles.messagesEndRef} />
                     <div className={styles.headingContainer}>
                         <CheckListIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
                         <h2 className={styles.assessmentHeading}>Band Scores</h2>
@@ -66,33 +66,44 @@ const Conversation: React.FC = () => {
                 </Message>
             case 'sideBySideCorrection':
                 return <Message key={index} role='assistant'>
-                        <div className={styles.headingContainer}>
-                            <ToolsIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
-                            <h2 className={styles.assessmentHeading}>Corrections</h2>
-                        </div>
-                        <SideBySideCorrection key={index} leftContent={message.leftContent || ''} rightContent={message.rightContent || ''} />
-                    </Message>
+                    <div className={styles.headingContainer}>
+                        <ToolsIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
+                        <h2 className={styles.assessmentHeading}>Corrections</h2>
+                    </div>
+                    <SideBySideCorrection key={index} leftContent={message.leftContent || ''} rightContent={message.rightContent || ''} />
+                </Message>
             case 'ideaSuggestions':
                 return <Message key={index} role='assistant'>
-                        <div className={styles.headingContainer}>
-                            <LightBulbIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
-                            <h2 className={styles.assessmentHeading}>Idea Suggestions</h2>
-                        </div>
-                        <p>{stylize(message.content || '')}</p>
-                    </Message>
+                    <div className={styles.headingContainer}>
+                        <LightBulbIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
+                        <h2 className={styles.assessmentHeading}>Idea Suggestions</h2>
+                    </div>
+                    <p>{stylize(message.content || '')}</p>
+                </Message>
             case 'improvedVersion':
                 return <Message key={index} role='assistant'>
-                        <div className={styles.headingContainer}>
-                            <SparklesIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.stroke}`} />
-                            <h2 className={styles.assessmentHeading}>Improved Version</h2>
-                        </div>
-                        <p>{stylize(message.content || '')}</p>
-                    </Message>
+                    <div className={styles.headingContainer}>
+                        <SparklesIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.stroke}`} />
+                        <h2 className={styles.assessmentHeading}>Improved Version</h2>
+                    </div>
+                    <p>{stylize(message.content || '')}</p>
+                </Message>
+            case 'error':
+                return <Message key={index} role='assistant'>
+                    <p className={styles.errorMessage}>{message.content}</p>
+                </Message>
             default:
                 return null;
         }
     }
 
+    function timeout(ms: number): Promise<never> {
+        return new Promise((_, reject) => {
+            setTimeout(() => {
+                reject(new Error("Request timed out."));
+            }, ms);
+        });
+    }
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [messages, setMessages] = useState<MessageType[]>([]);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
@@ -105,35 +116,44 @@ const Conversation: React.FC = () => {
 
         setIsLoading(true);
         let responseMessages: MessageType[] = [];
-        switch (selectedSkill) {
-            case 'Speaking Part 1':
-            case 'Speaking Part 2':
-            case 'Speaking Part 3': {
-                const textMessages = updatedMessages
-                    .filter(message => message.type === 'text' || message.type === 'displayHidden')
-                    .map(({ role, content }) => ({ role, content: content || '' }));
-                if (selectedSkill === 'Speaking Part 1') {
-                    responseMessages = await handleSpeakingPart1(textMessages);
-                } else if (selectedSkill === 'Speaking Part 2') {
-                    responseMessages = await handleSpeakingPart2(textMessages);
-                } else {
-                    responseMessages = await handleSpeakingPart3(textMessages);
+        try {
+            switch (selectedSkill) {
+                case 'Speaking Part 1':
+                case 'Speaking Part 2':
+                case 'Speaking Part 3': {
+                    const textMessages = updatedMessages
+                        .filter(message => message.type === 'text' || message.type === 'displayHidden')
+                        .map(({ role, content }) => ({ role, content: content || '' }));
+                    if (selectedSkill === 'Speaking Part 1') {
+                        responseMessages = await Promise.race([handleSpeakingPart1(textMessages), timeout(20000)]);
+                    } else if (selectedSkill === 'Speaking Part 2') {
+                        responseMessages = await Promise.race([handleSpeakingPart2(textMessages), timeout(20000)]);
+                    } else {
+                        responseMessages = await Promise.race([handleSpeakingPart3(textMessages), timeout(20000)]);
+                    }
+                    break;
                 }
-                break;
+                case 'Writing Task 1':
+                    responseMessages = await Promise.race([handleWritingTask1(userMessage.essayQuestion || '', userMessage.essay || ''), timeout(20000)]);
+                    break;
+                case 'Writing Task 2':
+                    responseMessages = await Promise.race([handleWritingTask2(userMessage.essayQuestion || '', userMessage.essay || ''), timeout(20000)]);
+                    break;
+                default:
+                    break;
             }
-            case 'Writing Task 1':
-                responseMessages = await handleWritingTask1(userMessage.essayQuestion || '', userMessage.essay || '');
-                break;
-            case 'Writing Task 2':
-                responseMessages = await handleWritingTask2(userMessage.essayQuestion || '', userMessage.essay || '');
-                break;
-            default:
-                break;
+        } catch (error) {
+            responseMessages = [{
+                role: 'assistant',
+                type: 'error',
+                content: "I'm sorry, but the server seems to be busy right now. Please try again later."
+            }];
+        } finally {
+            setMessages(prevMessages => [...prevMessages, ...responseMessages]);
+    
+            setUserMessage(null);
+            setIsLoading(false);
         }
-        setMessages(prevMessages => [...prevMessages, ...responseMessages]);
-
-        setUserMessage(null);
-        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -159,7 +179,7 @@ const Conversation: React.FC = () => {
         <>
             {messages.length === 0 && (selectedSkill === 'Writing Task 1' || selectedSkill === 'Writing Task 2') &&
                 <>
-                    <EssaySubmissionInstruction taskType={selectedSkill}/>
+                    <EssaySubmissionInstruction taskType={selectedSkill} />
                     <EssayForm />
                 </>
             }

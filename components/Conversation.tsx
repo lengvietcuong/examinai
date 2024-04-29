@@ -40,6 +40,59 @@ const Conversation: React.FC = () => {
         return result;
     };
 
+    const renderMessage = (message: MessageType, index: number) => {
+        switch (message.type) {
+            case 'text':
+                return <Message key={index} role={message.role}>
+                    <p>{message.content}</p>
+                </Message>;
+            case 'essaySubmission':
+                return <Message key={index} role='user'>
+                    <p>
+                        <strong><em>{message.essayQuestion}</em></strong>
+                        <br />
+                        <br />
+                        {message.essay}
+                    </p>
+                </Message>
+            case 'bandScores':
+                return <Message key={index} role='assistant'>
+                    <div ref={messagesEndRef} className={styles.messagesEndRef}/>
+                    <div className={styles.headingContainer}>
+                        <CheckListIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
+                        <h2 className={styles.assessmentHeading}>Band Scores</h2>
+                    </div>
+                    <BandScores bandScores={message.bandScores || ''} />
+                </Message>
+            case 'sideBySideCorrection':
+                return <Message key={index} role='assistant'>
+                        <div className={styles.headingContainer}>
+                            <ToolsIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
+                            <h2 className={styles.assessmentHeading}>Corrections</h2>
+                        </div>
+                        <SideBySideCorrection key={index} leftContent={message.leftContent || ''} rightContent={message.rightContent || ''} />
+                    </Message>
+            case 'ideaSuggestions':
+                return <Message key={index} role='assistant'>
+                        <div className={styles.headingContainer}>
+                            <LightBulbIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
+                            <h2 className={styles.assessmentHeading}>Idea Suggestions</h2>
+                        </div>
+                        <p>{stylize(message.content || '')}</p>
+                    </Message>
+            case 'improvedVersion':
+                return <Message key={index} role='assistant'>
+                        <div className={styles.headingContainer}>
+                            <SparklesIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.stroke}`} />
+                            <h2 className={styles.assessmentHeading}>Improved Version</h2>
+                        </div>
+                        <p>{stylize(message.content || '')}</p>
+                    </Message>
+            default:
+                return null;
+        }
+    }
+
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [messages, setMessages] = useState<MessageType[]>([]);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
@@ -111,58 +164,7 @@ const Conversation: React.FC = () => {
                 </>
             }
             <div className={styles.conversation}>
-                {messages.map((message, index) => {
-                    switch (message.type) {
-                        case 'text':
-                            return <Message key={index} role={message.role}>
-                                <p>{message.content}</p>
-                            </Message>;
-                        case 'essaySubmission':
-                            return <Message key={index} role='user'>
-                                <p>
-                                    <strong><em>{message.essayQuestion}</em></strong>
-                                    <br />
-                                    <br />
-                                    {message.essay}
-                                </p>
-                            </Message>
-                        case 'bandScores':
-                            return <Message key={index} role='assistant'>
-                                <div ref={messagesEndRef} className={styles.messagesEndRef}/>
-                                <div className={styles.headingContainer}>
-                                    <CheckListIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
-                                    <h2 className={styles.assessmentHeading}>Band Scores</h2>
-                                </div>
-                                <BandScores bandScores={message.bandScores || ''} />
-                            </Message>
-                        case 'sideBySideCorrection':
-                            return <Message key={index} role='assistant'>
-                                    <div className={styles.headingContainer}>
-                                        <ToolsIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
-                                        <h2 className={styles.assessmentHeading}>Corrections</h2>
-                                    </div>
-                                    <SideBySideCorrection key={index} leftContent={message.leftContent || ''} rightContent={message.rightContent || ''} />
-                                </Message>
-                        case 'ideaSuggestions':
-                            return <Message key={index} role='assistant'>
-                                    <div className={styles.headingContainer}>
-                                        <LightBulbIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
-                                        <h2 className={styles.assessmentHeading}>Idea Suggestions</h2>
-                                    </div>
-                                    <p>{stylize(message.content || '')}</p>
-                                </Message>
-                        case 'improvedVersion':
-                            return <Message key={index} role='assistant'>
-                                    <div className={styles.headingContainer}>
-                                        <SparklesIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.stroke}`} />
-                                        <h2 className={styles.assessmentHeading}>Improved Version</h2>
-                                    </div>
-                                    <p>{stylize(message.content || '')}</p>
-                                </Message>
-                        default:
-                            return null;
-                    }
-                })}
+                {messages.map((message, index) => renderMessage(message, index))}
                 {isLoading && <LoadingMessage />}
                 <div ref={messagesEndRef} />
             </div>

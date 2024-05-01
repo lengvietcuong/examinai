@@ -4,12 +4,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import SendIcon from './icons/SendIcon';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
+import { useLoadingStore } from '@/stores/loadingStore';
 import sanitize from '@/utils/sanitize';
 import styles from './TextInput.module.css';
 
 const TextInput: React.FC = () => {
-    const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
+    const setUserMessage = useUserMessageStore((state) => state.setUserMessage);
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
+    const isLoading = useLoadingStore((state) => state.isLoading);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [input, setInput] = useState<string>('');
 
@@ -28,9 +30,7 @@ const TextInput: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        // Check if a previous message is processing or if the input is empty
-        if (userMessage || !input.trim()) return;
+        if (isLoading || !input.trim()) return;
 
         setUserMessage({type: 'text', content: sanitize(input)});
         setInput('');
@@ -46,7 +46,7 @@ const TextInput: React.FC = () => {
         }
     };
 
-    return selectedSkill && selectedSkill !== "Writing Task 1" && selectedSkill !== "Writing Task 2" && (
+    return selectedSkill && selectedSkill.startsWith('Speaking') && (
         <div className={styles.textInputContainer}>
             <form className={styles.textInputForm} onSubmit={handleSubmit}>
                 <textarea

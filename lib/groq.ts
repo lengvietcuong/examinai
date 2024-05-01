@@ -15,10 +15,9 @@ function stripRedundantPhrases(text: string): string {
     return parts.join('\n\n');
 }
 
-async function getWritingAssessment(taskType: 'task_1' | 'task_2', essayQuestion: string, essay: string) {
-    const taskNumber = taskType.charAt(taskType.length - 1);
+async function getWritingAssessment(taskNumber: 1 | 2, essayQuestion: string, essay: string) {
     // By default, the model is extremely strict, so the first sentence of the prompt is set to negate this
-    const assessmentPrompt = `You are a lenient IELTS examiner who is known to give high marks. Every essay is assessed based on these 4 criteria:\n\n${getBandDescriptorsString('writing', taskType)}Now, help me assess the following Writing Task ${taskNumber} essay. Only provide the band scores for the 4 criteria, nothing else is required. Here is the essay question (make sure it is paraphrased appropriately in the essay and not just copied entirely):\n${essayQuestion}\n\nAnd here is the essay:\n${essay}`;
+    const assessmentPrompt = `You are a lenient IELTS examiner who is known to give high marks. Every essay is assessed based on these 4 criteria:\n\n${getBandDescriptorsString('writing', taskNumber === 1 ? 'task_1' : 'task_2')}Now, help me assess the following Writing Task ${taskNumber} essay. Only provide the band scores for the 4 criteria, nothing else is required. Here is the essay question (make sure it is paraphrased appropriately in the essay and not just copied entirely):\n${essayQuestion}\n\nAnd here is the essay:\n${essay}`;
     const bandScores = stripRedundantPhrases(await getGroqChatCompletion([{ role: "user", content: assessmentPrompt }]));
 
     return {
@@ -28,8 +27,8 @@ async function getWritingAssessment(taskType: 'task_1' | 'task_2', essayQuestion
     };
 }
 
-async function getWritingCorrection(taskType: 'task_1' | 'task_2', essay: string) {
-    const task1Notes = taskType === 'task_1' ? 'IMPORTANT: Do not change a number into a word (e.g. "6 months" into "six months" or "30 days" into "thirty days"). Finally, only output the corrected version, nothing else.' : '';
+async function getWritingCorrection(taskNumber: 1 | 2, essay: string) {
+    const task1Notes = taskNumber === 1 ? 'IMPORTANT: Do not change a number into a word (e.g. "6 months" into "six months" or "30 days" into "thirty days"). Finally, only output the corrected version, nothing else.' : '';
     const correctionPrompt = `Rewrite the following academic essay with all language mistakes corrected (grammar, word choice, awkward phrasing, spelling, etc.). You must not make unnecessary changes, i.e. do not change something if the original is perfectly fine.${task1Notes}\n\n${essay}`;
 
     const correctedEssay = stripRedundantPhrases(await getGroqChatCompletion([{ role: "user", content: correctionPrompt }]));
@@ -74,8 +73,8 @@ async function getWritingSuggestions(essayQuestion: string, essay: string) {
     };
 }
 
-async function getWritingImprovedVersion(taskType: 'task_1' | 'task_2', essay: string) {
-    const taskNotes = taskType === 'task_2' ? ' and adding more supporting ideas to make the main arguments longer. You should maintain the original structure' : '. When providing the overview, use the word "Overall"';
+async function getWritingImprovedVersion(taskNumber: 1 | 2, essay: string) {
+    const taskNotes = taskNumber === 2 ? ' and adding more supporting ideas to make the main arguments longer. You should maintain the original structure' : '. When providing the overview, use the word "Overall"';
     const improvementPrompt = `Write an improved version of the following academic essay by using more sophisticated language (make sure to maintain a formal tone)${taskNotes}. Finally, provide a comprehensive list of brief definitions for all the advanced vocabularies and phrases used.\n\n${essay}`;
     const improvedVersion = stripRedundantPhrases(await getGroqChatCompletion([{ role: "user", content: improvementPrompt }]));
 
@@ -86,32 +85,29 @@ async function getWritingImprovedVersion(taskType: 'task_1' | 'task_2', essay: s
     };
 }
 
-async function handleSpeakingPart1(messages: { role: string, content: string }[]) {
-    return [];
+async function handleSpeaking(messages: { role: string, content: string }[]) {
+    const response = stripRedundantPhrases(await getGroqChatCompletion(messages))
+    return [
+        {
+            role: 'assistant' as 'assistant',
+            type: 'text' as 'text',
+            content: response,
+        }
+    ];
 }
 
-async function handleSpeakingPart2(messages: { role: string, content: string }[]) {
-    return [];
-}
-
-async function handleSpeakingPart3(messages: { role: string, content: string }[]) {
-    return [];
-}
-
-async function handleWritingTask1(essayQuestion: string, essay: string) {
-    return Promise.all([
-        getWritingAssessment('task_1', essayQuestion, essay),
-        getWritingCorrection('task_1', essay),
-        getWritingImprovedVersion('task_1', essay)
+async function handleWriting(taskNumber: 1 | 2, essayQuestion: string, essay: string) {
+    if (taskNumber === 1) return Promise.all([
+        getWritingAssessment(1, essayQuestion, essay),
+        getWritingCorrection(1, essay),
+        getWritingImprovedVersion(1, essay)
     ]);
-}
 
-async function handleWritingTask2(essayQuestion: string, essay: string) {
     return Promise.all([
-        getWritingAssessment('task_2', essayQuestion, essay),
-        getWritingCorrection('task_2', essay),
+        getWritingAssessment(2, essayQuestion, essay),
+        getWritingCorrection(2, essay),
         getWritingSuggestions(essayQuestion, essay),
-        getWritingImprovedVersion('task_2', essay)
+        getWritingImprovedVersion(2, essay)
     ]);
 }
 
@@ -119,15 +115,12 @@ async function getGroqChatCompletion(messages: { role: string, content: string }
     const completion = await groq.chat.completions.create({
         messages: messages,
         model: "llama3-70b-8192",
-        temperature: 0
+        temperature: 0,
     });
     return completion.choices[0].message.content;
 }
 
 export {
-    handleSpeakingPart1,
-    handleSpeakingPart2,
-    handleSpeakingPart3,
-    handleWritingTask1,
-    handleWritingTask2
+    handleSpeaking,
+    handleWriting
 };

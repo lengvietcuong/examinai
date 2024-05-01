@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 type SkillState = {
     selectedSkill: string | null;
-    setSelectedSkill: (message: string) => void;
+    setSelectedSkill: (selectedSkill: string) => void;
 };
 
 export const useSkillStore = create<SkillState>((set) => ({

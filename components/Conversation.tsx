@@ -12,9 +12,11 @@ import CheckListIcon from './icons/CheckListIcon';
 import ToolsIcon from './icons/ToolsIcon';
 import LightBulbIcon from './icons/LightBulbIcon';
 import SparklesIcon from './icons/SparklesIcon';
+import getInitialSpeakingPrompt from '@/utils/getInitialSpeakingPrompt';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
-import { handleSpeakingPart1, handleSpeakingPart2, handleSpeakingPart3, handleWritingTask1, handleWritingTask2 } from '@/lib/groq';
+import { useLoadingStore } from '@/stores/loadingStore';
+import { handleSpeaking, handleWriting } from '@/lib/groq';
 import { montserrat } from '@/fonts/fonts';
 import styles from './Conversation.module.css';
 
@@ -44,7 +46,7 @@ const Conversation: React.FC = () => {
         switch (message.type) {
             case 'text':
                 return <Message key={index} role={message.role}>
-                    <p>{message.content}</p>
+                    <p>{stylize(message.content || '')}</p>
                 </Message>;
             case 'essaySubmission':
                 return <Message key={index} role='user'>
@@ -104,43 +106,31 @@ const Conversation: React.FC = () => {
             }, ms);
         });
     }
+
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
+    const [skillNumber, setSkillNumber] = useState<number>(0);
     const [messages, setMessages] = useState<MessageType[]>([]);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
+    const { isLoading, setIsLoading } = useLoadingStore((state) => ({ isLoading: state.isLoading, setIsLoading: state.setIsLoading }));
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const MAX_WAIT_TIME_MS = 20000;
 
-    async function onUserMessage(userMessage: MessageType) {
-        const updatedMessages = [...messages, userMessage];
+    async function generateResponse() {
+        if (!userMessage || !selectedSkill) return;
+
+        let updatedMessages = [...messages, userMessage];
         setMessages(updatedMessages);
 
         setIsLoading(true);
         let responseMessages: MessageType[] = [];
         try {
-            switch (selectedSkill) {
-                case 'Speaking Part 1':
-                case 'Speaking Part 2':
-                case 'Speaking Part 3': {
-                    const textMessages = updatedMessages
-                        .filter(message => message.type === 'text' || message.type === 'displayHidden')
-                        .map(({ role, content }) => ({ role, content: content || '' }));
-                    if (selectedSkill === 'Speaking Part 1') {
-                        responseMessages = await Promise.race([handleSpeakingPart1(textMessages), timeout(20000)]);
-                    } else if (selectedSkill === 'Speaking Part 2') {
-                        responseMessages = await Promise.race([handleSpeakingPart2(textMessages), timeout(20000)]);
-                    } else {
-                        responseMessages = await Promise.race([handleSpeakingPart3(textMessages), timeout(20000)]);
-                    }
-                    break;
-                }
-                case 'Writing Task 1':
-                    responseMessages = await Promise.race([handleWritingTask1(userMessage.essayQuestion || '', userMessage.essay || ''), timeout(20000)]);
-                    break;
-                case 'Writing Task 2':
-                    responseMessages = await Promise.race([handleWritingTask2(userMessage.essayQuestion || '', userMessage.essay || ''), timeout(20000)]);
-                    break;
-                default:
-                    break;
+            if (selectedSkill.startsWith('Speaking')) {
+                const textMessages = updatedMessages
+                    .filter(message => message.type === 'text' || message.type === 'displayHidden')
+                    .map(({ role, content }) => ({ role, content: content || '' }));
+                responseMessages = await Promise.race([handleSpeaking(textMessages), timeout(MAX_WAIT_TIME_MS)]);
+            } else {
+                responseMessages = await Promise.race([handleWriting(skillNumber as 1 | 2, userMessage.essayQuestion || '', userMessage.essay || ''), timeout(MAX_WAIT_TIME_MS)]);
             }
         } catch (error) {
             responseMessages = [{
@@ -150,26 +140,23 @@ const Conversation: React.FC = () => {
             }];
         } finally {
             setMessages(prevMessages => [...prevMessages, ...responseMessages]);
-    
-            setUserMessage(null);
             setIsLoading(false);
         }
     }
 
     useEffect(() => {
-        if (selectedSkill && selectedSkill.startsWith('Speaking')) {
-            setUserMessage({
-                type: 'displayHidden',
-                content: `Act as an IELTS Speaking examiner. Ask me one random ${selectedSkill} question, and when I'm finished answering, ask me another one and repeat this process.`,
-            });
+        generateResponse();
+    }, [userMessage]);
+
+    useEffect(() => {;
+        if (!selectedSkill) return;
+
+        const number = parseInt(selectedSkill[selectedSkill.length - 1]);
+        setSkillNumber(number);
+        if (selectedSkill?.startsWith('Speaking')) {
+            setUserMessage(getInitialSpeakingPrompt(number as 1 | 2 | 3));
         }
     }, [selectedSkill]);
-
-    useEffect(() => {
-        if (userMessage) {
-            onUserMessage(userMessage);
-        }
-    }, [userMessage]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -177,7 +164,7 @@ const Conversation: React.FC = () => {
 
     return (
         <>
-            {messages.length === 0 && (selectedSkill === 'Writing Task 1' || selectedSkill === 'Writing Task 2') &&
+            {messages.length === 0 && (selectedSkill?.startsWith("Writing")) &&
                 <>
                     <EssaySubmissionInstruction taskType={selectedSkill} />
                     <EssayForm />

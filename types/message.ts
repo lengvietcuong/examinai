@@ -1,6 +1,6 @@
 export default interface MessageType {
     role: 'user' | 'assistant';
-    type: 'text' | 'essaySubmission' | 'displayHidden' | 'bandScores' | 'sideBySideCorrection' | 'ideaSuggestions' | 'improvedVersion' | 'error';
+    type: 'text' | 'essaySubmission' | 'bandScores' | 'sideBySideCorrection' | 'ideaSuggestions' | 'improvedVersion' | 'error' | 'displayHidden';
     content?: string;
     essayQuestion?: string;
     essay?: string;

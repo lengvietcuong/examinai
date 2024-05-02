@@ -17,8 +17,8 @@
 
 .svgAvatar {
     fill: var(--foreground-color);
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .messageInfo {
@@ -40,7 +40,7 @@
 @media only screen and (max-width: 768px) {
     .svgAvatar {
         fill: var(--foreground-color);
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 1.25rem;
+        height: 1.25rem;
     }
 }

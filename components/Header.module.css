@@ -18,7 +18,9 @@
 }
 
 .accentText {
-    color: var(--accent-color);
+    background: linear-gradient(135deg, orangered, deeppink);
+    background-clip: text;
+    color: transparent;
 }
 
 @media only screen and (max-width: 768px) {

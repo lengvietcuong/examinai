@@ -173,8 +173,8 @@ const Conversation: React.FC = () => {
             <div className={styles.conversation}>
                 {messages.map((message, index) => renderMessage(message, index))}
                 {isLoading && <LoadingMessage />}
-                <div ref={messagesEndRef} />
             </div>
+            <div ref={messagesEndRef} />
         </>
     );
 };

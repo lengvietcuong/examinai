@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Message from './message/Message';
+import MessageType from '@/types/message';
+import StylizedText from './message/StylizedText';
 import LoadingMessage from './message/LoadingMessage';
 import EssaySubmissionInstruction from './message/EssaySubmissionInstruction';
-import MessageType from '@/types/message';
 import SideBySideCorrection from "@/components/message/SideBySideCorrection";
 import BandScores from "@/components/message/BandScores";
 import CheckListIcon from './icons/CheckListIcon';
@@ -12,6 +13,7 @@ import ToolsIcon from './icons/ToolsIcon';
 import LightBulbIcon from './icons/LightBulbIcon';
 import SparklesIcon from './icons/SparklesIcon';
 import getInitialSpeakingPrompt from '@/utils/getInitialSpeakingPrompt';
+import timeout from '@/utils/timeout';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
 import { useLoadingStore } from '@/stores/loadingStore';
@@ -20,32 +22,11 @@ import { montserrat } from '@/fonts/fonts';
 import styles from './Conversation.module.css';
 
 const Conversation: React.FC = () => {
-    const stylize = (text: string) => {
-        const regex = /(\*\*[^*]+\*\*)|(_[^_]+_)|([^\*_]+)/g;
-        let match;
-        let result = [];
-
-        while ((match = regex.exec(text)) !== null) {
-            let segment = match[0];
-            if (segment.startsWith('**') && segment.endsWith('**')) {
-                const displayText = segment.slice(2, -2);
-                result.push(<strong key={match.index}>{displayText}</strong>);
-            } else if (segment.startsWith('_') && segment.endsWith('_')) {
-                const cleanedSegment = segment.slice(1, -1);
-                result.push(<em key={match.index}>{cleanedSegment}</em>);
-            } else {
-                result.push(segment);
-            }
-        }
-
-        return result;
-    };
-
     const renderMessage = (message: MessageType, index: number) => {
         switch (message.type) {
             case 'text':
                 return <Message key={index} role={message.role}>
-                    <p>{stylize(message.content || '')}</p>
+                    <StylizedText text={message.content || ''}/>
                 </Message>;
             case 'essaySubmission':
                 return <Message key={index} role='user'>
@@ -79,7 +60,7 @@ const Conversation: React.FC = () => {
                         <LightBulbIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
                         <h2 className={styles.assessmentHeading}>Idea Suggestions</h2>
                     </div>
-                    <p>{stylize(message.content || '')}</p>
+                    <StylizedText text={message.content || ''}/>
                 </Message>
             case 'improvedVersion':
                 return <Message key={index} role='assistant'>
@@ -87,7 +68,7 @@ const Conversation: React.FC = () => {
                         <SparklesIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.stroke}`} />
                         <h2 className={styles.assessmentHeading}>Improved Version</h2>
                     </div>
-                    <p>{stylize(message.content || '')}</p>
+                    <StylizedText text={message.content || ''}/>
                 </Message>
             case 'error':
                 return <Message key={index} role='assistant'>
@@ -96,14 +77,6 @@ const Conversation: React.FC = () => {
             default:
                 return null;
         }
-    }
-
-    function timeout(ms: number): Promise<never> {
-        return new Promise((_, reject) => {
-            setTimeout(() => {
-                reject(new Error("Request timed out."));
-            }, ms);
-        });
     }
 
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
@@ -148,7 +121,6 @@ const Conversation: React.FC = () => {
     }, [userMessage]);
 
     useEffect(() => {
-        ;
         if (!selectedSkill) return;
 
         const number = parseInt(selectedSkill[selectedSkill.length - 1]);

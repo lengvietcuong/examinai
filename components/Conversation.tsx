@@ -6,7 +6,6 @@ import LoadingMessage from './message/LoadingMessage';
 import EssaySubmissionInstruction from './message/EssaySubmissionInstruction';
 import MessageType from '@/types/message';
 import SideBySideCorrection from "@/components/message/SideBySideCorrection";
-import EssayForm from './EssayForm';
 import BandScores from "@/components/message/BandScores";
 import CheckListIcon from './icons/CheckListIcon';
 import ToolsIcon from './icons/ToolsIcon';
@@ -148,7 +147,8 @@ const Conversation: React.FC = () => {
         generateResponse();
     }, [userMessage]);
 
-    useEffect(() => {;
+    useEffect(() => {
+        ;
         if (!selectedSkill) return;
 
         const number = parseInt(selectedSkill[selectedSkill.length - 1]);
@@ -165,10 +165,7 @@ const Conversation: React.FC = () => {
     return (
         <>
             {messages.length === 0 && (selectedSkill?.startsWith("Writing")) &&
-                <>
-                    <EssaySubmissionInstruction taskType={selectedSkill} />
-                    <EssayForm />
-                </>
+                <EssaySubmissionInstruction taskType={selectedSkill} />
             }
             <div className={styles.conversation}>
                 {messages.map((message, index) => renderMessage(message, index))}

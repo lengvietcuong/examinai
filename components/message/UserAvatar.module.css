@@ -1,0 +1,11 @@
+.svgAvatar {
+    fill: var(--foreground-color);
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.photoAvatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+}

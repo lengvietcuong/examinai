@@ -38,16 +38,20 @@ const HeaderButtons: React.FC = () => {
     );
 
     const renderUserAvatar = (user: User) => (
-        <button
-            onClick={toggleSignOutButtonVisibility}
-            className={`${buttonContainer} ${styles.avatarButton}`}
-        >
-            {user.photoURL ? (
+        user.photoURL ?
+            (<button
+                onClick={toggleSignOutButtonVisibility}
+                className={`${buttonContainer} ${styles.userAvatarButton}`}
+            >
                 <Image src={user.photoURL} alt="User Avatar" className={styles.userAvatar} width={40} height={40} />
-            ) : (
-                <ProfileIcon className={buttonIcon} />
-            )}
-        </button>
+            </button>)
+        :
+            (<button
+                onClick={toggleSignOutButtonVisibility}
+                className={`${buttonContainer} ${styles.placeholderAvatarButton}`}
+            >
+                <ProfileIcon className={styles.placeholderAvatar} />
+            </button>)
     );
 
     const renderSignOutButton = () => (
@@ -62,7 +66,7 @@ const HeaderButtons: React.FC = () => {
                 <SignOutIcon className={buttonIcon} />
                 <span className={`${styles.buttonText} ${montserrat.className}`}>Sign out</span>
             </button>
-            <div className={styles.overlay} onClick={toggleSignOutButtonVisibility}/>
+            <div className={styles.overlay} onClick={toggleSignOutButtonVisibility} />
         </>
     );
 

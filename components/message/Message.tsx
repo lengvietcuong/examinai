@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
-import styles from './Message.module.css';
 import ExaminaiIcon from '../icons/ExaminaiIcon';
-import ProfileIcon from '../icons/ProfileIcon';
+import UserAvatar from './UserAvatar';
+import styles from './Message.module.css';
 
 export interface MessageProps {
     role: 'user' | 'assistant';
@@ -9,23 +9,12 @@ export interface MessageProps {
 }
 
 const Message: React.FC<MessageProps> = ({ role, children }) => {
-    const renderSenderAvatar = () => {
-        if (role === 'assistant') {
-            return <ExaminaiIcon className={styles.svgAvatar} />;
-        }
-        if (userAvatar) {
-            return userAvatar;
-        }
-        return <ProfileIcon className={styles.svgAvatar} />;
-    };
-
-    const userAvatar = null;
     const displayName = role === 'user' ? 'You' : 'Examinai';
 
     return (
         <div className={styles.message}>
             <div className={styles.avatarContainer}>
-                {renderSenderAvatar()}
+                {role === 'assistant' ? <ExaminaiIcon className={styles.svgAvatar} /> : <UserAvatar />}
             </div>
             <div className={styles.messageInfo}>
                 <span className={styles.sender}>{displayName}</span>

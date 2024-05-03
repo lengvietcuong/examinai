@@ -41,24 +41,43 @@
 }
 
 .signInButton,
-.signOutButton {
+.signOutButton,
+.placeholderAvatarButton {
     border: 2px solid var(--tertiary-background-color);
     transition: border-color 0.3s ease;
 }
 
 .signInButton:hover,
-.signOutButton:hover {
+.signOutButton:hover,
+.placeholderAvatarButton:hover {
     border-color: var(--secondary-foreground-color);
+}
+
+.placeholderAvatarButton {
+    padding: 0.5rem;
+}
+
+.userAvatarButton {
+    padding: 0;
 }
 
 .userAvatar {
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 50%;
 }
 
-.avatarButton {
-    padding: 0;
+.placeholderAvatar {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.placeholderAvatar {
+    fill: var(--secondary-color);
+}
+
+.userAvatar,
+.placeholderAvatarButton {
+    border-radius: 50%;
 }
 
 .profileArea {
@@ -103,8 +122,12 @@
         border-radius: 50%;
     }
 
-    .avatarButton {
+    .userAvatarButton {
         padding: 0;
+    }
+
+    .placeholderAvatarButton {
+        padding: 0.5rem;
     }
 
     .buttonContainer.signOutButton {

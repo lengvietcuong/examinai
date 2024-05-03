@@ -1,6 +1,6 @@
 import React from 'react';
 import Message from './Message';
-
+import EssayForm from '../EssayForm';
 
 interface EssaySubmissionInstructionProps {
     taskType: string;
@@ -15,6 +15,7 @@ const EssaySubmissionInstruction: React.FC<EssaySubmissionInstructionProps> = ({
                 <br />
                 Don't know where to find {taskType} questions? Check out <a href="https://study4.com/tests/?term=IELTS+Writing" target="_blank" rel="noopener noreferrer">Study4</a>.
             </p>
+            <EssayForm />
         </Message>
     );
 }

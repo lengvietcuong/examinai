@@ -1,3 +1,7 @@
+.sidebarContainer {
+    overflow-y: auto;
+}
+
 .sidebarContainer,
 .overlay {
     display: none;

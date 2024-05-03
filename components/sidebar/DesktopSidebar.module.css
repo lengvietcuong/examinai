@@ -5,6 +5,7 @@
     height: 100vh;
     background-color: var(--secondary-background-color);
     transition: 0.3s ease;
+    overflow-y: auto;
 }
 
 .closed {

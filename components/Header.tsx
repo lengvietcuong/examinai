@@ -6,10 +6,10 @@ import styles from './Header.module.css';
 
 const Header: React.FC = () => {
     return (
-        <header className={styles.header}>
+        <div className={styles.header}>
             <h1 className={`${styles.heading} ${comfortaa.className}`}>Examin<span className={styles.accentText}>ai</span></h1>
             <HeaderButtons />
-        </header>
+        </div>
     );
 };
 

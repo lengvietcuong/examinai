@@ -32,7 +32,6 @@
     left: auto;
     bottom: 0.5rem;
     right: 0.5rem;
-    transition: 0.3s ease;
 }
 
 .questionIcon:hover.fill {

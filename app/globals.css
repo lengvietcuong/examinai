@@ -15,7 +15,7 @@
 		--background-color: #161616;
 		--secondary-foreground-color: #808080;
 		--secondary-background-color: #242424;
-		--tertiary-background-color: #404040;
+		--tertiary-background-color: #363636;
 	}
 }
 
@@ -31,7 +31,7 @@ a {
 	text-decoration: none;
 	color: var(--secondary-color);
 	font-style: italic;
-	transition: color 0.3s ease;
+	transition: color 0.15s ease;
 }
 
 a:hover {

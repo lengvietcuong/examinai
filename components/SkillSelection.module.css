@@ -23,7 +23,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     background-color: var(--secondary-background-color);
-    transition: 0.3s ease;
+    transition: color 0.15s ease, background-color 0.15s ease;
 }
 
 .label:hover {
@@ -35,7 +35,7 @@
     height: 1.15rem;
     margin-right: 0.5rem;
     fill: var(--secondary-color);
-    transition: 0.3s ease;
+    transition: fill 0.15s ease;
 }
 
 .label.selected {

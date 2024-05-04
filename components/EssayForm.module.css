@@ -23,7 +23,6 @@
 
 .stroke {
     stroke: var(--secondary-color);
-    transition: stroke 0.3s ease;
 }
 
 .textarea {
@@ -46,7 +45,7 @@
     font-weight: 500;
     color: var(--foreground-color);
     background-color: var(--secondary-background-color);
-    transition: 0.3s ease;
+    transition: background-color 0.15s ease;
 }
 
 .submitButton:hover {

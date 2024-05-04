@@ -19,7 +19,7 @@ export default function Home() {
 					<DesktopSideBarToggler />
 					<div className={styles.chat}>
 						<Message role="assistant">
-							<p>{`Hi! I'm your IELTS examiner, here to help you prepare for your test.\nI'm an AI, so mistakes are possible.\n\nPlease select what you'd like to practice:`}</p>
+							<p>{`Hi! I'm your IELTS examiner, here to help you prepare for your test.\nI'm an imperfect AI, so mistakes are possible.\n\nPlease select what you'd like to practice:`}</p>
 							<SkillSelection />
 						</Message>
 						<Conversation />

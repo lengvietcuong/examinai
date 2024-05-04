@@ -25,11 +25,11 @@
 .trashcanIcon {
     display: none;
     vertical-align: middle;
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1rem;
+    height: 1rem;
     stroke: var(--secondary-foreground-color);
-    transition: 0.3s ease;
     flex-shrink: 0;
+    transition: stroke 0.15s ease;
 }
 
 .conversation:hover .trashcanIcon {

@@ -11,7 +11,7 @@
     fill: var(--tertiary-background-color);
     width: 1.75rem;
     height: 1.75rem;
-    transition: fill 0.3s ease;
+    transition: fill 0.15s ease;
 }
 
 .flipped {

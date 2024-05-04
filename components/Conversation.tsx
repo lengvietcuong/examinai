@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth, db } from '@/lib/firebase';
+import { collection, addDoc, updateDoc, arrayUnion, serverTimestamp, DocumentReference } from 'firebase/firestore/lite';
 import Message from './message/Message';
 import MessageType from '@/types/message';
 import StylizedText from './message/StylizedText';
@@ -26,7 +29,7 @@ const Conversation: React.FC = () => {
         switch (message.type) {
             case 'text':
                 return <Message key={index} role={message.role}>
-                    <StylizedText text={message.content || ''}/>
+                    <StylizedText text={message.content || ''} />
                 </Message>;
             case 'essaySubmission':
                 return <Message key={index} role='user'>
@@ -60,7 +63,7 @@ const Conversation: React.FC = () => {
                         <LightBulbIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
                         <h2 className={styles.assessmentHeading}>Idea Suggestions</h2>
                     </div>
-                    <StylizedText text={message.content || ''}/>
+                    <StylizedText text={message.content || ''} />
                 </Message>
             case 'improvedVersion':
                 return <Message key={index} role='assistant'>
@@ -68,7 +71,7 @@ const Conversation: React.FC = () => {
                         <SparklesIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.stroke}`} />
                         <h2 className={styles.assessmentHeading}>Improved Version</h2>
                     </div>
-                    <StylizedText text={message.content || ''}/>
+                    <StylizedText text={message.content || ''} />
                 </Message>
             case 'error':
                 return <Message key={index} role='assistant'>
@@ -79,6 +82,8 @@ const Conversation: React.FC = () => {
         }
     }
 
+    const [user] = useAuthState(auth);
+    const [conversationRef, setConversationRef] = useState<DocumentReference | null>(null);
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [skillNumber, setSkillNumber] = useState<number>(0);
     const [messages, setMessages] = useState<MessageType[]>([]);
@@ -87,37 +92,57 @@ const Conversation: React.FC = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const MAX_WAIT_TIME_MS = 20000;
 
-    async function generateResponse() {
-        if (!userMessage || !selectedSkill) return;
+    const addMessagesFireStore = async (messages: MessageType[]) => {
+        if (!user) return;
 
-        let updatedMessages = [...messages, userMessage];
-        setMessages(updatedMessages);
-
-        setIsLoading(true);
-        let responseMessages: MessageType[] = [];
-        try {
-            if (selectedSkill.startsWith('Speaking')) {
-                const textMessages = updatedMessages
-                    .filter(message => message.type === 'text' || message.type === 'displayHidden')
-                    .map(({ role, content }) => ({ role, content: content || '' }));
-                responseMessages = await Promise.race([handleSpeaking(textMessages), timeout(MAX_WAIT_TIME_MS)]);
-            } else {
-                responseMessages = await Promise.race([handleWriting(skillNumber as 1 | 2, userMessage.essayQuestion || '', userMessage.essay || ''), timeout(MAX_WAIT_TIME_MS)]);
-            }
-        } catch (error) {
-            responseMessages = [{
-                role: 'assistant',
-                type: 'error',
-                content: "I'm sorry, but the server seems to be busy right now. Please try again later."
-            }];
-        } finally {
-            setMessages(prevMessages => [...prevMessages, ...responseMessages]);
-            setIsLoading(false);
+        if (!conversationRef) {
+            const ref = await addDoc(collection(db, `chats/${user.uid}/conversations`), {
+                skill: selectedSkill,
+                lastModified: serverTimestamp(),
+                messages: messages
+            });
+            setConversationRef(ref);
+        } else {
+            await updateDoc(conversationRef, {
+                messages: arrayUnion(...messages),
+                lastModified: serverTimestamp()
+            });
         }
     }
 
+    const getExaminerResponses = async (messages: MessageType[]) => {
+        if (selectedSkill?.startsWith('Speaking')) {
+            const textMessages = messages.map(({ role, content }) => ({ role, content: content || '' }));
+            return await Promise.race([handleSpeaking(textMessages), timeout(MAX_WAIT_TIME_MS)]);
+        }
+        if (userMessage?.essayQuestion && userMessage?.essay) {
+            return await Promise.race([handleWriting(skillNumber as 1 | 2, userMessage.essayQuestion, userMessage.essay), timeout(MAX_WAIT_TIME_MS)]);
+        }
+        return [];
+    }
+
     useEffect(() => {
-        generateResponse();
+        const onUserMessage = async () => {
+            if (!userMessage) return;
+
+            setMessages(prev => [...prev, userMessage]);
+            setIsLoading(true);
+            let examinerResponses: MessageType[] = [];
+            try {
+                examinerResponses = await getExaminerResponses([...messages, userMessage]);
+                addMessagesFireStore([userMessage, ...examinerResponses]);
+            } catch (error) {
+                examinerResponses = [{
+                    role: 'assistant',
+                    type: 'error',
+                    content: "I'm sorry, but the server seems to be busy right now. Please try again later."
+                }];
+            } finally {
+                setMessages(prev => [...prev, ...examinerResponses]);
+                setIsLoading(false);
+            }
+        }
+        onUserMessage();
     }, [userMessage]);
 
     useEffect(() => {

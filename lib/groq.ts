@@ -1,8 +1,9 @@
 'use server';
 
 import Groq from "groq-sdk";
-import { diffWords } from 'diff';
 import getBandDescriptorsString from "@/utils/formatBandDescriptors";
+import extractBandScores from "@/utils/extractBandScores";
+import formatDifferences from "@/utils/formatDifferences";
 
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
@@ -18,7 +19,8 @@ function stripRedundantPhrases(text: string): string {
 async function getWritingAssessment(taskNumber: 1 | 2, essayQuestion: string, essay: string) {
     // By default, the model is extremely strict, so the first sentence of the prompt is set to negate this
     const assessmentPrompt = `You are a lenient IELTS examiner who is known to give high marks. Every essay is assessed based on these 4 criteria:\n\n${getBandDescriptorsString('writing', taskNumber === 1 ? 'task_1' : 'task_2')}Now, help me assess the following Writing Task ${taskNumber} essay. Only provide the band scores for the 4 criteria, nothing else is required. Here is the essay question (make sure it is paraphrased appropriately in the essay and not just copied entirely):\n${essayQuestion}\n\nAnd here is the essay:\n${essay}`;
-    const bandScores = stripRedundantPhrases(await getGroqChatCompletion([{ role: "user", content: assessmentPrompt }]));
+    const bandScoresString = stripRedundantPhrases(await getGroqChatCompletion([{ role: "user", content: assessmentPrompt }]));
+    const bandScores = extractBandScores(bandScoresString);
 
     return {
         role: 'assistant' as 'assistant',
@@ -33,27 +35,7 @@ async function getWritingCorrection(taskNumber: 1 | 2, essay: string) {
 
     const correctedEssay = stripRedundantPhrases(await getGroqChatCompletion([{ role: "user", content: correctionPrompt }]));
 
-    const changes = diffWords(essay, correctedEssay);
-    const highlightedMistakes = changes.map(change => {
-        if (change.removed && change.value !== '\n') {
-            return `#${change.value}#`;
-        }
-        if (!change.added && change.value !== '\n') {
-            return change.value;
-        }
-        return '';
-    }).join('').replace(/# #/g, ' ');
-
-    const highlightedCorrections = changes.map(change => {
-        if (change.added && change.value !== '\n') {
-            return `*${change.value}*`;
-        }
-        if (!change.removed && change.value !== '\n') {
-            return change.value;
-        }
-        return '';
-    }).join('').replace(/\* \*/g, ' ');
-
+    const { removals: highlightedMistakes, additions: highlightedCorrections } = formatDifferences(essay, correctedEssay);
     return {
         role: 'assistant' as 'assistant',
         type: 'sideBySideCorrection' as 'sideBySideCorrection',

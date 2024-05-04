@@ -47,7 +47,7 @@ const Conversation: React.FC = () => {
                         <CheckListIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
                         <h2 className={styles.assessmentHeading}>Band Scores</h2>
                     </div>
-                    <BandScores bandScores={message.bandScores || ''} />
+                    <BandScores bandScores={message.bandScores || {}} />
                 </Message>
             case 'sideBySideCorrection':
                 return <Message key={index} role='assistant'>

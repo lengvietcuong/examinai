@@ -4,14 +4,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import SendIcon from './icons/SendIcon';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
-import { useLoadingStore } from '@/stores/loadingStore';
+import { useExaminerProcessingStore } from '@/stores/examinerProcessingStore';
 import sanitize from '@/utils/sanitize';
 import styles from './TextInput.module.css';
 
 const TextInput: React.FC = () => {
     const setUserMessage = useUserMessageStore((state) => state.setUserMessage);
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
-    const isLoading = useLoadingStore((state) => state.isLoading);
+    const isExaminerProcessing = useExaminerProcessingStore((state) => state.isExaminerProcessing);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [input, setInput] = useState<string>('');
 
@@ -30,9 +30,9 @@ const TextInput: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (isLoading || !input.trim()) return;
+        if (isExaminerProcessing || !input.trim()) return;
 
-        setUserMessage({type: 'text', content: sanitize(input)});
+        setUserMessage({ type: 'text', content: sanitize(input) });
         setInput('');
         if (textareaRef.current) {
             textareaRef.current.style.height = 'inherit';

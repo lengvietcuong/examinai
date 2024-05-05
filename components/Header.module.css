@@ -6,8 +6,8 @@
     gap: 0.25rem;
     align-items: center;
     height: 12vh;
-	padding-left: 10vw;
-	padding-right: 10vw;
+	padding-left: 5vw;
+	padding-right: 5vw;
     background-color: var(--background-color);
 }
 

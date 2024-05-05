@@ -19,7 +19,7 @@ import getInitialSpeakingPrompt from '@/utils/getInitialSpeakingPrompt';
 import timeout from '@/utils/timeout';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
-import { useLoadingStore } from '@/stores/loadingStore';
+import { useExaminerProcessingStore } from '@/stores/examinerProcessingStore';
 import { handleSpeaking, handleWriting, getConversationName } from '@/lib/groq';
 import { montserrat } from '@/fonts/fonts';
 import styles from './Conversation.module.css';
@@ -82,21 +82,28 @@ const Conversation: React.FC = () => {
         }
     }
 
-    const [user] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     const [conversationName, setConversationName] = useState<string>('New chat');
     const [conversationRef, setConversationRef] = useState<DocumentReference | null>(null);
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [skillNumber, setSkillNumber] = useState<number>(0);
     const [messages, setMessages] = useState<MessageType[]>([]);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
-    const { isLoading, setIsLoading } = useLoadingStore((state) => ({ isLoading: state.isLoading, setIsLoading: state.setIsLoading }));
+    const [pendingMessages, setPendingMessages] = useState<MessageType[]>([]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const { isExaminerProcessing, setIsExaminerProcessing } = useExaminerProcessingStore((state) => ({ isExaminerProcessing: state.isExaminerProcessing, setIsExaminerProcessing: state.setIsExaminerProcessing }));
     const MAX_WAIT_TIME_MS = 20000;
 
-    const addMessagesFireStore = async (messages: MessageType[]) => {
+    const addMessagesFirestore = async (messages: MessageType[]) => {
+        if (loading) {
+            setPendingMessages(prev => [...prev, ...messages]);
+            return;
+        }
+
         if (!user) return;
 
         if (!conversationRef) {
+            // Add new conversation
             const ref = await addDoc(collection(db, `chats/${user.uid}/conversations`), {
                 skill: selectedSkill,
                 name: conversationName,
@@ -105,21 +112,11 @@ const Conversation: React.FC = () => {
             });
             setConversationRef(ref);
         } else {
+            // Append messages to existing conversation
             await updateDoc(conversationRef, {
                 messages: arrayUnion(...messages),
                 lastModified: serverTimestamp()
             });
-        }
-    }
-
-    const nameConversation = async () => {
-        if (selectedSkill?.startsWith('Speaking') && userMessage?.content) {
-            // Get the first speaking question (in the second line of the user's message)
-            const context = userMessage.content.split('\n')[1];
-            setConversationName(await getConversationName(context));
-        } else if (userMessage?.essayQuestion) {
-            const context = userMessage.essayQuestion;
-            setConversationName(await getConversationName(context));
         }
     }
 
@@ -151,32 +148,15 @@ const Conversation: React.FC = () => {
     }, [selectedSkill]);
 
     useEffect(() => {
-        const updateConversationName = async (name: string) => {
-            if (conversationRef && conversationName !== 'New chat') {
-                await updateDoc(conversationRef, {
-                    name: name
-                });
-            }
-        }
-        
-        updateConversationName(conversationName);
-    }, [conversationName, conversationRef]);
-
-    useEffect(() => {
         const onUserMessage = async () => {
             if (!userMessage) return;
-            
-            // First message of logged-in user
-            if (user && messages.length === 0) {
-                nameConversation();
-            }
 
             setMessages(prev => [...prev, userMessage]);
-            setIsLoading(true);
+            setIsExaminerProcessing(true);
             let examinerResponses: MessageType[] = [];
             try {
                 examinerResponses = await getExaminerResponses([...messages, userMessage]);
-                addMessagesFireStore([userMessage, ...examinerResponses]);
+                addMessagesFirestore([userMessage, ...examinerResponses]);
             } catch (error) {
                 examinerResponses = [{
                     role: 'assistant',
@@ -185,11 +165,40 @@ const Conversation: React.FC = () => {
                 }];
             } finally {
                 setMessages(prev => [...prev, ...examinerResponses]);
-                setIsLoading(false);
+                setIsExaminerProcessing(false);
             }
         }
         onUserMessage();
     }, [userMessage]);
+
+    useEffect(() => {
+        if (user && pendingMessages.length > 0) {
+            addMessagesFirestore(pendingMessages);
+            setPendingMessages([]);
+        }
+    }, [user, pendingMessages]);
+
+    useEffect(() => {
+        const updateConversationName = async () => {
+            if (!(user && conversationRef && conversationName === 'New chat')) return;
+
+            const firstUserMessage = messages[0];
+            let context;
+            if (selectedSkill?.startsWith('Speaking') && firstUserMessage?.content) {
+                // Get the first speaking question (in the second line of the user's message)
+                context = firstUserMessage.content.split('\n')[1];
+            } else if (firstUserMessage?.essayQuestion) {
+                context = firstUserMessage.essayQuestion;
+            } else {
+                return;
+            }
+            await updateDoc(conversationRef, {
+                name: await getConversationName(context)
+            });
+        }
+
+        updateConversationName();
+    }, [user, conversationRef]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -202,7 +211,7 @@ const Conversation: React.FC = () => {
             }
             <div className={styles.conversation}>
                 {messages.map((message, index) => renderMessage(message, index))}
-                {isLoading && <LoadingMessage />}
+                {isExaminerProcessing && <LoadingMessage />}
             </div>
             <div ref={messagesEndRef} />
         </>

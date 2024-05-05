@@ -102,7 +102,7 @@ const EssayForm: React.FC = () => {
                     onChange={handleEssayChange}
                     placeholder="Enter your essay..."
                 />
-                {essayWordCount > 0 && <p className={styles.wordCount}>Word count: {essayWordCount}</p>}
+                {essayWordCount > 0 && <span className={styles.wordCount}>Word count: {essayWordCount}</span>}
             </div>
             <button type="submit" className={`${styles.submitButton} ${montserrat.className}`}>
                 <SendIcon className={`${styles.icon} ${styles.stroke}`} />

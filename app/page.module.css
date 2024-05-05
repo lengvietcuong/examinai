@@ -13,14 +13,17 @@
 }
 
 .chat {
-	max-width: 1000px;
-	padding: 0vh 6vw 7.5vh 6vw;
+	max-width: calc(min(900px, 100vw - 18vw - 10vw - 10vw));
+	padding-left: 10vw;
+	padding-right: 10vw;
+	padding-bottom: 6vh;
 	margin-left: auto;
 	margin-right: auto;
 }
 
 @media only screen and (max-width: 768px) {
 	.chat {
-		padding: 3.5vh 4vw 5vh 4vw;
+		max-width: none;
+		padding: 4vh 4vw 4vh 4vw;
 	}
 }

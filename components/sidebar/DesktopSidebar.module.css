@@ -2,6 +2,7 @@
     position: sticky;
     top: 0;
     width: 18vw;
+    min-width: 250px;
     height: 100vh;
     background-color: var(--secondary-background-color);
     transition: 0.3s ease;
@@ -9,6 +10,7 @@
 }
 
 .closed {
+    min-width: 0;
     width: 0;
 }
 

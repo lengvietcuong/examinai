@@ -192,8 +192,10 @@ const Conversation: React.FC = () => {
             } else {
                 return;
             }
+            const name = await getConversationName(context);
+            setConversationName(name);
             await updateDoc(conversationRef, {
-                name: await getConversationName(context)
+                name: name
             });
         }
 

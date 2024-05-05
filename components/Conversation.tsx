@@ -204,7 +204,7 @@ const Conversation: React.FC = () => {
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+    }, [messages, selectedSkill]);
 
     return (
         <>

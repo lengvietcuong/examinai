@@ -20,7 +20,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding: 0.75rem 1.5rem;
+    padding: 2rem;
     border-radius: 0.5rem;
     background-color: var(--secondary-background-color);
     transition: color 0.15s ease, background-color 0.15s ease;
@@ -67,6 +67,10 @@
 
     .labelsContainer {
         grid-template-columns: repeat(1, 1fr);
+    }
+
+    .label {
+        padding: 1rem;
     }
 }
 

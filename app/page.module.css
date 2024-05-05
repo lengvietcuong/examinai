@@ -16,6 +16,7 @@
 	max-width: calc(min(900px, 100vw - 18vw - 10vw - 10vw));
 	padding-left: 10vw;
 	padding-right: 10vw;
+	padding-top: 1vh;
 	padding-bottom: 6vh;
 	margin-left: auto;
 	margin-right: auto;

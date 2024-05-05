@@ -17,8 +17,8 @@ const EssayForm: React.FC = () => {
     const [essay, setEssay] = useState('');
     const [essayWordCount, setEssayWordCount] = useState(0);
     const [questionWordCount, setQuestionWordCount] = useState(0);
-    const questionRef = useRef(null);
-    const essayRef = useRef(null);
+    const questionRef = React.useRef<HTMLTextAreaElement>(null);
+    const essayRef = React.useRef<HTMLTextAreaElement>(null);
 
     const adjustTextareaHeight = (textareaRef: React.RefObject<HTMLTextAreaElement>) => {
         if (textareaRef.current) {
@@ -29,8 +29,11 @@ const EssayForm: React.FC = () => {
 
     useEffect(() => {
         adjustTextareaHeight(questionRef);
+    }, [question]);
+
+    useEffect(() => {
         adjustTextareaHeight(essayRef);
-    }, [question, essay]);
+    }, [essay]);
 
     const handleQuestionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setQuestion(event.target.value);
@@ -70,7 +73,7 @@ const EssayForm: React.FC = () => {
             return;
         }
 
-        setUserMessage({ type: 'essaySubmission', essayQuestion: sanitizedQuestion, essay: sanitizedEssay});
+        setUserMessage({ type: 'essaySubmission', essayQuestion: sanitizedQuestion, essay: sanitizedEssay });
     };
 
     return (

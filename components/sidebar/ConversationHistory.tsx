@@ -24,7 +24,7 @@ const ConversationHistory: React.FC = () => {
 
     if (loading) {
         return <div className={styles.centerContainer}>
-            <DashedCircleIcon className={styles.loadingSpinner} />;
+            <DashedCircleIcon className={styles.loadingSpinner} />
         </div>
     }
 

@@ -93,6 +93,14 @@ async function handleWriting(taskNumber: 1 | 2, essayQuestion: string, essay: st
     ]);
 }
 
+async function getConversationName(context: string) {
+    return await getGroqChatCompletion([{
+        role: "user",
+        content: `Assign a short title that best represents the topic this question is about (do not output anything else): ${context}`
+    }]);
+
+}
+
 async function getGroqChatCompletion(messages: { role: string, content: string }[]) {
     const completion = await groq.chat.completions.create({
         messages: messages,
@@ -104,5 +112,6 @@ async function getGroqChatCompletion(messages: { role: string, content: string }
 
 export {
     handleSpeaking,
-    handleWriting
+    handleWriting,
+    getConversationName
 };

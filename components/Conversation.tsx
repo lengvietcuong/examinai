@@ -20,7 +20,7 @@ import timeout from '@/utils/timeout';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
 import { useLoadingStore } from '@/stores/loadingStore';
-import { handleSpeaking, handleWriting } from '@/lib/groq';
+import { handleSpeaking, handleWriting, getConversationName } from '@/lib/groq';
 import { montserrat } from '@/fonts/fonts';
 import styles from './Conversation.module.css';
 
@@ -83,6 +83,7 @@ const Conversation: React.FC = () => {
     }
 
     const [user] = useAuthState(auth);
+    const [conversationName, setConversationName] = useState<string>('New chat');
     const [conversationRef, setConversationRef] = useState<DocumentReference | null>(null);
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [skillNumber, setSkillNumber] = useState<number>(0);
@@ -98,8 +99,9 @@ const Conversation: React.FC = () => {
         if (!conversationRef) {
             const ref = await addDoc(collection(db, `chats/${user.uid}/conversations`), {
                 skill: selectedSkill,
-                lastModified: serverTimestamp(),
-                messages: messages
+                name: conversationName,
+                messages: messages,
+                lastModified: serverTimestamp()
             });
             setConversationRef(ref);
         } else {
@@ -107,6 +109,17 @@ const Conversation: React.FC = () => {
                 messages: arrayUnion(...messages),
                 lastModified: serverTimestamp()
             });
+        }
+    }
+
+    const nameConversation = async () => {
+        if (selectedSkill?.startsWith('Speaking') && userMessage?.content) {
+            // Get the first speaking question (in the second line of the user's message)
+            const context = userMessage.content.split('\n')[1];
+            setConversationName(await getConversationName(context));
+        } else if (userMessage?.essayQuestion) {
+            const context = userMessage.essayQuestion;
+            setConversationName(await getConversationName(context));
         }
     }
 
@@ -122,8 +135,41 @@ const Conversation: React.FC = () => {
     }
 
     useEffect(() => {
+        const onSkillSelection = async () => {
+            if (!selectedSkill) return;
+
+            const number = parseInt(selectedSkill[selectedSkill.length - 1]);
+            setSkillNumber(number);
+
+            if (selectedSkill?.startsWith('Speaking')) {
+                const initialPrompt = getInitialSpeakingPrompt(number as 1 | 2 | 3);
+                setUserMessage(initialPrompt);
+            }
+        }
+
+        onSkillSelection();
+    }, [selectedSkill]);
+
+    useEffect(() => {
+        const updateConversationName = async (name: string) => {
+            if (conversationRef && conversationName !== 'New chat') {
+                await updateDoc(conversationRef, {
+                    name: name
+                });
+            }
+        }
+        
+        updateConversationName(conversationName);
+    }, [conversationName, conversationRef]);
+
+    useEffect(() => {
         const onUserMessage = async () => {
             if (!userMessage) return;
+            
+            // First message of logged-in user
+            if (user && messages.length === 0) {
+                nameConversation();
+            }
 
             setMessages(prev => [...prev, userMessage]);
             setIsLoading(true);
@@ -144,16 +190,6 @@ const Conversation: React.FC = () => {
         }
         onUserMessage();
     }, [userMessage]);
-
-    useEffect(() => {
-        if (!selectedSkill) return;
-
-        const number = parseInt(selectedSkill[selectedSkill.length - 1]);
-        setSkillNumber(number);
-        if (selectedSkill?.startsWith('Speaking')) {
-            setUserMessage(getInitialSpeakingPrompt(number as 1 | 2 | 3));
-        }
-    }, [selectedSkill]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

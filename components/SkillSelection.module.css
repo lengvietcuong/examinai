@@ -20,6 +20,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    font-weight: 500;
     padding: 2rem;
     border-radius: 0.5rem;
     background-color: var(--secondary-background-color);
@@ -70,7 +71,7 @@
     }
 
     .label {
-        padding: 1rem;
+        padding: 1.5rem;
     }
 }
 

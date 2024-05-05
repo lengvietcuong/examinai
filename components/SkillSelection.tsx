@@ -7,6 +7,7 @@ import SpeakingPart3Icon from './icons/SpeakingPart3Icon';
 import WritingTask1Icon from './icons/WritingTask1Icon';
 import WritingTask2Icon from './icons/WritingTask2Icon';
 import { useSkillStore } from '@/stores/skillStore';
+import { montserrat } from '@/fonts/fonts';
 import styles from './SkillSelection.module.css';
 
 
@@ -66,7 +67,7 @@ const SkillSelection: React.FC = () => {
                 onChange={handleTabChange}
             />
 
-            <div className={styles.labelsContainer}>
+            <div className={`${styles.labelsContainer} ${montserrat.className}`}>
                 <label 
                     className={`${styles.label} ${selectedSkill === 'Speaking Part 1' ? styles.selected : selectedSkill ? styles.unselected : ''}`} 
                     htmlFor="speakingPart1"

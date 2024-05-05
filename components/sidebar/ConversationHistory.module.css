@@ -1,19 +1,31 @@
 .conversationHistory {
+    position: relative;
     margin: 0;
-    padding: 2rem 1.25rem;
+    padding: 2rem 1rem;
 }
 
 .conversation {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
     list-style: none;
     cursor: pointer;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     border-radius: 0.5rem;
 }
 
 .conversation:hover {
     background-color: var(--tertiary-background-color);
+}
+
+.skillCodeContainer {
+    flex-shrink: 0;
+    width: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.skillCode {
+    color: var(--secondary-foreground-color);
+    font-weight: bold;
 }
 
 .conversationName {
@@ -24,6 +36,7 @@
 
 .trashcanIcon {
     display: none;
+    margin-left: auto;
     vertical-align: middle;
     width: 1rem;
     height: 1rem;
@@ -33,16 +46,57 @@
 }
 
 .conversation:hover .trashcanIcon {
-    display: inline;
+    display: inline-block;
 }
 
 .trashcanIcon:hover {
     stroke: var(--secondary-color);
 }
 
+.centerContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.loadingSpinner,
+.conversationIcon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.loadingSpinner {
+    stroke: var(--secondary-foreground-color);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.tipContainer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+.conversationIcon {
+    flex-shrink: 0;
+    fill: var(--secondary-foreground-color);
+}
+
+.tip {
+    margin: 0;
+    white-space: pre;
+    color: var(--secondary-foreground-color);
+}
+
 @media only screen and (max-width: 768px) {
     .conversationHistory {
-        padding: 1rem 1.25rem;
+        padding: 1rem;
     }
     
     .trashcanIcon {

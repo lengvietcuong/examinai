@@ -96,9 +96,8 @@ async function handleWriting(taskNumber: 1 | 2, essayQuestion: string, essay: st
 async function getConversationName(context: string) {
     return await getGroqChatCompletion([{
         role: "user",
-        content: `Assign a short title that best represents the topic this question is about (do not output anything else): ${context}`
+        content: `Assign a short title that best describes what this question is about (do not output anything else, even quotes): ${context}`
     }]);
-
 }
 
 async function getGroqChatCompletion(messages: { role: string, content: string }[]) {

@@ -10,10 +10,9 @@ import useSkillStore from '@/stores/skillStore';
 import { montserrat } from '@/fonts/fonts';
 import styles from './SkillSelection.module.css';
 
-
 const SkillSelection: React.FC = () => {
     const { selectedSkill, setSelectedSkill } = useSkillStore((state) => ({ selectedSkill: state.selectedSkill, setSelectedSkill: state.setSelectedSkill }));
-    const handleTabChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSkillSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!selectedSkill) {
             setSelectedSkill(event.target.value);
         }
@@ -28,7 +27,7 @@ const SkillSelection: React.FC = () => {
                 name="skill"
                 value="Speaking Part 1"
                 checked={selectedSkill === 'Speaking Part 1'}
-                onChange={handleTabChange}
+                onChange={handleSkillSelection}
             />
             <input
                 className={styles.skillInput}
@@ -37,7 +36,7 @@ const SkillSelection: React.FC = () => {
                 name="skill"
                 value="Speaking Part 2"
                 checked={selectedSkill === 'Speaking Part 2'}
-                onChange={handleTabChange}
+                onChange={handleSkillSelection}
             />
             <input
                 className={styles.skillInput}
@@ -46,7 +45,7 @@ const SkillSelection: React.FC = () => {
                 name="skill"
                 value="Speaking Part 3"
                 checked={selectedSkill === 'Speaking Part 3'}
-                onChange={handleTabChange}
+                onChange={handleSkillSelection}
             />
             <input
                 className={styles.skillInput}
@@ -55,7 +54,7 @@ const SkillSelection: React.FC = () => {
                 name="skill"
                 value="Writing Task 1"
                 checked={selectedSkill === 'Writing Task 1'}
-                onChange={handleTabChange}
+                onChange={handleSkillSelection}
             />
             <input
                 className={styles.skillInput}
@@ -64,7 +63,7 @@ const SkillSelection: React.FC = () => {
                 name="skill"
                 value="Writing Task 2"
                 checked={selectedSkill === 'Writing Task 2'}
-                onChange={handleTabChange}
+                onChange={handleSkillSelection}
             />
 
             <div className={`${styles.labelsContainer} ${montserrat.className}`}>

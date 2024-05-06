@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
-import { collection, addDoc, updateDoc, arrayUnion, serverTimestamp, DocumentReference } from 'firebase/firestore';
+import { collection, doc, addDoc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 import Message from './message/Message';
 import MessageType from '@/types/message';
 import StylizedText from './message/StylizedText';
@@ -43,7 +43,7 @@ const Conversation: React.FC = () => {
                 </Message>
             case 'bandScores':
                 return <Message key={index} role='assistant'>
-                    <div ref={messagesEndRef} className={styles.messagesEndRef} />
+                    {userMessage?.type === 'essaySubmission' && <div ref={messagesEndRef} className={styles.messagesEndRef} />}
                     <div className={styles.headingContainer}>
                         <CheckListIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
                         <h2 className={styles.assessmentHeading}>Band Scores</h2>
@@ -85,7 +85,7 @@ const Conversation: React.FC = () => {
 
     const [user, loading] = useAuthState(auth);
     const [conversationName, setConversationName] = useState<string>('New chat');
-    const { messages, setMessages, conversationRef, setConversationRef } = useConversationStore();
+    const { messages, setMessages, conversationId, setConversationId } = useConversationStore();
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [skillNumber, setSkillNumber] = useState<number>(0);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
@@ -102,7 +102,7 @@ const Conversation: React.FC = () => {
 
         if (!user) return;
 
-        if (!conversationRef) {
+        if (!conversationId) {
             // Add new conversation
             const ref = await addDoc(collection(db, `chats/${user.uid}/conversations`), {
                 skill: selectedSkill,
@@ -110,10 +110,10 @@ const Conversation: React.FC = () => {
                 messages: messages,
                 lastModified: serverTimestamp()
             });
-            setConversationRef(ref);
+            setConversationId(ref.id);
         } else {
             // Append messages to existing conversation
-            await updateDoc(conversationRef, {
+            await updateDoc(doc(db, `chats/${user.uid}/conversations/${conversationId}`), {
                 messages: arrayUnion(...messages),
                 lastModified: serverTimestamp()
             });
@@ -133,7 +133,8 @@ const Conversation: React.FC = () => {
 
     useEffect(() => {
         const onSkillSelection = async () => {
-            if (!selectedSkill) return;
+            // If the conversation ID exists, it means the user has selected a conversation from the sidebar
+            if (!selectedSkill || conversationId) return;
 
             const number = parseInt(selectedSkill[selectedSkill.length - 1]);
             setSkillNumber(number);
@@ -180,7 +181,7 @@ const Conversation: React.FC = () => {
 
     useEffect(() => {
         const updateConversationName = async () => {
-            if (!(user && conversationRef && conversationName === 'New chat')) return;
+            if (!(user && conversationId && conversationName === 'New chat')) return;
 
             const firstUserMessage = messages[0];
             let context;
@@ -194,23 +195,31 @@ const Conversation: React.FC = () => {
             }
             const name = await getConversationName(context);
             setConversationName(name);
-            await updateDoc(conversationRef, {
+            await updateDoc(doc(db, `chats/${user.uid}/conversations/${conversationId}`), {
                 name: name
             });
         }
 
         updateConversationName();
-    }, [user, conversationRef]);
+    }, [user, conversationId]);
 
     useEffect(() => {
-        if (conversationRef === null) {
+        // Handle 'New chat' button click
+        if (conversationId === null) {
             setConversationName('New chat');
         }
-    }, [conversationRef]);
+    }, [conversationId]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
+
+    useEffect(() => {
+        // Reset scrolling if the user selects a writing conversation from the sidebar
+        if (selectedSkill?.startsWith('Writing') && conversationId && !userMessage) {
+            window.scrollTo(0, 0);
+        }
+    }, [conversationId]);
 
     return (
         <>
@@ -221,7 +230,7 @@ const Conversation: React.FC = () => {
                 {messages.map((message, index) => renderMessage(message, index))}
                 {isExaminerProcessing && <LoadingMessage />}
             </div>
-            <div ref={messagesEndRef} />
+            {(userMessage?.type === 'essaySubmission' || selectedSkill?.startsWith('Speaking')) && <div ref={messagesEndRef} />}
         </>
     );
 };

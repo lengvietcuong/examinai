@@ -14,7 +14,8 @@
     font-size: 0.875rem;
 }
 
-.conversation:hover {
+.conversation:hover,
+.conversation.highlighted {
     background-color: var(--tertiary-background-color);
 }
 

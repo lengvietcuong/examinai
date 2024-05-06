@@ -12,6 +12,7 @@ import HamburgerMenuIcon from '../icons/HamburgerMenuIcon';
 import SignOutIcon from '../icons/SignOutIcon';
 import useSidebarStore from '@/stores/sidebarStore';
 import useConversationStore from '@/stores/conversationStore';
+import useUserMessageStore from '@/stores/userMessageStore';
 import useSkillStore from '@/stores/skillStore';
 import { montserrat } from '@/fonts/fonts';
 import styles from './HeaderButtons.module.css';
@@ -21,8 +22,9 @@ const HeaderButtons: React.FC = () => {
     const [user, loading] = useAuthState(auth);
     const profileAreaRef = useRef<HTMLDivElement>(null);
     const [showSignOutButton, setShowSignOutButton] = useState(false);
-    const { setMessages, setConversationRef } = useConversationStore((state) => ({ setMessages: state.setMessages, setConversationRef: state.setConversationRef }));
+    const { setMessages, setConversationId } = useConversationStore((state) => ({ setMessages: state.setMessages, setConversationId: state.setConversationId }));
     const setSelectedSkill = useSkillStore((state) => state.setSelectedSkill);
+    const setUserMessage = useUserMessageStore((state) => state.setUserMessage);
 
     const toggleSignOutButtonVisibility = () => {
         setShowSignOutButton(!showSignOutButton);
@@ -95,9 +97,10 @@ const HeaderButtons: React.FC = () => {
             <button
                 className={`${styles.buttonContainer} ${styles.newChatButton}`}
                 onClick={() => {
-                    setMessages(() => []);
-                    setConversationRef(null);
+                    setConversationId(null);
                     setSelectedSkill(null);
+                    setMessages(() => []);
+                    setUserMessage(null);
                 }}
             >
                 <PlusIcon className={styles.buttonIcon} />

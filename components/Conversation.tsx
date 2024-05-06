@@ -195,9 +195,18 @@ const Conversation: React.FC = () => {
             }
             const name = await getConversationName(context);
             setConversationName(name);
-            await updateDoc(doc(db, `chats/${user.uid}/conversations/${conversationId}`), {
-                name: name
-            });
+            try {
+                await updateDoc(doc(db, `chats/${user.uid}/conversations/${conversationId}`), {
+                    name: name
+                });
+            } catch (error: any) {
+                // If the document doesn't exist, do nothing
+                // This typically happens when the user deletes the conversation while it's being named
+                if (error.code === 'not-found') {
+                    return;
+                }
+                throw error;
+            }
         }
 
         updateConversationName();

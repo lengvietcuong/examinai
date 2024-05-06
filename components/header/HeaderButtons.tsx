@@ -6,10 +6,10 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from '@/lib/firebase';
 import { User } from 'firebase/auth';
-import PlusIcon from './icons/PlusIcon';
-import ProfileIcon from './icons/ProfileIcon';
-import HamburgerMenuIcon from './icons/HamburgerMenuIcon';
-import SignOutIcon from './icons/SignOutIcon';
+import PlusIcon from '../icons/PlusIcon';
+import ProfileIcon from '../icons/ProfileIcon';
+import HamburgerMenuIcon from '../icons/HamburgerMenuIcon';
+import SignOutIcon from '../icons/SignOutIcon';
 import useSidebarStore from '@/stores/sidebarStore';
 import { montserrat } from '@/fonts/fonts';
 import styles from './HeaderButtons.module.css';
@@ -45,7 +45,7 @@ const HeaderButtons: React.FC = () => {
             >
                 <Image src={user.photoURL} alt="User Avatar" className={styles.userAvatar} width={40} height={40} />
             </button>)
-        :
+            :
             (<button
                 onClick={toggleSignOutButtonVisibility}
                 className={`${buttonContainer} ${styles.placeholderAvatarButton}`}

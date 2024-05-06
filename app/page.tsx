@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/header/Header";
 import DesktopSidebar from "@/components/sidebar/DesktopSidebar";
 import MobileSidebar from "@/components/sidebar/MobileSidebar";
 import DesktopSideBarToggler from "@/components/sidebar/DesktopSidebarToggler";

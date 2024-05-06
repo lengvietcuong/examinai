@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import QuestionIcon from './icons/QuestionIcon';
-import EssayIcon from './icons/EssayIcon';
-import SendIcon from './icons/SendIcon';
+import React, { useState } from 'react';
+import QuestionIcon from '../icons/QuestionIcon';
+import EssayIcon from '../icons/EssayIcon';
+import SendIcon from '../icons/SendIcon';
 import { useUserMessageStore } from '@/stores/userMessageStore';
 import { useSkillStore } from '@/stores/skillStore';
 import sanitize from '@/utils/sanitize';
@@ -17,23 +17,6 @@ const EssayForm: React.FC = () => {
     const [essay, setEssay] = useState('');
     const [essayWordCount, setEssayWordCount] = useState(0);
     const [questionWordCount, setQuestionWordCount] = useState(0);
-    const questionRef = React.useRef<HTMLTextAreaElement>(null);
-    const essayRef = React.useRef<HTMLTextAreaElement>(null);
-
-    const adjustTextareaHeight = (textareaRef: React.RefObject<HTMLTextAreaElement>) => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'inherit';
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-        }
-    };
-
-    useEffect(() => {
-        adjustTextareaHeight(questionRef);
-    }, [question]);
-
-    useEffect(() => {
-        adjustTextareaHeight(essayRef);
-    }, [essay]);
 
     const handleQuestionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setQuestion(event.target.value);
@@ -84,7 +67,6 @@ const EssayForm: React.FC = () => {
                     Essay question
                 </label>
                 <textarea
-                    ref={questionRef}
                     className={`${styles.textarea} ${styles.question}`}
                     id="question"
                     value={question}
@@ -98,18 +80,17 @@ const EssayForm: React.FC = () => {
                     Your essay
                 </label>
                 <textarea
-                    ref={essayRef}
                     className={`${styles.textarea} ${styles.essay}`}
                     id="essay"
                     value={essay}
                     onChange={handleEssayChange}
                     placeholder="Enter your essay..."
                 />
-                {essayWordCount > 0 && <span className={styles.wordCount}>Word count: {essayWordCount}</span>}
+                <span className={styles.wordCount}>Word count: {essayWordCount}</span>
             </div>
-            <button type="submit" className={`${styles.submitButton} ${montserrat.className}`}>
+            <button type="submit" className={styles.submitButton}>
                 <SendIcon className={`${styles.icon} ${styles.stroke}`} />
-                Submit
+                <span className={`${styles.buttonText} ${montserrat.className}`}>Submit</span>
             </button>
         </form>
     );

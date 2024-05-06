@@ -8,7 +8,7 @@ import Message from './message/Message';
 import MessageType from '@/types/message';
 import StylizedText from './message/StylizedText';
 import LoadingMessage from './message/LoadingMessage';
-import EssaySubmissionInstruction from './message/EssaySubmissionInstruction';
+import EssaySubmissionPopup from './essaySubmissionPopup/EssaySubmissionPopup';
 import SideBySideCorrection from "@/components/message/SideBySideCorrection";
 import BandScores from "@/components/message/BandScores";
 import CheckListIcon from './icons/CheckListIcon';
@@ -209,7 +209,7 @@ const Conversation: React.FC = () => {
     return (
         <>
             {messages.length === 0 && (selectedSkill?.startsWith("Writing")) &&
-                <EssaySubmissionInstruction taskType={selectedSkill} />
+                <EssaySubmissionPopup taskType={selectedSkill} />
             }
             <div className={styles.conversation}>
                 {messages.map((message, index) => renderMessage(message, index))}

@@ -22,7 +22,7 @@ const HeaderButtons: React.FC = () => {
     const [user, loading] = useAuthState(auth);
     const profileAreaRef = useRef<HTMLDivElement>(null);
     const [showSignOutButton, setShowSignOutButton] = useState(false);
-    const { setMessages, setConversationId } = useConversationStore((state) => ({ setMessages: state.setMessages, setConversationId: state.setConversationId }));
+    const { setMessages, setConversationId, setIsNewConversation } = useConversationStore((state) => ({ setMessages: state.setMessages, setConversationId: state.setConversationId, setIsNewConversation: state.setIsNewConversation }));
     const setSelectedSkill = useSkillStore((state) => state.setSelectedSkill);
     const setUserMessage = useUserMessageStore((state) => state.setUserMessage);
 
@@ -97,6 +97,7 @@ const HeaderButtons: React.FC = () => {
             <button
                 className={`${styles.buttonContainer} ${styles.newChatButton}`}
                 onClick={() => {
+                    setIsNewConversation(true);
                     setConversationId(null);
                     setSelectedSkill(null);
                     setMessages(() => []);

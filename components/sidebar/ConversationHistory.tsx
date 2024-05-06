@@ -11,7 +11,7 @@ import ConversationIcon from '../icons/ConversationIcon';
 import styles from './ConversationHistory.module.css';
 
 const ConversationHistory: React.FC = () => {
-    const { setMessages, conversationId, setConversationId } = useConversationStore((state) => ({ setMessages: state.setMessages, conversationId: state.conversationId, setConversationId: state.setConversationId }));
+    const { setMessages, conversationId, setConversationId, setIsNewConversation } = useConversationStore((state) => ({ setMessages: state.setMessages, conversationId: state.conversationId, setConversationId: state.setConversationId, setIsNewConversation: state.setIsNewConversation}));
     const setSelectedSkill = useSkillStore((state) => state.setSelectedSkill);
     const setUserMessage = useUserMessageStore((state) => state.setUserMessage);
     const [user, loading] = useAuthState(auth);
@@ -34,13 +34,23 @@ const ConversationHistory: React.FC = () => {
 
     const deleteConversation = async (id: string) => {
         if (!user) return;
-        const conversationId = doc(db, `chats/${user.uid}/conversations`, id);
-        await deleteDoc(conversationId);
+
+        if (id === conversationId) {
+            // Delete current conversation
+            setIsNewConversation(true);
+            setConversationId(null);
+            setSelectedSkill(null);
+            setMessages(() => []);
+            setUserMessage(null);
+        }
+        const conversationRef = doc(db, `chats/${user.uid}/conversations`, id);
+        await deleteDoc(conversationRef);
     };
 
     const handleSelectConversation = async (id: string) => {
         const conversation = conversations.find((conversation) => conversation.id === id);
         if (!conversation) return;
+        setIsNewConversation(false);
         setConversationId(id);
         setSelectedSkill(conversation.skill);
         setMessages(() => conversation.messages);

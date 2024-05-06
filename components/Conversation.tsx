@@ -43,7 +43,7 @@ const Conversation: React.FC = () => {
                 </Message>
             case 'bandScores':
                 return <Message key={index} role='assistant'>
-                    {userMessage?.type === 'essaySubmission' && <div ref={messagesEndRef} className={styles.messagesEndRef} />}
+                    {isNewConversation && <div ref={messagesEndRef} className={styles.messagesEndRef} />}
                     <div className={styles.headingContainer}>
                         <CheckListIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
                         <h2 className={styles.assessmentHeading}>Band Scores</h2>
@@ -85,7 +85,7 @@ const Conversation: React.FC = () => {
 
     const [user, loading] = useAuthState(auth);
     const [conversationName, setConversationName] = useState<string>('New chat');
-    const { messages, setMessages, conversationId, setConversationId } = useConversationStore();
+    const { messages, setMessages, conversationId, setConversationId, isNewConversation } = useConversationStore((state) => ({ messages: state.messages, setMessages: state.setMessages, conversationId: state.conversationId, setConversationId: state.setConversationId, isNewConversation: state.isNewConversation }));
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [skillNumber, setSkillNumber] = useState<number>(0);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
@@ -216,7 +216,7 @@ const Conversation: React.FC = () => {
 
     useEffect(() => {
         // Reset scrolling if the user selects a writing conversation from the sidebar
-        if (selectedSkill?.startsWith('Writing') && conversationId && !userMessage) {
+        if (selectedSkill?.startsWith('Writing') && !isNewConversation) {
             window.scrollTo(0, 0);
         }
     }, [conversationId]);
@@ -230,7 +230,7 @@ const Conversation: React.FC = () => {
                 {messages.map((message, index) => renderMessage(message, index))}
                 {isExaminerProcessing && <LoadingMessage />}
             </div>
-            {(userMessage?.type === 'essaySubmission' || selectedSkill?.startsWith('Speaking')) && <div ref={messagesEndRef} />}
+            {(isNewConversation || selectedSkill?.startsWith('Speaking')) && <div ref={messagesEndRef} />}
         </>
     );
 };

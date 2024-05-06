@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
-import { collection, getDocs, DocumentData } from 'firebase/firestore/lite';
+import { collection, onSnapshot, query, DocumentData, doc, deleteDoc, orderBy } from 'firebase/firestore';
 import TrashcanIcon from '../icons/TrashcanIcon';
 import DashedCircleIcon from '../icons/DashedCircleIcon';
 import ConversationIcon from '../icons/ConversationIcon';
@@ -13,14 +13,24 @@ const ConversationHistory: React.FC = () => {
 
     useEffect(() => {
         if (user) {
-            const fetchConversations = async () => {
+            const fetchConversations = () => {
                 const conversationsRef = collection(db, `chats/${user.uid}/conversations`);
-                const conversationsSnapshot = await getDocs(conversationsRef);
-                setConversations(conversationsSnapshot.docs.map(doc => doc.data()));
+                const q = query(conversationsRef, orderBy('lastModified', 'desc')); // Order by lastModified field in descending order
+                const unsubscribe = onSnapshot(q, (snapshot) => {
+                    setConversations(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                });
+
+                return () => unsubscribe();
             };
             fetchConversations();
         }
     }, [user]);
+
+    const deleteConversation = async (id: string) => {
+        if (!user) return;
+        const conversationRef = doc(db, `chats/${user.uid}/conversations`, id);
+        await deleteDoc(conversationRef);
+    };
 
     if (loading) {
         return <div className={styles.centerContainer}>
@@ -47,7 +57,7 @@ const ConversationHistory: React.FC = () => {
                             <span className={styles.skillCode}>{skillCode}</span>
                         </div>
                         <span className={styles.conversationName}>{conversation.name}</span>
-                        <TrashcanIcon className={styles.trashcanIcon} />
+                        <TrashcanIcon className={styles.trashcanIcon} onClick={() => deleteConversation(conversation.id)} />
                     </li>
                 )
             })}

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
-import { collection, addDoc, updateDoc, arrayUnion, serverTimestamp, DocumentReference } from 'firebase/firestore/lite';
+import { collection, addDoc, updateDoc, arrayUnion, serverTimestamp, DocumentReference } from 'firebase/firestore';
 import Message from './message/Message';
 import MessageType from '@/types/message';
 import StylizedText from './message/StylizedText';

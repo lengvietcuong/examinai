@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import SendIcon from './icons/SendIcon';
-import { useUserMessageStore } from '@/stores/userMessageStore';
-import { useSkillStore } from '@/stores/skillStore';
-import { useExaminerProcessingStore } from '@/stores/examinerProcessingStore';
+import useUserMessageStore from '@/stores/userMessageStore';
+import useSkillStore from '@/stores/skillStore';
+import useExaminerProcessingStore from '@/stores/examinerProcessingStore';
 import sanitize from '@/utils/sanitize';
 import styles from './TextInput.module.css';
 

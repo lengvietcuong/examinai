@@ -17,9 +17,10 @@ import LightBulbIcon from './icons/LightBulbIcon';
 import SparklesIcon from './icons/SparklesIcon';
 import getInitialSpeakingPrompt from '@/utils/getInitialSpeakingPrompt';
 import timeout from '@/utils/timeout';
-import { useUserMessageStore } from '@/stores/userMessageStore';
-import { useSkillStore } from '@/stores/skillStore';
-import { useExaminerProcessingStore } from '@/stores/examinerProcessingStore';
+import useUserMessageStore from '@/stores/userMessageStore';
+import useSkillStore from '@/stores/skillStore';
+import useExaminerProcessingStore from '@/stores/examinerProcessingStore';
+import useConversationStore from '@/stores/conversationStore';
 import { handleSpeaking, handleWriting, getConversationName } from '@/lib/groq';
 import { montserrat } from '@/fonts/fonts';
 import styles from './Conversation.module.css';
@@ -84,10 +85,9 @@ const Conversation: React.FC = () => {
 
     const [user, loading] = useAuthState(auth);
     const [conversationName, setConversationName] = useState<string>('New chat');
-    const [conversationRef, setConversationRef] = useState<DocumentReference | null>(null);
+    const { messages, setMessages, conversationRef, setConversationRef } = useConversationStore();
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [skillNumber, setSkillNumber] = useState<number>(0);
-    const [messages, setMessages] = useState<MessageType[]>([]);
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
     const [pendingMessages, setPendingMessages] = useState<MessageType[]>([]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -151,7 +151,7 @@ const Conversation: React.FC = () => {
         const onUserMessage = async () => {
             if (!userMessage) return;
 
-            setMessages(prev => [...prev, userMessage]);
+            setMessages((prev: MessageType[]) => [...prev, userMessage]);
             setIsExaminerProcessing(true);
             let examinerResponses: MessageType[] = [];
             try {
@@ -164,7 +164,7 @@ const Conversation: React.FC = () => {
                     content: "I'm sorry, but the server seems to be busy right now. Please try again later."
                 }];
             } finally {
-                setMessages(prev => [...prev, ...examinerResponses]);
+                setMessages((prev: MessageType[]) => [...prev, ...examinerResponses]);
                 setIsExaminerProcessing(false);
             }
         }
@@ -201,6 +201,12 @@ const Conversation: React.FC = () => {
 
         updateConversationName();
     }, [user, conversationRef]);
+
+    useEffect(() => {
+        if (conversationRef === null) {
+            setConversationName('New chat');
+        }
+    }, [conversationRef]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

@@ -13,7 +13,7 @@ type UserMessageState = {
     ) => void;
 };
 
-export const useUserMessageStore = create<UserMessageState>((set) => ({
+const useUserMessageStore = create<UserMessageState>((set) => ({
     userMessage: null,
     setUserMessage: (
         message
@@ -25,3 +25,5 @@ export const useUserMessageStore = create<UserMessageState>((set) => ({
         }
     },
 }));
+
+export default useUserMessageStore;

@@ -6,7 +6,7 @@ import SpeakingPart2Icon from './icons/SpeakingPart2Icon';
 import SpeakingPart3Icon from './icons/SpeakingPart3Icon';
 import WritingTask1Icon from './icons/WritingTask1Icon';
 import WritingTask2Icon from './icons/WritingTask2Icon';
-import { useSkillStore } from '@/stores/skillStore';
+import useSkillStore from '@/stores/skillStore';
 import { montserrat } from '@/fonts/fonts';
 import styles from './SkillSelection.module.css';
 

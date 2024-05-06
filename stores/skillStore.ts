@@ -5,7 +5,9 @@ type SkillState = {
     setSelectedSkill: (selectedSkill: string | null) => void;
 };
 
-export const useSkillStore = create<SkillState>((set) => ({
+const useSkillStore = create<SkillState>((set) => ({
     selectedSkill: null,
     setSelectedSkill: (selectedSkill) => set({ selectedSkill }),
 }));
+
+export default useSkillStore;

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import CloseIcon from '../icons/CloseIcon';
-import { useSkillStore } from '@/stores/skillStore';
+import useSkillStore from '@/stores/skillStore';
 import styles from './CloseEssayPopup.module.css';
 
 const CloseEssayPopup: React.FC = () => {

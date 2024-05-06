@@ -11,6 +11,8 @@ import ProfileIcon from '../icons/ProfileIcon';
 import HamburgerMenuIcon from '../icons/HamburgerMenuIcon';
 import SignOutIcon from '../icons/SignOutIcon';
 import useSidebarStore from '@/stores/sidebarStore';
+import useConversationStore from '@/stores/conversationStore';
+import useSkillStore from '@/stores/skillStore';
 import { montserrat } from '@/fonts/fonts';
 import styles from './HeaderButtons.module.css';
 
@@ -19,20 +21,19 @@ const HeaderButtons: React.FC = () => {
     const [user, loading] = useAuthState(auth);
     const profileAreaRef = useRef<HTMLDivElement>(null);
     const [showSignOutButton, setShowSignOutButton] = useState(false);
+    const { setMessages, setConversationRef } = useConversationStore((state) => ({ setMessages: state.setMessages, setConversationRef: state.setConversationRef }));
+    const setSelectedSkill = useSkillStore((state) => state.setSelectedSkill);
 
     const toggleSignOutButtonVisibility = () => {
         setShowSignOutButton(!showSignOutButton);
     };
 
-    const buttonContainer = styles.buttonContainer;
-    const buttonIcon = styles.buttonIcon;
-
     const renderSignInButton = () => (
         <button
             onClick={async () => await signInWithPopup(auth, new GoogleAuthProvider())}
-            className={`${styles.signInButton} ${buttonContainer}`}
+            className={`${styles.signInButton} ${styles.buttonContainer}`}
         >
-            <ProfileIcon className={buttonIcon} />
+            <ProfileIcon className={styles.buttonIcon} />
             <span className={`${styles.buttonText} ${montserrat.className}`}>Sign in</span>
         </button>
     );
@@ -41,14 +42,14 @@ const HeaderButtons: React.FC = () => {
         user.photoURL ?
             (<button
                 onClick={toggleSignOutButtonVisibility}
-                className={`${buttonContainer} ${styles.userAvatarButton}`}
+                className={`${styles.buttonContainer} ${styles.userAvatarButton}`}
             >
                 <Image src={user.photoURL} alt="User Avatar" className={styles.userAvatar} width={40} height={40} />
             </button>)
             :
             (<button
                 onClick={toggleSignOutButtonVisibility}
-                className={`${buttonContainer} ${styles.placeholderAvatarButton}`}
+                className={`${styles.buttonContainer} ${styles.placeholderAvatarButton}`}
             >
                 <ProfileIcon className={styles.placeholderAvatar} />
             </button>)
@@ -61,9 +62,9 @@ const HeaderButtons: React.FC = () => {
                     await signOut(auth);
                     window.location.reload();
                 }}
-                className={`${buttonContainer} ${styles.signOutButton}`}
+                className={`${styles.buttonContainer} ${styles.signOutButton}`}
             >
-                <SignOutIcon className={buttonIcon} />
+                <SignOutIcon className={styles.buttonIcon} />
                 <span className={`${styles.buttonText} ${montserrat.className}`}>Sign out</span>
             </button>
             <div className={styles.overlay} onClick={toggleSignOutButtonVisibility} />
@@ -88,11 +89,18 @@ const HeaderButtons: React.FC = () => {
 
     return (
         <>
-            <button className={`${buttonContainer} ${styles.hamburgerMenuButton}`} onClick={() => setIsOpenMobile(true)}>
-                <HamburgerMenuIcon className={buttonIcon} />
+            <button className={`${styles.buttonContainer} ${styles.hamburgerMenuButton}`} onClick={() => setIsOpenMobile(true)}>
+                <HamburgerMenuIcon className={styles.buttonIcon} />
             </button>
-            <button className={`${buttonContainer} ${styles.newChatButton}`}>
-                <PlusIcon className={buttonIcon} />
+            <button
+                className={`${styles.buttonContainer} ${styles.newChatButton}`}
+                onClick={() => {
+                    setMessages(() => []);
+                    setConversationRef(null);
+                    setSelectedSkill(null);
+                }}
+            >
+                <PlusIcon className={styles.buttonIcon} />
                 <span className={`${styles.buttonText} ${montserrat.className}`}>New chat</span>
             </button>
             {!loading &&

@@ -5,7 +5,9 @@ type ExaminerProcessingState = {
     setIsExaminerProcessing: (isExaminerProcessing: boolean) => void;
 };
 
-export const useExaminerProcessingStore = create<ExaminerProcessingState>((set) => ({
+const useExaminerProcessingStore = create<ExaminerProcessingState>((set) => ({
     isExaminerProcessing: false,
     setIsExaminerProcessing: (isExaminerProcessing: boolean) => set({ isExaminerProcessing }),
 }));
+
+export default useExaminerProcessingStore;

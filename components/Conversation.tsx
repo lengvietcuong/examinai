@@ -149,14 +149,16 @@ const Conversation: React.FC = () => {
     }, [selectedSkill]);
 
     useEffect(() => {
+        let isCancelled = false;
         const onUserMessage = async () => {
-            if (!userMessage) return;
+            if (!userMessage || isCancelled) return;
 
-            setMessages((prev: MessageType[]) => [...prev, userMessage]);
+            setMessages((prev) => [...prev, userMessage]);
             setIsExaminerProcessing(true);
             let examinerResponses: MessageType[] = [];
             try {
                 examinerResponses = await getExaminerResponses([...messages, userMessage]);
+                if (isCancelled) return;
                 addMessagesFirestore([userMessage, ...examinerResponses]);
             } catch (error) {
                 examinerResponses = [{
@@ -165,11 +167,17 @@ const Conversation: React.FC = () => {
                     content: "I'm sorry, but the server seems to be busy right now. Please try again later."
                 }];
             } finally {
-                setMessages((prev: MessageType[]) => [...prev, ...examinerResponses]);
-                setIsExaminerProcessing(false);
+                if (!isCancelled) {
+                    setMessages((prev) => [...prev, ...examinerResponses]);
+                    setIsExaminerProcessing(false);
+                }
             }
         }
         onUserMessage();
+        return () => {
+            isCancelled = true;
+            setIsExaminerProcessing(false);
+        };
     }, [userMessage]);
 
     useEffect(() => {

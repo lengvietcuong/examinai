@@ -232,9 +232,7 @@ const Conversation: React.FC = () => {
 
     return (
         <>
-            {messages.length === 0 && (selectedSkill?.startsWith("Writing")) &&
-                <EssaySubmissionPopup taskType={selectedSkill} />
-            }
+            {messages.length === 0 && <EssaySubmissionPopup />}
             <div className={styles.conversation}>
                 {messages.map((message, index) => renderMessage(message, index))}
                 {isExaminerProcessing && <LoadingMessage />}

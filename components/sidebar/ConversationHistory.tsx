@@ -15,7 +15,7 @@ const ConversationHistory: React.FC = () => {
     const setSelectedSkill = useSkillStore((state) => state.setSelectedSkill);
     const setUserMessage = useUserMessageStore((state) => state.setUserMessage);
     const [user, loading] = useAuthState(auth);
-    const [conversations, setConversations] = useState<DocumentData[]>([]);
+    const [conversations, setConversations] = useState<Record<string, DocumentData>>({});
 
     useEffect(() => {
         if (user) {
@@ -23,7 +23,7 @@ const ConversationHistory: React.FC = () => {
                 const conversationsRef = collection(db, `chats/${user.uid}/conversations`);
                 const q = query(conversationsRef, orderBy('lastModified', 'desc')); // Order by lastModified field in descending order
                 const unsubscribe = onSnapshot(q, (snapshot) => {
-                    setConversations(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                    setConversations(snapshot.docs.reduce((acc, doc) => ({ ...acc, [doc.id]: doc.data() }), {}));
                 });
 
                 return () => unsubscribe();
@@ -31,7 +31,6 @@ const ConversationHistory: React.FC = () => {
             fetchConversations();
         }
     }, [user]);
-
     const deleteConversation = async (id: string) => {
         if (!user) return;
 
@@ -48,7 +47,7 @@ const ConversationHistory: React.FC = () => {
     };
 
     const handleSelectConversation = async (id: string) => {
-        const conversation = conversations.find((conversation) => conversation.id === id);
+        const conversation = conversations[id];
         if (!conversation) return;
         setIsNewConversation(false);
         setConversationId(id);
@@ -74,16 +73,17 @@ const ConversationHistory: React.FC = () => {
 
     return (
         <ul className={styles.conversationHistory}>
-            {conversations.map((conversation, i) => {
+            {Object.keys(conversations).map((id, i) => {
+                let conversation = conversations[id];
                 let skillCode = conversation.skill.charAt(0) + conversation.skill.slice(-1);
-                let isHighlighted = conversationId === conversation.id;
+                let isHighlighted = conversationId === id;
                 return (
-                    <li key={i} className={`${styles.conversation} ${isHighlighted ? styles.highlighted : ''}`} onClick={() => handleSelectConversation(conversation.id)}>
+                    <li key={i} className={`${styles.conversation} ${isHighlighted ? styles.highlighted : ''}`} onClick={() => handleSelectConversation(id)}>
                         <div className={styles.skillCodeContainer}>
                             <span className={styles.skillCode}>{skillCode}</span>
                         </div>
                         <span className={styles.conversationName}>{conversation.name}</span>
-                        <TrashcanIcon className={styles.trashcanIcon} onClick={(e) => { e.stopPropagation(); deleteConversation(conversation.id); }} />
+                        <TrashcanIcon className={styles.trashcanIcon} onClick={(e) => { e.stopPropagation(); deleteConversation(id); }} />
                     </li>
                 )
             })}

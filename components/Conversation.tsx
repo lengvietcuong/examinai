@@ -43,7 +43,7 @@ const Conversation: React.FC = () => {
                 </Message>
             case 'bandScores':
                 return <Message key={index} role='assistant'>
-                    {isNewConversation && <div ref={messagesEndRef} className={styles.messagesEndRef} />}
+                    {isNewConversation && <div ref={bandScoresRef} className={styles.bandScoresRef} />}
                     <div className={styles.headingContainer}>
                         <CheckListIcon className={`${montserrat.className} ${styles.assessmentIcon} ${styles.fill}`} />
                         <h2 className={styles.assessmentHeading}>Band Scores</h2>
@@ -82,16 +82,16 @@ const Conversation: React.FC = () => {
                 return null;
         }
     }
-
+    
     const [user, loading] = useAuthState(auth);
-    const [conversationName, setConversationName] = useState<string>('New chat');
-    const { messages, setMessages, conversationId, setConversationId, isNewConversation } = useConversationStore((state) => ({ messages: state.messages, setMessages: state.setMessages, conversationId: state.conversationId, setConversationId: state.setConversationId, isNewConversation: state.isNewConversation }));
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [skillNumber, setSkillNumber] = useState<number>(0);
+    const { messages, setMessages, conversationId, setConversationId, isNewConversation } = useConversationStore((state) => ({ messages: state.messages, setMessages: state.setMessages, conversationId: state.conversationId, setConversationId: state.setConversationId, isNewConversation: state.isNewConversation }));
     const { userMessage, setUserMessage } = useUserMessageStore((state) => ({ userMessage: state.userMessage, setUserMessage: state.setUserMessage }));
     const [pendingMessages, setPendingMessages] = useState<MessageType[]>([]);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
     const { isExaminerProcessing, setIsExaminerProcessing } = useExaminerProcessingStore((state) => ({ isExaminerProcessing: state.isExaminerProcessing, setIsExaminerProcessing: state.setIsExaminerProcessing }));
+    const bandScoresRef = useRef<HTMLDivElement>(null);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
     const MAX_WAIT_TIME_MS = 20000;
 
     const addMessagesFirestore = async (messages: MessageType[]) => {
@@ -106,7 +106,7 @@ const Conversation: React.FC = () => {
             // Add new conversation
             const ref = await addDoc(collection(db, `chats/${user.uid}/conversations`), {
                 skill: selectedSkill,
-                name: conversationName,
+                name: 'New chat',
                 messages: messages,
                 lastModified: serverTimestamp()
             });
@@ -129,6 +129,23 @@ const Conversation: React.FC = () => {
             return await Promise.race([handleWriting(skillNumber as 1 | 2, userMessage.essayQuestion, userMessage.essay), timeout(MAX_WAIT_TIME_MS)]);
         }
         return [];
+    }
+
+    const nameConversation = async () => {
+        if (!messages) return 'New chat';
+
+        const firstUserMessage = messages[0];
+        let context;
+        if (selectedSkill?.startsWith('Speaking') && firstUserMessage?.content) {
+            // Get the first speaking question (in the second line of the user's message)
+            context = firstUserMessage.content.split('\n')[1];
+        } else if (firstUserMessage?.essayQuestion) {
+            context = firstUserMessage.essayQuestion;
+        } else {
+            return 'New chat';
+        }
+
+        return Promise.race([getConversationName(context), timeout(MAX_WAIT_TIME_MS)]);
     }
 
     useEffect(() => {
@@ -189,46 +206,27 @@ const Conversation: React.FC = () => {
 
     useEffect(() => {
         const updateConversationName = async () => {
-            if (!(user && conversationId && conversationName === 'New chat')) return;
+            if (!user || !conversationId || !isNewConversation) return;
 
-            const firstUserMessage = messages[0];
-            let context;
-            if (selectedSkill?.startsWith('Speaking') && firstUserMessage?.content) {
-                // Get the first speaking question (in the second line of the user's message)
-                context = firstUserMessage.content.split('\n')[1];
-            } else if (firstUserMessage?.essayQuestion) {
-                context = firstUserMessage.essayQuestion;
-            } else {
-                return;
-            }
-            const name = await getConversationName(context);
-            setConversationName(name);
             try {
+                const name = await nameConversation();
                 await updateDoc(doc(db, `chats/${user.uid}/conversations/${conversationId}`), {
                     name: name
                 });
-            } catch (error: any) {
-                // If the document doesn't exist, do nothing
-                // This typically happens when the user deletes the conversation while it's being named
-                if (error.code === 'not-found') {
-                    return;
-                }
-                throw error;
+            } catch (error) {
+                // Ignore if fails to name the conversation or update the document
             }
         }
 
         updateConversationName();
-    }, [user, conversationId]);
-
-    useEffect(() => {
-        // Handle 'New chat' button click
-        if (conversationId === null) {
-            setConversationName('New chat');
-        }
     }, [conversationId]);
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (bandScoresRef.current) {
+            bandScoresRef.current.scrollIntoView({ behavior: "smooth" });
+        } else if (messagesEndRef.current){
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
     }, [messages]);
 
     useEffect(() => {

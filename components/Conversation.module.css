@@ -30,7 +30,7 @@
     stroke: var(--secondary-color);
 }
 
-.messagesEndRef {
+.bandScoresRef {
     position: relative;
     top: -12vh;
 }

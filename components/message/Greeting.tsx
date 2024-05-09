@@ -21,6 +21,7 @@ const Greeting: React.FC = () => {
       
           return () => clearTimeout(timeout);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [currentIndex]);
 
     return isNewConversation && (

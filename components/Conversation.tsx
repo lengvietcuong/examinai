@@ -163,6 +163,7 @@ const Conversation: React.FC = () => {
         }
 
         onSkillSelection();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedSkill]);
 
     useEffect(() => {
@@ -195,6 +196,7 @@ const Conversation: React.FC = () => {
             isCancelled = true;
             setIsExaminerProcessing(false);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userMessage]);
 
     useEffect(() => {
@@ -202,6 +204,7 @@ const Conversation: React.FC = () => {
             addMessagesFirestore(pendingMessages);
             setPendingMessages([]);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, pendingMessages]);
 
     useEffect(() => {
@@ -219,6 +222,7 @@ const Conversation: React.FC = () => {
         }
 
         updateConversationName();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [conversationId]);
 
     useEffect(() => {
@@ -234,6 +238,7 @@ const Conversation: React.FC = () => {
         if (selectedSkill?.startsWith('Writing') && !isNewConversation) {
             window.scrollTo(0, 0);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [conversationId]);
 
     return (

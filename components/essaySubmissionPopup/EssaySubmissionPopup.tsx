@@ -16,6 +16,7 @@ const EssaySubmissionPopup: React.FC = () => {
                 setCloseButtonClicked(false);
             }, 150);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [closeButtonClicked]);
 
     return selectedSkill?.startsWith('Writing') && (
@@ -27,7 +28,7 @@ const EssaySubmissionPopup: React.FC = () => {
                 <p className={styles.instructions}>
                     Please submit the essay question and your essay. I will assess it and provide detailed feedback.
                     <br />
-                    Don't know where to find {selectedSkill} questions? Check out <a href="https://study4.com/tests/?term=IELTS+Writing" target="_blank" rel="noopener noreferrer">Study4</a>.
+                    Don&apos;t know where to find {selectedSkill} questions? Check out <a href="https://study4.com/tests/?term=IELTS+Writing" target="_blank" rel="noopener noreferrer">Study4</a>.
                 </p>
                 <EssayForm />
             </div>

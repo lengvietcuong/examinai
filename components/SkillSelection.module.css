@@ -76,6 +76,8 @@
 @media only screen and (max-width: 768px) {
     .skillsContainer {
         margin-top: 0.75rem;
+        width: initial;
+        margin-right: 3rem;
     }
 
     .labelsContainer {

@@ -5,27 +5,39 @@ import SendIcon from './icons/SendIcon';
 import useUserMessageStore from '@/stores/userMessageStore';
 import useSkillStore from '@/stores/skillStore';
 import useExaminerProcessingStore from '@/stores/examinerProcessingStore';
+import useConversationStore from '@/stores/conversationStore';
 import sanitize from '@/utils/sanitize';
 import styles from './TextInput.module.css';
 
 const TextInput: React.FC = () => {
     const setUserMessage = useUserMessageStore((state) => state.setUserMessage);
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
+    const [conversationId, isNewconversation] = useConversationStore((state) => [state.conversationId, state.isNewConversation]);
     const isExaminerProcessing = useExaminerProcessingStore((state) => state.isExaminerProcessing);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [input, setInput] = useState<string>('');
 
     useEffect(() => {
+        if (!conversationId || !isNewconversation) {
+            setInput('');
+        }
+    }, [conversationId, isNewconversation]);
+
+    useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = 'inherit';
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+            if (textareaRef.current.scrollHeight > textareaRef.current.clientHeight) {
+                textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+            }
         }
     }, [selectedSkill]);
 
     const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInput(e.target.value);
         e.target.style.height = 'inherit';
-        e.target.style.height = `${e.target.scrollHeight}px`;
+        if (e.target.scrollHeight > e.target.clientHeight) {
+            e.target.style.height = `${e.target.scrollHeight}px`;
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {

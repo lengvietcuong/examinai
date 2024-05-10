@@ -5,7 +5,7 @@
     justify-content: center;
     bottom: 0;
     width: 100%;
-    min-height: 10vh;
+    min-height: 10svh;
     background-color: var(--background-color);
 }
 
@@ -52,5 +52,17 @@
 
     .sendButton {
         right: 2rem;
+    }
+}
+
+@media (hover: hover) {
+    .sendButton:hover .sendIcon {
+        stroke: var(--secondary-color);
+    }
+}
+
+@media (hover: none) {
+    .sendButton:hover .sendIcon {
+        stroke: var(--foreground-color);
     }
 }

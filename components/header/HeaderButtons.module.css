@@ -90,6 +90,7 @@
     margin-top: 0.25rem;
     width: max-content;
     z-index: 3;
+    background-color: var(--background-color);
 }
 
 .overlay {
@@ -112,22 +113,23 @@
         display: none;
     }
 
+    .userAvatar {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+
     .signOutButton .buttonText {
         display: inline;
     }
 
     .buttonContainer {
         display: flex;
-        padding: 0.7rem;
+        padding: 0.55rem;
         border-radius: 50%;
     }
 
     .userAvatarButton {
         padding: 0;
-    }
-
-    .placeholderAvatarButton {
-        padding: 0.5rem;
     }
 
     .buttonContainer.signOutButton {
@@ -137,5 +139,31 @@
 
     .overlay {
         display: block;
+    }
+}
+
+@media (hover: hover) {
+    .newChatButton:hover,
+    .hamburgerMenuButton:hover {
+        background-color: var(--tertiary-background-color);
+    }
+
+    .signInButton:hover,
+    .signOutButton:hover,
+    .placeholderAvatarButton:hover {
+        border-color: var(--secondary-foreground-color);
+    }
+}
+
+@media (hover: none) {
+    .newChatButton:hover,
+    .hamburgerMenuButton:hover {
+        background-color: var(--secondary-background-color);
+    }
+
+    .signInButton:hover,
+    .signOutButton:hover,
+    .placeholderAvatarButton:hover {
+        border-color: var(--tertiary-background-color);
     }
 }

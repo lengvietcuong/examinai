@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/lib/firebase';
 import { collection, onSnapshot, query, DocumentData, doc, deleteDoc, orderBy, limit } from 'firebase/firestore';
+import useSidebarStore from '@/stores/sidebarStore';
 import useConversationStore from '@/stores/conversationStore';
 import useSkillStore from '@/stores/skillStore';
 import useUserMessageStore from '@/stores/userMessageStore';
@@ -11,6 +12,7 @@ import ConversationIcon from '../icons/ConversationIcon';
 import styles from './ConversationHistory.module.css';
 
 const ConversationHistory: React.FC = () => {
+    const setIsOpenMobile = useSidebarStore((state) => state.setIsOpenMobile);
     const { setMessages, conversationId, setConversationId, setIsNewConversation } = useConversationStore((state) => ({ setMessages: state.setMessages, conversationId: state.conversationId, setConversationId: state.setConversationId, setIsNewConversation: state.setIsNewConversation }));
     const setSelectedSkill = useSkillStore((state) => state.setSelectedSkill);
     const setUserMessage = useUserMessageStore((state) => state.setUserMessage);
@@ -62,6 +64,7 @@ const ConversationHistory: React.FC = () => {
     const handleSelectConversation = async (id: string) => {
         const conversation = conversations.find(conversation => conversation.id === id);
         if (!conversation) return;
+        setIsOpenMobile(false);
         setIsNewConversation(false);
         setConversationId(id);
         setSelectedSkill(conversation.skill);

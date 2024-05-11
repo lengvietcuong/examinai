@@ -25,8 +25,17 @@
 }
 
 .messageInfo p {
-    margin: 0;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
     white-space: pre-wrap;
+}
+
+.messageInfo p:first-of-type {
+    margin-top: 0;
+}
+
+.messageInfo p:last-of-type {
+    margin-bottom: 0;
 }
 
 .sender {

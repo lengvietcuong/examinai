@@ -228,9 +228,19 @@ const Conversation: React.FC = () => {
     useEffect(() => {
         if (bandScoresRef.current) {
             bandScoresRef.current.scrollIntoView({ behavior: "smooth" });
-        } else if (messagesEndRef.current){
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            return;
         }
+
+        // Ensure the keyboard on mobile has disappeared before scrolling
+        const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        const delay = isMobile ? 100 : 0;
+        const timer = setTimeout(() => {
+            if (messagesEndRef.current) {
+                messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            }
+        }, delay);
+
+        return () => clearTimeout(timer);
     }, [messages]);
 
     useEffect(() => {

@@ -19,7 +19,7 @@
 }
 
 .accentText {
-    background: linear-gradient(135deg, orangered, deeppink);
+    background: linear-gradient(135deg, gold, rgb(255, 0, 69), deeppink);
     background-clip: text;
     color: transparent;
 }

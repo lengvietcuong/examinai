@@ -2,6 +2,7 @@
     position: relative;
     margin: 0;
     padding: 2rem 1rem;
+    line-height: initial;
 }
 
 .conversation {
@@ -9,6 +10,7 @@
     align-items: center;
     list-style: none;
     cursor: pointer;
+    margin: 0;
     padding: 0.5rem;
     border-radius: 0.5rem;
     font-size: 0.875rem;

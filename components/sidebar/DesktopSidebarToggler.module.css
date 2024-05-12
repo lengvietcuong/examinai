@@ -1,16 +1,15 @@
 .toggler {
     position: sticky;
-    top: 50vh;
-    font-size: 3rem;
-    margin-top: calc(-100%);
-    color: var(--tertiary-background-color);
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: -100%;
     background-color: transparent;
 }
 
 .togglerIcon {
-    fill: var(--tertiary-background-color);
-    width: 1.75rem;
-    height: 1.75rem;
+    fill: var(--secondary-foreground-color);
+    width: 1.5rem;
+    height: 1.5rem;
     transition: fill 0.15s ease;
 }
 
@@ -19,7 +18,7 @@
 }
 
 .toggler:hover .togglerIcon {
-    fill: var(--secondary-foreground-color);
+    fill: var(--foreground-color);
 }
 
 @media only screen and (max-width: 768px) {

@@ -55,12 +55,12 @@
 .closeIcon {
     width: 1.5rem;
     height: 1.5rem;
-    fill: var(--tertiary-background-color);
+    fill: var(--secondary-foreground-color);
     transition: fill 0.15s ease;
 }
 
 .closeIcon:hover {
-    fill: var(--secondary-foreground-color);
+    fill: var(--foreground-color);
 }
 
 @media only screen and (max-width: 768px) {

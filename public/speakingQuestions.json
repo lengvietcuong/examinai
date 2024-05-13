@@ -64,7 +64,8 @@
             "What kind of house or flat do you want to live in the future?"
         ],
         [
-            "Can you read a map when you get lost?"
+            "Can you read a map when you get lost?",
+            "Do you think traditional paper maps are still relevant?"
         ],
         [
             "Did you do puzzles in your childhood?",
@@ -675,7 +676,7 @@
         ],
         [
             "Have you ever sent handmade gifts to others?",
-            "How to choose a gift?",
+            "How do you choose a gift?",
             "Can you share an experience of giving a special gift to someone?"
         ],
         [
@@ -800,13 +801,14 @@
             "How do you think neighbours can help each other?"
         ],
         [
-            "In what conditions would you use a computer?",
             "When was the first time you used a computer?",
             "What would your life be like without computers?",
             "In what conditions would it be difficult for you to use a computer?"
         ],
         [
-            "In what conditions, you won't use headphones?"
+            "Do you often use headphones? Why or why not?",
+            "How do you choose which headphones to buy?",
+            "In what situations would you not want to wear headphones?"
         ],
         [
             "In what ways do you try to stay healthy?",
@@ -954,7 +956,8 @@
             "Do you like to sit in front or back when travelling by car?"
         ],
         [
-            "What is the most popular animal in your country?"
+            "What is the most popular animal in your country?",
+            "Do you have any pets?"
         ],
         [
             "What is your favourite meal?",
@@ -1255,7 +1258,7 @@
         [
             "Where are you studying?",
             "How many hours do you spend there in a week?",
-            "Tell me something about the place where you study. What are your favourite subjects?"
+            "What are your favourite subjects?"
         ],
         [
             "Where did you go for your last holiday?",
@@ -1308,20 +1311,18 @@
             "Would you like to change anything in your home town/city?"
         ],
         [
-            "Where is your home town?",
             "Can you describe the area you come from?",
-            "What facilities are there in your area for children/teenagers? Is it a place where tourists go?"
+            "What facilities are there in your area for children/teenagers?",
+            "Is it a place where tourists go?"
         ],
         [
-            "Where is your hometown",
+            "Where is your hometown?",
             "Is that a big city or a small place?",
-            "Please describe your hometown a little.",
             "How long have you been living there?",
             "Do you think you will continue living there for a long time?",
             "What do you like (most) about your hometown?"
         ],
         [
-            "Where is your hometown?",
             "Do you like your hometown?",
             "Is there anything you dislike about it?",
             "What's your hometown famous for?",
@@ -1354,7 +1355,7 @@
             "Is there anything you don't like about social media? [Why?]"
         ],
         [
-            "Who do you spend most time studying/working with? [Why?]",
+            "Who do you spend the most time studying/working with? [Why?]",
             "What kinds of things do you study/work on with other people? [Why?]",
             "Are there times when you study/work better by yourself? [Why/why not?]",
             "Is it important to like the people you study/work with? [Why/why not?]"
@@ -1378,8 +1379,7 @@
         "Describe a bicycle/motorcycle/car trip you would like to go\n\nYou should say:\nWho you would like to go with\nWhere you would like to go\nWhen you would like to go\nAnd explain why you would like to go by bicycle/motorcycle/car",
         "Describe a big city you would like to visit.\nYou should say:\nWhich big city you would like to visit\nhow you would travel there\nWhat you would do there\nAnd explain why you would like to visit this big city.",
         "Describe a big company that you would like to work in\nYou should say:\nWhat kind of company it is\nWhat the company does\nHow you know about this company and explain why you are interested in working in this company.",
-        "Describe a book that you enjoyed reading because you had to think a lot.\nYou should say:\nWhat this book was\nWhy you decided to read it\nWhat reading this book made you think about\nAnd explain why you enjoyed reading this book",
-        "Describe a book that you enjoyed reading because you had to think a lot.\nYou should say:\nWhat this book was\nWhy you decided to read it \nWhat reading this book made you think about\nAnd explain why you enjoyed reading this book.",
+        "Describe a book that you enjoyed reading because it made you think a lot.\nYou should say:\nWhat this book was\nWhy you decided to read it\nWhat reading this book made you think about\nAnd explain why you enjoyed reading this book",
         "Describe a businessman you admire\n\nYou should say:\nWho this person is\nHow you knew this person\nWhat kinds of business this person does\nAnd explain why you admire this person",
         "Describe a café you enjoy/have been to.\nYou should say:\nWhere it is\nHow often you go there\nWhen you usually go there\nWhy you like to visit this café",
         "Describe a café you'd like to visit\n\nYou should say:\nWhere it is\nWhat kinds of food and drinks it serves\nWho you usually go there with\nAnd explain why you like to go there",
@@ -1781,7 +1781,8 @@
             "How our reading habit changes as we grow up? Why does it happen?"
         ],
         [
-            "Do you have any foreign friends and do you think having foreign friends is a good way to know other countries?",
+            "Do you have any foreign friends",
+            "Do you think having foreign friends is a good way to know other countries?",
             "Do you think it's important to know the culture and language before going to another country?",
             "What do you think of people who work in international companies?",
             "What abilities do people need to have when working in an international company?"
@@ -2522,7 +2523,8 @@
             "Do you think TV is the main way for people to get the news in your country? What other ways are there?"
         ],
         [
-            "What are the most popular places to visit in your country? Why do many people like to visit historic buildings?",
+            "What are the most popular places to visit in your country?",
+            "Why do many people like to visit historic buildings?",
             "Why is it hard sometimes to choose a place for a family group to visit?"
         ],
         [
@@ -2617,7 +2619,9 @@
             "Do you think language learning is important? Why?"
         ],
         [
-            "What do old people like to eat?"
+            "What role do parents and schools play in shaping children's dietary habits?",
+            "What do old people like to eat?",
+            "What are the consequences of consistently eating an imbalanced diet?"
         ],
         [
             "What do people in your country often do while waiting?",
@@ -3315,7 +3319,8 @@
             "Are knowledgeable people popular at work?"
         ],
         [
-            "Will people continue to shop in small shops and markets in the future?"
+            "Will people continue to shop in small shops and markets in the future?",
+            "Do you think online shopping will replace physical stores?"
         ],
         [
             "Would you like to be a famous person?",

@@ -10,7 +10,7 @@ import sanitize from '@/utils/sanitize';
 import styles from './TextInput.module.css';
 
 const TextInput: React.FC = () => {
-    const setUserMessage = useUserMessageStore((state) => state.setUserMessage);
+    const [userMessage, setUserMessage] = useUserMessageStore((state) => [state.userMessage, state.setUserMessage]);
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [conversationId, isNewconversation] = useConversationStore((state) => [state.conversationId, state.isNewConversation]);
     const isExaminerProcessing = useExaminerProcessingStore((state) => state.isExaminerProcessing);
@@ -18,19 +18,14 @@ const TextInput: React.FC = () => {
     const [input, setInput] = useState<string>('');
 
     useEffect(() => {
-        if (!conversationId || !isNewconversation) {
+        // Reset when 'New chat' is pressed or when switching between past conversations
+        if (!userMessage || (conversationId && !isNewconversation)) {
             setInput('');
-        }
-    }, [conversationId, isNewconversation]);
-
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'inherit';
-            if (textareaRef.current.scrollHeight > textareaRef.current.clientHeight) {
-                textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+            if (textareaRef.current) {
+                textareaRef.current.style.height = 'inherit';
             }
         }
-    }, [selectedSkill]);
+    }, [userMessage, conversationId, isNewconversation]);
 
     const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInput(e.target.value);

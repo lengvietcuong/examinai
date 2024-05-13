@@ -2,7 +2,7 @@
     margin-top: 0.75rem;
     margin-bottom: 4rem;
     width: fit-content;
-    animation: floatUp 0.3s ease-out;
+    animation: slideIn 0.3s ease-out;
 }
 
 .skillInput {
@@ -58,13 +58,13 @@
     background-color: var(--secondary-background-color);
 }
 
-@keyframes floatUp {
+@keyframes slideIn {
     0% {
-        transform: translateY(1rem);
+        transform: translateX(-0.5rem);
         opacity: 0;
     }
     100% {
-        transform: translateY(0);
+        transform: translateX(0);
         opacity: 1;
     }
 }

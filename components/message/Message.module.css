@@ -1,9 +1,16 @@
 .message {
-    display: flex;
-    gap: 1rem;
+    display: grid;
+    grid-template-areas:
+        ". sender"
+        "avatar content";
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    row-gap: 0.25rem;
+    column-gap: 1rem;
 }
 
 .avatarContainer {
+    grid-area: avatar;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,7 +27,7 @@
 }
 
 .messageInfo {
-    flex: 1;
+    grid-area: content;
     position: relative;
 }
 
@@ -39,8 +46,7 @@
 }
 
 .sender {
-    position: absolute;
-    top: -1.5rem;
+    grid-area: sender;
     color: var(--secondary-foreground-color);
     font-weight: bold;
 }

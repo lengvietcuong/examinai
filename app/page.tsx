@@ -1,6 +1,5 @@
 import Header from "@/components/header/Header";
-import DesktopSidebar from "@/components/sidebar/DesktopSidebar";
-import MobileSidebar from "@/components/sidebar/MobileSidebar";
+import SideBar from "@/components/sidebar/SideBar";
 import DesktopSideBarToggler from "@/components/sidebar/DesktopSidebarToggler";
 import Greeting from "@/components/message/Greeting";
 import Conversation from "@/components/Conversation";
@@ -9,20 +8,17 @@ import styles from "./page.module.css";
 
 export default function Home() {
 	return (
-		<main className={styles.main}>
-			<DesktopSidebar />
-			<MobileSidebar />
-			<div className={styles.content}>
-				<div className={styles.headerChatContainer}>
-					<Header />
-					<DesktopSideBarToggler />
-					<div className={styles.chat}>
-						<Greeting />
-						<Conversation />
-					</div>
+		<div className={styles.layout}>
+			<SideBar />
+			<main className={styles.mainContent}>
+				<DesktopSideBarToggler />
+				<Header />
+				<div className={styles.chat}>
+					<Greeting />
+					<Conversation />
 				</div>
 				<TextInput />
-			</div>
-		</main>
+			</main>
+		</div>
 	);
 }

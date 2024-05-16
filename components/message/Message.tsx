@@ -16,8 +16,8 @@ const Message: React.FC<MessageProps> = ({ role, children }) => {
             <div className={styles.avatarContainer}>
                 {role === 'assistant' ? <ExaminaiIcon className={styles.svgAvatar} /> : <UserAvatar />}
             </div>
+            <span className={styles.sender}>{displayName}</span>
             <div className={styles.messageInfo}>
-                <span className={styles.sender}>{displayName}</span>
                 {children}
             </div>
         </div>

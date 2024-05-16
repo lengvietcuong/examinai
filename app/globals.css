@@ -15,7 +15,7 @@
 		--background-color: #161616;
 		--secondary-foreground-color: #808080;
 		--secondary-background-color: #242424;
-		--tertiary-background-color: #363636;
+		--tertiary-background-color: #404040;
 	}
 }
 
@@ -62,8 +62,8 @@ button {
 textarea {
 	font-family: Arial, sans-serif;
 	resize: none;
-    border: 1px solid var(--tertiary-background-color);
-    border-radius: 0.5rem;
+    border: 1px solid var(--tertiary-foreground-color);
+    border-radius: 1rem;
 	box-sizing: border-box;
     padding: 1rem;
     font-size: 1rem;
@@ -72,7 +72,7 @@ textarea {
 }
 
 textarea:focus {
-    outline: none;
+	outline: none;
     border: 1px solid var(--secondary-foreground-color);
 }
 

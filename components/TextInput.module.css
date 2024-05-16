@@ -1,57 +1,60 @@
 .textInputContainer {
     position: sticky;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     bottom: 0;
-    width: 100%;
-    min-height: 10svh;
-    background-color: var(--background-color);
+    min-height: 8svh;
+	background-color: var(--background-color);
 }
 
 .textInputForm {
-    position: relative;
-    display: block;
-    width: 70%;
-    max-width: 800px;
+    display: flex;
+	max-width: calc(min(800px, 100vw - max(20vw, 250px)));
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 1rem;
+    border: 1px solid var(--tertiary-background-color);
+}
+
+.textInputForm:focus-within {
+    border: 1px solid var(--secondary-foreground-color);
 }
 
 .textarea {
     width: 100%;
     max-height: 12rem;
+    padding-right: 0;
     overflow: auto;
-    padding-right: 3rem;
-    border-radius: 1rem;
-	background-color: var(--background-color);
+    border: none;
+}
+
+.textarea:focus {
+    border: none;
 }
 
 .sendButton {
-    position: absolute;
-    top: 0.875rem;
-    right: 1rem;
+    align-self: flex-start;
     padding: 0;
+    margin-top: 0.8125rem;
+    margin-right: 1rem;
     background-color: transparent;
+}
+
+.sendIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+    transition: 0.3s ease;
+}
+
+.sendIcon {
+    stroke: var(--foreground-color);
 }
 
 .sendButton:hover .sendIcon {
     stroke: var(--secondary-color);
 }
 
-.sendIcon {
-    stroke: var(--foreground-color);
-    width: 1.5rem;
-    height: 1.5rem;
-    transition: 0.3s ease;
-}
-
 @media only screen and (max-width: 768px) {
     .textInputForm {
-        width: 100%;
-        padding: 0 4vw;
-    }
-
-    .sendButton {
-        right: 2rem;
+        max-width: none;
     }
 }
 

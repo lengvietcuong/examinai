@@ -1,9 +1,12 @@
 .toggler {
     position: sticky;
+    float: left;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-5vw, -50%);
     margin-top: -100%;
+    margin-left: 0.5rem;
     background-color: transparent;
+    padding: 0;
 }
 
 .togglerIcon {

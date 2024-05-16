@@ -1,14 +1,6 @@
-.sidebarContainer {
-    overflow-y: auto;
-}
-
 .sidebarContainer,
 .overlay {
     display: none;
-}
-
-.overlay {
-    transition: background-color 0.3s ease;
 }
 
 @media only screen and (max-width: 768px) {
@@ -16,24 +8,26 @@
         position: fixed;
         top: 0;
         z-index: 3;
+        transform: translateX(0);
         display: flex;
         flex-direction: column;
         width: 80%;
         height: 100vh;
+        overflow-y: auto;
         background-color: var(--secondary-background-color);
-        transform: translateX(0);
         transition: 0.3s ease;
     }
 
     .overlay {
-        display: block;
         position: fixed;
         top: 0;
         left: 0;
+        z-index: 2;
+        display: block;
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);
-        z-index: 2;
+        transition: background-color 0.3s ease;
     }
 
     .closed {

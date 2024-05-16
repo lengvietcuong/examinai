@@ -5,9 +5,8 @@
     display: flex;
     gap: 0.25rem;
     align-items: center;
-    height: 12vh;
-	padding-left: 5vw;
-	padding-right: 5vw;
+    height: 12svh;
+    max-height: 100px;
     background-color: var(--background-color);
 }
 
@@ -26,7 +25,6 @@
 
 @media only screen and (max-width: 768px) {
     .header {
-        padding: 0 4vw;
         height: 10vh;
     }
 

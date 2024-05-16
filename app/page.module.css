@@ -1,21 +1,17 @@
-.main {
+.layout {
 	display: flex;
 }
 
-.content {
-	position: relative;
-	box-sizing: border-box;
+.mainContent {
 	flex: 1;
-}
-
-.headerChatContainer {
-	min-height: 90svh;
+	padding-left: 5vw;
+	padding-right: 5vw;
 }
 
 .chat {
-	max-width: calc(min(800px, 100vw - 20vw - 12vw - 12vw));
-	padding-left: 12vw;
-	padding-right: 12vw;
+	min-height: 80svh;
+	max-width: calc(min(800px, 100vw - max(20vw, 250px)));
+	box-sizing: border-box;
 	padding-top: 1vh;
 	padding-bottom: 6vh;
 	margin-left: auto;
@@ -23,8 +19,14 @@
 }
 
 @media only screen and (max-width: 768px) {
+	.mainContent {
+		padding-left: 4vw;
+		padding-right: 4vw;
+	}
+
 	.chat {
+		min-height: 82svh;
 		max-width: none;
-		padding: 4vh 4vw 4vh 4vw;
+		padding-bottom: 4vh;
 	}
 }

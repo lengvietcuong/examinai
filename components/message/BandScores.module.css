@@ -79,8 +79,13 @@
     }
 
     .criterion {
-        width: 9rem;
-        height: 9rem;
+        width: 100%;
+        min-width: 9rem;
+        min-height: 9rem;
+    }
+
+    .criterion.overallScore {
+        max-width: calc(50% - 0.75rem/2);
     }
 
     .title {

@@ -24,6 +24,7 @@
 .textarea {
     margin-top: 0.25rem;
     width: 100%;
+    border-radius: 0.5rem;
 }
 
 .essay {

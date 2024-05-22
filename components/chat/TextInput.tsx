@@ -10,7 +10,6 @@ import useSkillStore from '@/stores/skillStore';
 import useExaminerProcessingStore from '@/stores/examinerProcessingStore';
 import useConversationStore from '@/stores/conversationStore';
 import sanitize from '@/utils/sanitize';
-import { getTextWidth } from 'get-text-width';
 import styles from './TextInput.module.css';
 
 const TextInput = () => {
@@ -30,14 +29,15 @@ const TextInput = () => {
     const keepAliveInterval = useRef<NodeJS.Timeout | undefined>(undefined);
 
     useEffect(() => {
+        if (!textareaRef.current) return;
+
         // Get initial width of textarea (without padding)
-        if (textareaRef.current) {
-            const style = window.getComputedStyle(textareaRef.current);
-            const leftPadding = parseInt(style.paddingLeft, 10);
-            const rightPadding = parseInt(style.paddingRight, 10);
-            const widthWithoutPadding = textareaRef.current.clientWidth - leftPadding - rightPadding;
-            setInitialWidth(widthWithoutPadding);
-        }
+        const style = window.getComputedStyle(textareaRef.current);
+        const leftPadding = parseInt(style.paddingLeft, 10);
+        const rightPadding = parseInt(style.paddingRight, 10);
+        const widthWithoutPadding = textareaRef.current.clientWidth - leftPadding - rightPadding;
+        setInitialWidth(widthWithoutPadding);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [textareaRef.current]);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ const TextInput = () => {
 
     useEffect(() => {
         if (!textareaRef.current) return;
-        
+
         // Dynamically adjust textarea height based on content
         textareaRef.current.style.height = 'inherit';
         textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -57,6 +57,8 @@ const TextInput = () => {
         // Scroll to the bottom
         textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
     }, [input]);
+
+    const getTextWidth = typeof window !== 'undefined' ? require('get-text-width').getTextWidth : () => 0;
 
     const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInput(e.target.value);
@@ -69,7 +71,7 @@ const TextInput = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (isExaminerProcessing || !input.trim()) return;
-        
+
         setUserMessage({ type: 'text', content: sanitize(input) });
         setInput('');
         setIsExpanded(false);

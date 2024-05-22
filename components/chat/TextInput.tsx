@@ -27,6 +27,7 @@ const TextInput = () => {
     const microphoneRef = useRef<MediaRecorder | null>(null);
     const fixedInput = useRef('');
     const keepAliveInterval = useRef<NodeJS.Timeout | undefined>(undefined);
+    const silenceTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
     useEffect(() => {
         if (!textareaRef.current) return;
@@ -74,8 +75,9 @@ const TextInput = () => {
 
         setUserMessage({ type: 'text', content: sanitize(input) });
         setInput('');
-        setIsExpanded(false);
         fixedInput.current = '';
+        setIsExpanded(false);
+        if (isListening) stopListening();
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -97,6 +99,8 @@ const TextInput = () => {
         });
         conn.addListener(LiveTranscriptionEvents.Transcript, (data: LiveTranscriptionEvent) => {
             const transcript = data.channel.alternatives[0].transcript;
+            if (!transcript.trim()) return;
+
             const newText = (fixedInput.current + ' ' + transcript).trim();
             setInput(newText);
             if (data.is_final) {
@@ -105,6 +109,8 @@ const TextInput = () => {
 
             const currentWidth = getTextWidth(newText);
             setIsExpanded(currentWidth > initialWidth);
+
+            resetSilenceTimeout();
         });
         connectionRef.current = conn;
 
@@ -120,6 +126,7 @@ const TextInput = () => {
                 echoCancellation: true,
             },
         });
+
         const mic = new MediaRecorder(userMedia);
         mic.addEventListener('dataavailable', (e: BlobEvent) => {
             if (microphoneRef.current?.state !== 'recording') return;
@@ -158,6 +165,7 @@ const TextInput = () => {
     };
 
     const stopListening = () => {
+        clearTimeout(silenceTimeout.current);
         microphoneRef.current?.stop();
         connectionRef.current?.keepAlive();
         keepAliveInterval.current = setInterval(() => {
@@ -165,6 +173,13 @@ const TextInput = () => {
         }, 10_000);
         setIsListening(false);
     }
+
+    const resetSilenceTimeout = () => {
+        clearTimeout(silenceTimeout.current);
+        silenceTimeout.current = setTimeout(() => {
+            stopListening();
+        }, 10_000);
+    };
 
     const toggleListening = () => {
         if (isListening) {

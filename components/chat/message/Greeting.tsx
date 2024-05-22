@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Message from "./Message";
-import SkillSelection from "../SkillSelection";
+import SkillSelection from "./SkillSelection";
 import useConversationStore from "@/stores/conversationStore";
 import styles from './Greeting.module.css';
 

@@ -1,9 +1,9 @@
 import Header from "@/components/header/Header";
 import SideBar from "@/components/sidebar/SideBar";
 import DesktopSideBarToggler from "@/components/sidebar/DesktopSidebarToggler";
-import Greeting from "@/components/message/Greeting";
-import Conversation from "@/components/Conversation";
-import TextInput from "@/components/TextInput";
+import Greeting from "@/components/chat/message/Greeting";
+import Conversation from "@/components/chat/Conversation";
+import TextInput from "@/components/chat/TextInput";
 import styles from "./page.module.css";
 
 export default function Home() {

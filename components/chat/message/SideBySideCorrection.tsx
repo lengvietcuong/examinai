@@ -1,6 +1,6 @@
 import React from 'react';
-import OriginalEssayIcon from '../icons/OriginalEssayIcon';
-import CorrectedEssayIcon from '../icons/CorrectedEssayIcon';
+import OriginalEssayIcon from '../../icons/OriginalEssayIcon';
+import CorrectedEssayIcon from '../../icons/CorrectedEssayIcon';
 import { montserrat } from '@/fonts/fonts';
 import styles from './SideBySideCorrection.module.css';
 

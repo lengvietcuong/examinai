@@ -8,13 +8,13 @@ import Message from './message/Message';
 import MessageType from '@/types/message';
 import StylizedText from './message/StylizedText';
 import LoadingMessage from './message/LoadingMessage';
-import EssaySubmissionPopup from './essaySubmissionPopup/EssaySubmissionPopup';
-import SideBySideCorrection from "@/components/message/SideBySideCorrection";
-import BandScores from "@/components/message/BandScores";
-import CheckListIcon from './icons/CheckListIcon';
-import ToolsIcon from './icons/ToolsIcon';
-import LightBulbIcon from './icons/LightBulbIcon';
-import SparklesIcon from './icons/SparklesIcon';
+import EssaySubmissionPopup from '../essaySubmissionPopup/EssaySubmissionPopup';
+import SideBySideCorrection from "@/components/chat/message/SideBySideCorrection";
+import BandScores from "@/components/chat/message/BandScores";
+import CheckListIcon from '../icons/CheckListIcon';
+import ToolsIcon from '../icons/ToolsIcon';
+import LightBulbIcon from '../icons/LightBulbIcon';
+import SparklesIcon from '../icons/SparklesIcon';
 import getInitialSpeakingPrompt from '@/utils/getInitialSpeakingPrompt';
 import timeout from '@/utils/timeout';
 import useUserMessageStore from '@/stores/userMessageStore';
@@ -82,7 +82,7 @@ const Conversation: React.FC = () => {
                 return null;
         }
     }
-    
+
     const [user, loading] = useAuthState(auth);
     const selectedSkill = useSkillStore((state) => state.selectedSkill);
     const [skillNumber, setSkillNumber] = useState<number>(0);

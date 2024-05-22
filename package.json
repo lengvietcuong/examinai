@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@deepgram/sdk": "^3.3.2",
+    "@types/dom-speech-recognition": "^0.0.4",
     "diff": "^5.2.0",
     "firebase": "^10.11.1",
+    "get-text-width": "^1.0.3",
     "groq-sdk": "^0.3.2",
     "next": "^14.3.0-canary.33",
     "react": "^18",

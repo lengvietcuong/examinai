@@ -1,10 +1,10 @@
 import React from 'react';
-import TargetIcon from '../icons/TargetIcon';
-import StructureIcon from '../icons/StructureIcon';
-import BookIcon from '../icons/BookIcon';
-import LinkIcon from '../icons/LinkIcon';
-import SigmaIcon from '../icons/SigmaIcon';
-import QuestionIcon from '../icons/QuestionIcon';
+import TargetIcon from '../../icons/TargetIcon';
+import StructureIcon from '../../icons/StructureIcon';
+import BookIcon from '../../icons/BookIcon';
+import LinkIcon from '../../icons/LinkIcon';
+import SigmaIcon from '../../icons/SigmaIcon';
+import QuestionIcon from '../../icons/QuestionIcon';
 import { montserrat } from '@/fonts/fonts';
 import styles from './BandScores.module.css';
 

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import ExaminaiIcon from '../icons/ExaminaiIcon';
+import ExaminaiIcon from '../../icons/ExaminaiIcon';
 import UserAvatar from './UserAvatar';
 import styles from './Message.module.css';
 

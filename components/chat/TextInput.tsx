@@ -61,7 +61,7 @@ const TextInput = () => {
 
     const getTextWidth = typeof window !== 'undefined' ? require('get-text-width').getTextWidth : () => 0;
 
-    const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleKeyboardInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInput(e.target.value);
         fixedInput.current = e.target.value;
 
@@ -71,9 +71,10 @@ const TextInput = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (isExaminerProcessing || !input.trim()) return;
+        const sanitizedInput = sanitize(input);
+        if (isExaminerProcessing || !sanitizedInput) return;
 
-        setUserMessage({ type: 'text', content: sanitize(input) });
+        setUserMessage({ type: 'text', content: sanitizedInput });
         setInput('');
         fixedInput.current = '';
         setIsExpanded(false);
@@ -97,6 +98,13 @@ const TextInput = () => {
             filler_words: true,
             utterance_end_ms: 3000,
         });
+
+        await new Promise((resolve, _) => {
+            conn.addListener(LiveTranscriptionEvents.Open, () => {
+                resolve(null); // Resolve the promise when the connection is open
+            });
+        });
+
         conn.addListener(LiveTranscriptionEvents.Transcript, (data: LiveTranscriptionEvent) => {
             const transcript = data.channel.alternatives[0].transcript;
             if (!transcript.trim()) return;
@@ -104,7 +112,7 @@ const TextInput = () => {
             const newText = (fixedInput.current + ' ' + transcript).trim();
             setInput(newText);
             if (data.is_final) {
-                fixedInput.current += ' ' + transcript;
+                fixedInput.current = newText;
             }
 
             const currentWidth = getTextWidth(newText);
@@ -112,11 +120,11 @@ const TextInput = () => {
 
             resetSilenceTimeout();
         });
-        connectionRef.current = conn;
-
         keepAliveInterval.current = setInterval(() => {
             connectionRef.current?.keepAlive();
         }, 10_000);
+
+        connectionRef.current = conn;
     }
 
     const initializeMicrophone = async () => {
@@ -129,14 +137,12 @@ const TextInput = () => {
 
         const mic = new MediaRecorder(userMedia);
         mic.addEventListener('dataavailable', (e: BlobEvent) => {
-            if (microphoneRef.current?.state !== 'recording') return;
-            if (!e.data.size) {
-                window.alert('Please allow microphone access to use voice input.');
-                stopListening();
-                return;
+            if (microphoneRef.current?.state === 'recording' && e.data.size > 0) {
+                connectionRef.current?.send(e.data);
             }
-            connectionRef.current?.send(e.data);
         });
+        mic.start(250); // Send data every 250ms
+
         microphoneRef.current = mic;
     }
 
@@ -148,9 +154,10 @@ const TextInput = () => {
             }
             if (!microphoneRef.current) {
                 await initializeMicrophone();
+            } else {
+                microphoneRef.current?.resume();
             }
 
-            microphoneRef.current?.start(250); // Send data every 250ms
             textareaRef.current?.focus();
             setIsListening(true);
         } catch (error) {
@@ -165,8 +172,8 @@ const TextInput = () => {
     };
 
     const stopListening = () => {
+        microphoneRef.current?.pause();
         clearTimeout(silenceTimeout.current);
-        microphoneRef.current?.stop();
         connectionRef.current?.keepAlive();
         keepAliveInterval.current = setInterval(() => {
             connectionRef.current?.keepAlive();
@@ -202,7 +209,7 @@ const TextInput = () => {
                     id="textInput"
                     className={styles.textarea}
                     placeholder='Message Examinai...'
-                    onInput={handleInput}
+                    onInput={handleKeyboardInput}
                     onKeyDown={handleKeyDown}
                     rows={1}
                     value={input}

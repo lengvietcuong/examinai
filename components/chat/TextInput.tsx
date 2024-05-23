@@ -199,11 +199,6 @@ const TextInput = () => {
     return selectedSkill && selectedSkill.startsWith('Speaking') && (
         <div className={styles.textInputContainer}>
             <form className={`${styles.textInputForm} ${isExpanded ? styles.expanded : ''}`} onSubmit={handleSubmit}>
-                {(isConnecting || isListening) && (
-                    <div className={styles.statusMessage}>
-                        {isConnecting ? "Connecting..." : "Listening..."}
-                    </div>
-                )}
                 <textarea
                     ref={textareaRef}
                     id="textInput"

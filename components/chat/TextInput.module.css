@@ -21,13 +21,6 @@
     flex-direction: column;
 }
 
-.statusMessage {
-    position: absolute;
-    top: -1.5rem;
-    right: 0;
-    color: var(--secondary-foreground-color);
-}
-
 .textInputForm:focus-within {
     border: 1px solid var(--secondary-foreground-color);
 }
@@ -62,20 +55,23 @@
     background-color: transparent;
 }
 
-.microphoneIcon, 
+.microphoneIcon,
 .sendIcon {
     width: 1.5rem;
     height: 1.5rem;
-    transition: 0.3s ease;
+    transition: 0.15s ease;
 }
 
 .microphoneIcon {
     fill: var(--foreground-color);
 }
 
-.microphoneButton:hover .microphoneIcon,
-.microphoneButton.listening .microphoneIcon{
+.microphoneButton.listening .microphoneIcon {
     fill: var(--secondary-color);
+}
+
+.microphoneButton:hover .microphoneIcon {
+    fill: var(--secondary-foreground-color);
 }
 
 .sendIcon {
@@ -103,8 +99,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @media only screen and (max-width: 768px) {

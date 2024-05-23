@@ -113,14 +113,16 @@
     }
 }
 
-@media (hover: hover) {
-    .sendButton:hover .sendIcon {
-        stroke: var(--secondary-color);
-    }
-}
-
 @media (hover: none) {
     .sendButton:hover .sendIcon {
         stroke: var(--foreground-color);
+    }
+
+    .microphoneButton:hover .microphoneIcon {
+        fill: var(--foreground-color);
+    }
+
+    .microphoneButton.listening .microphoneIcon {
+        fill: var(--secondary-color);
     }
 }

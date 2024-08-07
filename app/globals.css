@@ -3,9 +3,9 @@
 	--background-color: #ffffff;
 	--secondary-foreground-color: #a0a0a0;
 	--secondary-background-color: #f4f4f4;
-	--accent-color: #ff5151;
-	--secondary-color: #ff8b8b;
 	--tertiary-background-color: #dddddd;
+	--accent-color: #e31837;
+	--secondary-color: #e31837;
 }
 
 
@@ -16,6 +16,8 @@
 		--secondary-foreground-color: #808080;
 		--secondary-background-color: #242424;
 		--tertiary-background-color: #404040;
+		--accent-color: #e32d49;
+		--secondary-color: #eb4d65;
 	}
 }
 
@@ -29,13 +31,14 @@ body {
 
 a {
 	text-decoration: none;
-	color: var(--secondary-color);
+	color: var(--accent-color);
 	font-style: italic;
 	transition: color 0.15s ease;
 }
 
 a:hover {
-	color: var(--accent-color);
+	text-decoration: underline;
+	text-underline-offset: 0.25rem;
 }
 
 p {

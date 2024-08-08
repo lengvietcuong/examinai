@@ -57,7 +57,7 @@ async function getWritingSuggestions(essayQuestion: string, essay: string) {
 
 async function getWritingImprovedVersion(taskNumber: 1 | 2, essay: string) {
     const taskNotes = taskNumber === 2 ? ' and adding more supporting ideas to make the main arguments longer. You should maintain the original structure' : '. When providing the overview, use the word "Overall"';
-    const improvementPrompt = `Write an improved version of the following academic essay by using more sophisticated language (make sure to maintain a formal tone)${taskNotes}. Finally, provide a comprehensive list of brief definitions for all the advanced vocabularies and phrases used.\n\n${essay}`;
+    const improvementPrompt = `Write an improved version of the following academic essay by using more sophisticated language (make sure to maintain a formal tone)${taskNotes}. Finally, provide a comprehensive list of brief definitions for all the advanced vocabulary and phrases used.\n\n${essay}`;
     const improvedVersion = stripRedundantPhrases(await getGroqChatCompletion([{ role: "user", content: improvementPrompt }]));
 
     return {
@@ -69,6 +69,7 @@ async function getWritingImprovedVersion(taskNumber: 1 | 2, essay: string) {
 
 async function handleSpeaking(messages: { role: string, content: string }[]) {
     const response = stripRedundantPhrases(await getGroqChatCompletion(messages))
+    console.log(response);
     return [
         {
             role: 'assistant' as 'assistant',

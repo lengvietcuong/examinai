@@ -1,26 +1,45 @@
 import { diffWords } from "diff";
-import { sanitize } from "./essaySubmission";
 
 export function tagCorrections(original: string, corrected: string) {
-  const changes = diffWords(original, corrected);
-  const removals: string[] = [];
-  const additions: string[] = [];
+  const originalParagraphs = original
+    .split(/\r?\n/)
+    .filter((paragraph) => paragraph.trim() !== "");
+  const correctedParagraphs = corrected
+    .split(/\r?\n/)
+    .filter((paragraph) => paragraph.trim() !== "");
 
-  changes.forEach((change) => {
-    if (change.removed) {
-      if (!change.value.includes("\n")) removals.push(`--${change.value}--`);
-      else removals.push(change.value);
-    } else if (change.added) {
-      if (!change.value.includes("\n")) additions.push(`++${change.value}++`);
-      else additions.push(change.value);
-    } else {
-      removals.push(change.value);
-      additions.push(change.value);
-    }
-  });
+  const maxLength = Math.max(
+    originalParagraphs.length,
+    correctedParagraphs.length,
+  );
+  for (let index = 0; index < maxLength; index++) {
+    const originalParagraph = originalParagraphs[index] ?? "";
+    const correctedParagraph = correctedParagraphs[index] ?? "";
+
+    const changes = diffWords(originalParagraph, correctedParagraph);
+    const taggedOriginalParts: string[] = [];
+    const taggedCorrectedParts: string[] = [];
+    changes.forEach((change) => {
+      if (change.removed) {
+        taggedOriginalParts.push(`--${change.value}--`);
+      } else if (change.added) {
+        taggedCorrectedParts.push(`++${change.value}++`);
+      } else {
+        taggedOriginalParts.push(change.value);
+        taggedCorrectedParts.push(change.value);
+      }
+    });
+
+    originalParagraphs[index] = taggedOriginalParts
+      .join("")
+      .replace(/-- +--/g, " ");
+    correctedParagraphs[index] = taggedCorrectedParts
+      .join("")
+      .replace(/\+\+ +\+\+/g, " ");
+  }
 
   return {
-    original: sanitize(removals.join("").replace(/-- --/g, " ")),
-    corrected: sanitize(additions.join("").replace(/\+\+ \+\+/g, " "))
+    original: originalParagraphs.join("\n\n").trim(),
+    corrected: correctedParagraphs.join("\n\n").trim(),
   };
 }

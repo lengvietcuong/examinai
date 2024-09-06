@@ -3,8 +3,8 @@ import { Fragment } from "react";
 type CorrectionsProps = { original: string; corrected: string };
 
 const TAG_STYLES = {
-  "--": "bg-red-500/45 text-foreground dark:bg-red-900/70",
-  "++": "bg-green-500/45 text-foreground dark:bg-green-900/80",
+  "--": "bg-red-500/45 text-foreground dark:text-red-100 dark:bg-red-900/70",
+  "++": "bg-green-500/45 text-foreground dark:text-green-100 dark:bg-green-900/80",
 };
 
 function renderPart(part: string, key: number) {

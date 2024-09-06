@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import useConversationStore from "@/stores/conversationStore";
 import useExaminerStateStore from "@/stores/examinerStateStore";
 import { getWritingExaminerResponse } from "@/app/actions";
@@ -17,11 +17,14 @@ import {
 } from "@/utils/extractMessages";
 
 export default function WritingConversation() {
-  const [skill, messages, setMessages] = useConversationStore((state) => [
-    state.skill,
-    state.messages,
-    state.setMessages,
-  ]);
+  const [conversationId, skill, messages, setMessages] = useConversationStore(
+    (state) => [
+      state.conversationId,
+      state.skill,
+      state.messages,
+      state.setMessages,
+    ],
+  );
   const setExaminerState = useExaminerStateStore(
     (state) => state.setExaminerState,
   );
@@ -139,7 +142,6 @@ export default function WritingConversation() {
         setExaminerState("idle");
       } catch (error) {
         setExaminerState("error");
-        return;
       }
     }
 
@@ -160,6 +162,14 @@ export default function WritingConversation() {
     const essay = firstMessage.essay;
     handleUserMessage(skill, question, essay);
   }, [skill, messages, setMessages, setExaminerState]);
+
+  // Reset feedback streams when switching conversations
+  useEffect(() => {
+    setScoresStream(undefined);
+    setCorrectionsStream(undefined);
+    setSuggestionsStream(undefined);
+    setImprovedStream(undefined);
+  }, [conversationId]);
 
   const streamingMessages = [
     scoresStream,

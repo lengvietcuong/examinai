@@ -15,7 +15,8 @@ import {
 import { tagCorrections } from "@/utils/tagCorrections";
 
 export default function SpeakingConversation() {
-  const [messages, setMessages] = useConversationStore((state) => [
+  const [conversationId, messages, setMessages] = useConversationStore((state) => [
+    state.conversationId,
     state.messages,
     state.setMessages,
   ]);
@@ -105,7 +106,7 @@ export default function SpeakingConversation() {
         const response = await getSpeakingExaminerResponse(coreMessages);
         setExaminerState("generating");
 
-        // If response contains a single text stream
+        // Response contains a single text stream (in old conversations or when asking first question)
         if (!("reaction" in response)) {
           const text = await streamBasicTextResponse(response);
           setMessages((prevMessages) => [...prevMessages, text]);
@@ -114,38 +115,44 @@ export default function SpeakingConversation() {
         }
 
         // Response contains an object with potentially multiple streams
-        // React to the user's message
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { role: "assistant", type: "text", content: response.reaction },
-        ]);
-
-        // Response does include feedback
-        if (response.correctionsStream) {
-          // Stream the 3 types of feedback in parallel
-          const feedback =
-            await streamSpeakingFeedback(
-              userMessage,
-              response.correctionsStream,
-              response.suggestionsStream,
-              response.improvedStream,
-            );
+        const reaction: AssistantMessage = {
+          role: "assistant",
+          type: "text",
+          content: response.reaction,
+        };
+        const nextQuestion: AssistantMessage = {
+          role: "assistant",
+          type: "text",
+          content: response.nextQuestion,
+        };
+        // Response does not include feedback (user answered off-topic or asked a question)
+        if (!response.correctionsStream) {
           setMessages((prevMessages) => [
             ...prevMessages,
-            ...feedback
+            reaction,
+            nextQuestion,
           ]);
+          setExaminerState("idle");
+          return;
         }
 
-        // Ask the next question
+        setTextStream(reaction);
+        // Stream the 3 types of feedback in parallel
+        const feedback = await streamSpeakingFeedback(
+          userMessage,
+          response.correctionsStream,
+          response.suggestionsStream,
+          response.improvedStream,
+        );
         setMessages((prevMessages) => [
           ...prevMessages,
-          { role: "assistant", type: "text", content: response.nextQuestion },
+          reaction,
+          ...feedback,
+          nextQuestion,
         ]);
         setExaminerState("idle");
-        return;
       } catch (error) {
         setExaminerState("error");
-        return;
       }
     }
 
@@ -158,6 +165,14 @@ export default function SpeakingConversation() {
       handleUserMessage(lastMessage.content);
     }
   }, [messages, setMessages, setExaminerState]);
+
+  // Reset feedback streams when switching conversations
+  useEffect(() => {
+    setTextStream(undefined);
+    setCorrectionsStream(undefined);
+    setSuggestionsStream(undefined);
+    setImprovedStream(undefined);
+  }, [conversationId]);
 
   const streamingMessages = [
     textStream,

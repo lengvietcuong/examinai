@@ -90,8 +90,8 @@ export function stripRedundantPhrases(response: string) {
   const lines = response.replace(/^"|"$/g, "").split("\n");
   const firstLine = lines[0];
   const lastLine = lines.length >= 2 ? lines[lines.length - 1] : "";
-  if (firstLine.startsWith("Here") || firstLine.endsWith(":")) {
-    // Remove phrases like "Here is the improved version:"
+  if (firstLine.startsWith("<") || firstLine.startsWith("Here") || firstLine.endsWith(":")) {
+    // Remove phrases like "<rewritten_version>" or "Here is the improved version:"
     lines.shift();
   }
   if (lastLine.startsWith("Note") || lastLine.startsWith("Let")) {

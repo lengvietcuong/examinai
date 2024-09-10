@@ -144,6 +144,7 @@ export default function SpeakingConversation() {
           response.suggestionsStream,
           response.improvedStream,
         );
+        setTextStream(undefined);
         setMessages((prevMessages) => [
           ...prevMessages,
           reaction,

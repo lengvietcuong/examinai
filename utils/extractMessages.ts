@@ -86,11 +86,14 @@ export function extractWritingScores(response: string): ScoreReport {
 }
 
 export function stripRedundantPhrases(response: string) {
-  // Strip leading and trailing double quotes
-  const lines = response.replace(/^"|"$/g, "").split("\n");
+  const lines = response.split("\n");
   const firstLine = lines[0];
-  const lastLine = lines.length >= 2 ? lines[lines.length - 1] : "";
-  if (firstLine.startsWith("<") || firstLine.startsWith("Here") || firstLine.endsWith(":")) {
+  const lastLine = lines[lines.length - 1] ?? "";
+  if (
+    firstLine.startsWith("<") ||
+    firstLine.startsWith("Here") ||
+    firstLine.endsWith(":")
+  ) {
     // Remove phrases like "<rewritten_version>" or "Here is the improved version:"
     lines.shift();
   }
@@ -98,8 +101,31 @@ export function stripRedundantPhrases(response: string) {
     // Remove phrases like "Note: I made sure to maintained a conversational tone." or "Let me know if you need anything else."
     lines.pop();
   }
+  
+  // Strip leading and trailing double quotes
+  return lines.join("\n").replace(/^"|"$/g, "");
+}
 
-  return lines.join("\n");
+export function removeRedundantDefinitions(
+  userMessage: string,
+  response: string,
+): string {
+  // Ensure the definition list only includes words the user hasn't used 
+  userMessage = userMessage.toLowerCase();
+  const lines = response.split("\n");
+  const pattern = /\*\s\*\*(.*?)\*\*/; // Matches * **word**
+
+  const filteredLines = lines.filter((line) => {
+    const match = line.match(pattern);
+    if (match) {
+      const word = match[1].toLowerCase();
+      return !userMessage.includes(word);
+    }
+
+    return true;
+  });
+
+  return filteredLines.join("\n");
 }
 
 export function getConversationContext(messages: Message[]) {

@@ -45,7 +45,13 @@ export function getSpeakingCorrectionsPrompt(
 Question: ${question}
 Answer: ${answer}
 
-Rewrite the response with all language mistakes corrected. Note that because this is an informal speaking test, informal expressions and contractions are not considered errors and should remain unchanged. Do not output anything else.`;
+Rewrite the response with all language mistakes corrected. Only modify what's wrong and leave the rest unchanged. Do not output anything else besides.
+Good examples:
+- "I thinks video games is a double-edged knife." -> "I think video games are a double-edged sword."
+- "My teacher could not explain me the concepts understandably" -> "My teacher could not explain the concepts simply."
+BAD examples:
+- "I don't wanna go to museums cause there's nothing interesting for me." -> "I do not want to go to museums because there is nothing interesting for me." (informal expressions and contractions are fine in this speaking test)
+- "It is so annoying when I cannot skip an ad on YouTube." -> "It's so annoying when I can't skip an ad on YouTube. ("It is" and "cannot" are already correct and must not be changed)`;
 }
 
 export function getSpeakingSuggestionsPrompt(

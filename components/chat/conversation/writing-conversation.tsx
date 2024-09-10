@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import useConversationStore from "@/stores/conversationStore";
 import useExaminerStateStore from "@/stores/examinerStateStore";
 import { getWritingExaminerResponse } from "@/app/actions";
@@ -13,6 +13,7 @@ import Conversation from "./conversation";
 import { tagCorrections } from "@/utils/tagCorrections";
 import {
   extractWritingScores,
+  removeRedundantDefinitions,
   stripRedundantPhrases,
 } from "@/utils/extractMessages";
 
@@ -46,19 +47,19 @@ export default function WritingConversation() {
     const streams = [
       streamResponse(
         scoresStream,
-        (content) => ({
+        (response) => ({
           role: "assistant",
           type: "scores",
-          scores: extractWritingScores(content),
+          scores: extractWritingScores(response),
         }),
         setScoresStream,
       ),
       streamResponse(
         correctionsStream,
-        (content) => {
+        (response) => {
           const { original, corrected } = tagCorrections(
             essay,
-            stripRedundantPhrases(content),
+            response,
           );
           return {
             role: "assistant",
@@ -71,10 +72,10 @@ export default function WritingConversation() {
       ),
       streamResponse(
         improvedStream,
-        (content) => ({
+        (response) => ({
           role: "assistant",
           type: "improved",
-          content: stripRedundantPhrases(content),
+          content: stripRedundantPhrases(removeRedundantDefinitions(essay, response)),
         }),
         setImprovedStream,
       ),
@@ -86,10 +87,10 @@ export default function WritingConversation() {
       streams.push(
         streamResponse(
           suggestionsStream,
-          (content) => ({
+          (response) => ({
             role: "assistant",
             type: "suggestions",
-            content: stripRedundantPhrases(content),
+            content: stripRedundantPhrases(response),
           }),
           setSuggestionsStream,
         ),

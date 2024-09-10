@@ -11,15 +11,14 @@ import Conversation from "./conversation";
 import {
   extractCoreMessages,
   stripRedundantPhrases,
+  removeRedundantDefinitions,
 } from "@/utils/extractMessages";
 import { tagCorrections } from "@/utils/tagCorrections";
 
 export default function SpeakingConversation() {
-  const [conversationId, messages, setMessages] = useConversationStore((state) => [
-    state.conversationId,
-    state.messages,
-    state.setMessages,
-  ]);
+  const [conversationId, messages, setMessages] = useConversationStore(
+    (state) => [state.conversationId, state.messages, state.setMessages],
+  );
   const setExaminerState = useExaminerStateStore(
     (state) => state.setExaminerState,
   );
@@ -34,10 +33,10 @@ export default function SpeakingConversation() {
   async function streamBasicTextResponse(textStream: StreamableValue) {
     const text = await streamResponse(
       textStream,
-      (content) => ({
+      (response) => ({
         role: "assistant",
         type: "text",
-        content,
+        content: response,
       }),
       setTextStream,
     );
@@ -56,10 +55,10 @@ export default function SpeakingConversation() {
     const [corrections, suggestions, improved] = await Promise.all([
       streamResponse(
         correctionsStream,
-        (content) => {
+        (response) => {
           const { original, corrected } = tagCorrections(
             userMessage,
-            stripRedundantPhrases(content),
+            stripRedundantPhrases(response),
           );
           return {
             role: "assistant",
@@ -72,19 +71,21 @@ export default function SpeakingConversation() {
       ),
       streamResponse(
         suggestionsStream,
-        (content) => ({
+        (response) => ({
           role: "assistant",
           type: "suggestions",
-          content: stripRedundantPhrases(content),
+          content: stripRedundantPhrases(response),
         }),
         setSuggestionsStream,
       ),
       streamResponse(
         improvedStream,
-        (content) => ({
+        (response) => ({
           role: "assistant",
           type: "improved",
-          content: stripRedundantPhrases(content),
+          content: stripRedundantPhrases(
+            removeRedundantDefinitions(userMessage, response),
+          ),
         }),
         setImprovedStream,
       ),

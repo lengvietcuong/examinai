@@ -18,37 +18,37 @@ export default function Scores({ scores }: ScoresProps) {
           {"Task Achievement" in scores ? (
             <ScoreCard
               title="Task Achievement"
-              score={scores["Task Achievement"] || NaN}
+              score={scores["Task Achievement"] ?? NaN}
             />
           ) : (
             <ScoreCard
               title="Task Response"
-              score={scores["Task Response"] || NaN}
+              score={scores["Task Response"] ?? NaN}
             />
           )}
           <ScoreCard
             title="Coherence & Cohesion"
-            score={scores["Coherence & Cohesion"] || NaN}
+            score={scores["Coherence & Cohesion"] ?? NaN}
           />
           <ScoreCard
             title="Lexical Resource"
-            score={scores["Lexical Resource"] || NaN}
+            score={scores["Lexical Resource"] ?? NaN}
           />
           <ScoreCard
             title="Grammatical Range & Accuracy"
-            score={scores["Grammatical Range & Accuracy"] || NaN}
+            score={scores["Grammatical Range & Accuracy"] ?? NaN}
           />
           <ScoreCard
             className="md:hidden"
             title="Overall"
-            score={scores["Overall"] || NaN}
+            score={scores["Overall"] ?? NaN}
           />
         </div>
         <div className="hidden self-stretch border-l border-muted-foreground/35 md:block" />
         <ScoreCard
           className="hidden md:block"
           title="Overall"
-          score={scores["Overall"] || NaN}
+          score={scores["Overall"] ?? NaN}
         />
       </div>
     </>

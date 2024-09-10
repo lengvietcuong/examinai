@@ -8,7 +8,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { IoChevronBack as ArrowIcon } from "react-icons/io5";
-import { cn } from "@/lib/utils";
 
 export default function ToggleSidebarButton({
   className,
@@ -23,13 +22,17 @@ export default function ToggleSidebarButton({
     <div className={className}>
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>
-            <ArrowIcon
-              className={`size-10 stroke-muted-foreground/35 transition-all hover:cursor-pointer hover:stroke-muted-foreground block ${
-                isDesktopSidebarOpen ? "" : "rotate-180"
-              }`}
+          <TooltipTrigger asChild>
+            <button
+              aria-label="Toggle sidebar"
               onClick={() => setIsDesktopSidebarOpen(!isDesktopSidebarOpen)}
-            />
+            >
+              <ArrowIcon
+                className={`size-10 stroke-muted-foreground/35 transition-all hover:cursor-pointer hover:stroke-muted-foreground ${
+                  isDesktopSidebarOpen ? "" : "rotate-180"
+                }`}
+              />
+            </button>
           </TooltipTrigger>
           <TooltipContent>
             <p>{`${isDesktopSidebarOpen ? "Close" : "Open"} sidebar`}</p>

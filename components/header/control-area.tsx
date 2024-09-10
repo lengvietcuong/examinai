@@ -23,6 +23,7 @@ export default function ControlArea() {
   return (
     <div className="flex items-center">
       <Button
+        aria-label="Toggle sidebar"
         variant="outline"
         className="mr-2 size-9 rounded-full p-0 lg:hidden"
         onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}

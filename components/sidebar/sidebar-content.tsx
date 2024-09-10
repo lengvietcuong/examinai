@@ -21,7 +21,7 @@ export default function SidebarContent() {
       ) : (
         <div className="mt-6 flex items-center justify-center gap-4 overflow-hidden">
           <ConversationIcon className="size-8 flex-shrink-0" />
-          <p className="whitespace-pre text-muted-foreground">
+          <p className="whitespace-pre">
             {`Sign in to save\nyour conversations!`}
           </p>
         </div>

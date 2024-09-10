@@ -111,8 +111,8 @@
   }
 
   .markdown h3 {
-    @apply mt-4;
-    @apply mb-2;
+    @apply my-4;
+    @apply mb-3;
   }
 
   .markdown p {
@@ -120,27 +120,60 @@
     @apply mb-2;
   }
 
-  .markdown h2:first-child, h3:first-child, p:first-child, h2 + p, h3 + p {
+  .markdown h2:first-child,
+  h3:first-child,
+  p:first-child,
+  h2 + p,
+  h3 + p {
     @apply mt-0;
   }
 
-  .markdown h2:last-child, h3:last-child, p:last-child {
+  .markdown h2:last-child,
+  h3:last-child,
+  p:last-child {
     @apply mb-0;
   }
-
-  .markdown ul {
-    @apply list-disc pl-6 lg:pl-8 leading-normal;
-  }
-
-  .markdown ol {
-    @apply list-decimal pl-6 lg:pl-8 leading-normal;
+  
+  .markdown hr {
+    @apply mb-8 border-muted-foreground/35;
   }
 
   .markdown li {
     @apply my-2 pl-1 lg:pl-2;
   }
 
-  .markdown hr {
-    @apply mb-8 border-muted-foreground/35;
+  .markdown ul {
+    @apply list-disc pl-4 leading-normal lg:pl-6 space-y-4;
+  }
+
+  .markdown ul > li::marker {
+    @apply text-primary;
+  }
+
+  .markdown ul li strong {
+    @apply bg-muted py-1 px-2 rounded-[0.25rem]
+  }
+
+  .markdown ol {
+    counter-reset: list-counter;
+    @apply list-none leading-normal space-y-4;
+  }
+
+  .markdown ol > li {
+    @apply relative pl-9;
+  }
+
+  .markdown ol > li::before {
+    content: counter(list-counter);
+    counter-increment: list-counter;
+    @apply absolute left-0 flex size-6 items-center justify-center rounded-full bg-muted text-sm font-bold text-primary;
+  }
+
+  .markdown ol > li > ul {
+    @apply list-none pl-0
+  }
+
+  .markdown ol > li > ul > li{
+    @apply pl-0
   }
 }

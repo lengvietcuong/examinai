@@ -14,7 +14,7 @@ const comfortaa = Comfortaa({
 });
 
 export const metadata: Metadata = {
-  title: "Examinai – AI-powered IELTS Examiner",
+  title: "Examinai",
   description:
     "Supercharge your IELTS preparation with a personalized examiner. Enjoy a natural, engaging learning experience without formulas or rote memorization.",
 };

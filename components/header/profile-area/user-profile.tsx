@@ -17,15 +17,15 @@ export default function UserProfile() {
       <DropdownMenuTrigger>
         <UserAvatar className="size-9 lg:size-10" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="p-0">
         <DropdownMenuItem
           onClick={async () => {
             await signOut(auth);
             window.location.reload();
           }}
-          className="px-3.5 py-2.5 hover:cursor-pointer"
+          className="px-4 py-2.5 hover:cursor-pointer"
         >
-          <SignOutIcon className="mr-2 size-5" />
+          <SignOutIcon className="mr-2.5 size-5" />
           <span className="font-montserrat text-base">Sign out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

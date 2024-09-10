@@ -56,7 +56,7 @@ export default function NewChatButton({
     );
   }
 
-  // Default to full variant
+  // Full variant (default)
   return (
     <Button
       variant="secondary"
@@ -64,9 +64,10 @@ export default function NewChatButton({
       onClick={() => {
         clearConversation();
         setExaminerState("idle");
+        setIsMobileSidebarOpen(false);
       }}
       className={cn(
-        "w-full justify-between border-none bg-muted-foreground/20 hover:bg-muted-foreground/35",
+        "w-full justify-between border-none bg-muted-foreground/15 hover:bg-muted-foreground/35",
         className,
       )}
     >

@@ -8,7 +8,10 @@ import { SKILL_ICON } from "@/constants";
 import { IoMenu as HamburgerMenuIcon } from "react-icons/io5";
 
 export default function ControlArea() {
-  const skill = useConversationStore((state) => state.skill);
+  const [skill, messages] = useConversationStore((state) => [
+    state.skill,
+    state.messages,
+  ]);
   const [isDesktopSidebarOpen, isMobileSidebarOpen, setIsMobileSidebarOpen] =
     useSidebarStore((state) => [
       state.isDesktopSidebarOpen,
@@ -35,12 +38,16 @@ export default function ControlArea() {
       {/* On mobile, the icon new chat button is always displayed */}
       <NewChatButton variant="icon" className="lg:hidden" />
 
-      {SkillIcon && (
-        <SkillIcon className="mr-2 hidden size-4 fill-primary lg:inline-block" />
+      {messages.length > 0 && (
+        <>
+          {SkillIcon && (
+            <SkillIcon className="mr-2 hidden size-4 fill-primary lg:inline-block" />
+          )}
+          <p className="hidden font-montserrat text-sm font-medium lg:inline-block">
+            {skill}
+          </p>
+        </>
       )}
-      <p className="hidden font-montserrat text-sm font-medium lg:inline-block">
-        {skill}
-      </p>
     </div>
   );
 }

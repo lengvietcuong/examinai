@@ -141,7 +141,7 @@ export default function ConversationHistory({
               openConversation(conversation.id);
               setExaminerState("idle");
             }}
-            className={`group flex h-9 w-full flex-shrink-0 cursor-pointer items-center overflow-hidden rounded-sm p-2 text-sm hover:bg-muted-foreground/20 ${conversation.id === conversationId ? "bg-muted-foreground/20" : ""}`}
+            className={`group flex h-9 w-full flex-shrink-0 cursor-pointer items-center overflow-hidden rounded-sm p-2 text-sm hover:bg-muted-foreground/15 ${conversation.id === conversationId ? "bg-muted-foreground/15" : ""}`}
           >
             <div className="mr-3 w-6 flex-shrink-0">
               <span className="font-bold text-muted-foreground/75">

@@ -153,7 +153,7 @@ export default function Conversation({
         ref={isMessageToScrollTo ? messageToScrollToRef : undefined}
         message={message}
         renderAvatar={isSenderDifferentFromLastMessage}
-        className={`${isSenderDifferentFromNextMessage ? "pb-12" : "pb-8"}`}
+        className={`${isSenderDifferentFromNextMessage ? "pb-16" : "pb-8"}`}
       />
     );
   }

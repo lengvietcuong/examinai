@@ -30,12 +30,16 @@ const Message = forwardRef<HTMLDivElement, MessageProps>((props, ref) => {
       case "essaySubmission":
         return (
           <>
-            <p>
-              <strong>
-                <em>{message.question}</em>
-              </strong>
-            </p>
-            <br />
+            {message.question && (
+              <>
+                <p>
+                  <strong>
+                    <em>{message.question}</em>
+                  </strong>
+                </p>
+                <br />
+              </>
+            )}
             <ReactMarkdown className="markdown">{message.essay}</ReactMarkdown>
           </>
         );
@@ -90,15 +94,15 @@ const Message = forwardRef<HTMLDivElement, MessageProps>((props, ref) => {
         return (
           <div className="space-y-2">
             <Skeleton className="h-4 w-64 lg:w-96" />
-            <Skeleton className="h-4 w-48 lg:w-80 delay-300" />
-            <Skeleton className="h-4 w-32 lg:w-64 delay-700" />
+            <Skeleton className="h-4 w-48 delay-300 lg:w-80" />
+            <Skeleton className="h-4 w-32 delay-700 lg:w-64" />
           </div>
         );
       case "error":
         return (
           <p className="text-error">
-            I&apos;m sorry, an error occurred while generating the response. Please
-            try again later.
+            I&apos;m sorry, an error occurred while generating the response.
+            Please try again later.
           </p>
         );
     }

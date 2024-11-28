@@ -61,7 +61,7 @@ export default function EssaySubmissionPopup({
 
     const sanitizedQuestion = sanitize(question);
     const sanitizedEssay = sanitize(essay);
-    if (!sanitizedQuestion || !sanitizedEssay) return;
+    if (!sanitizedEssay) return;
 
     if (questionWordCount > MAX_QUESTION_WORD_COUNT) {
       alert("The essay question is too long. It must be at most 100 words.");

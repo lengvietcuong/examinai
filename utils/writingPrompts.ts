@@ -8,7 +8,7 @@ export function getWritingScoresPrompt(
 ) {
   // Add 'lenient' because the model is too strict by default
   return `You are a lenient IELTS examiner. Below is a candidate's essay for ${skill}:
-Question: ${question}
+${question && `Question: ${question}`}
 Essay: ${essay}
 
 Your task is to grade the essay based on the following 4 criteria (each is given a score which is a whole number from 0-9):

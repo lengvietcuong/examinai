@@ -143,8 +143,8 @@ export async function getWritingExaminerResponse(
       model: fireworks.completion(
         "accounts/lengvietcuong-63786b/models/essay-correction",
       ),
+      maxTokens: 1024,
       temperature: 0,
-      seed: 1,
       prompt: correctionPrompt,
     }),
     streamText({

@@ -67,13 +67,11 @@ export async function getSpeakingExaminerResponse(messages: CoreMessage[]) {
   const isFeedbackNeededPrompt = getIsFeedbackNeededPrompt(question, answer);
   const [response, feedbackConsideration] = await Promise.all([
     generateText({
-      model: groq1("llama3-70b-8192"),
-      temperature: 0,
+      model: groq1("llama-3.1-8b-instant"),
       messages: mergeCoreMessages(messages), // Ensure messages alternate between "user" & "assistant"
     }),
     generateText({
-      model: groq1("llama3-70b-8192"),
-      temperature: 0,
+      model: groq1("llama-3.1-8b-instant"),
       prompt: isFeedbackNeededPrompt,
     }),
   ]);
@@ -97,16 +95,15 @@ export async function getSpeakingExaminerResponse(messages: CoreMessage[]) {
     streamText({
       model: groq2("llama3-70b-8192"),
       temperature: 0,
+      seed: 1,
       prompt: correctionPrompt,
     }),
     streamText({
       model: groq3("llama3-70b-8192"),
-      temperature: 0,
       prompt: suggestionsPrompt,
     }),
     streamText({
       model: groq4("gemma2-9b-it"),
-      temperature: 0,
       prompt: improvedPrompt,
     }),
   ]);
@@ -146,19 +143,16 @@ export async function getWritingExaminerResponse(
       model: fireworks.completion(
         "accounts/lengvietcuong-63786b/models/essay-correction",
       ),
-      maxTokens: 1024,
-      stopSequences: ["###"],
       temperature: 0,
+      seed: 1,
       prompt: correctionPrompt,
     }),
     streamText({
       model: groq3("llama3-70b-8192"),
-      temperature: 0,
       prompt: suggestionsPrompt,
     }),
     streamText({
       model: groq4("llama3-70b-8192"),
-      temperature: 1,
       prompt: improvedPrompt,
     }),
   ]);
@@ -186,11 +180,9 @@ export async function getWritingExaminerResponse(
 
 export async function getConversationName(context: string) {
   const prompt = `Assign a short title that best describes what this question is about (do not output anything else, including quotes): ${context}`;
-
-  const name = await generateText({
-    model: groq1("llama3-70b-8192"),
-    temperature: 0,
+  const response = await generateText({
+    model: groq1("llama-3.1-8b-instant"),
     prompt,
   });
-  return name.text;
+  return response.text;
 }

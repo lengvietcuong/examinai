@@ -41,17 +41,18 @@ export function getSpeakingCorrectionsPrompt(
   question: string,
   answer: string,
 ): string {
-  return `Below is a candidate's answer in an informal IELTS Speaking test:
+  return `You are an IELTS Speaking examiner who has been tasked with correcting a candidate's answer. Here's their response:
 Question: ${question}
 Answer: ${answer}
 
-Rewrite the response with all language mistakes corrected. Only modify what's wrong and leave the rest unchanged. Do not output anything else besides.
+Rewrite the response with all language mistakes corrected. You should only modify what's wrong and leave the rest unchanged. Note that this is an informal speaking test, so informal expressions are perfectly acceptable and should be left as-is. Do not output anything else besides the corrected version.
 Good examples:
 - "I thinks video games is a double-edged knife." -> "I think video games are a double-edged sword."
 - "My teacher could not explain me the concepts understandably" -> "My teacher could not explain the concepts simply."
 BAD examples:
-- "I don't wanna go to museums cause there's nothing interesting for me." -> "I do not want to go to museums because there is nothing interesting for me." (informal expressions and contractions are fine in this speaking test)
-- "It is so annoying when I cannot skip an ad on YouTube." -> "It's so annoying when I can't skip an ad on YouTube. ("It is" and "cannot" are already correct and must not be changed)`;
+- "I don't wanna go to museums cause there's nothing interesting for me." -> "I do not want to go to museums because there is nothing interesting for me." (do not correct informal expressions as they are accepted in this context)
+- "Nah" -> "No" (similarly, do not correct interjections)
+- "It is so annoying when I cannot skip an ad on YouTube." -> "It's so annoying when I can't skip an ad on YouTube. ("It is" and "cannot" are already correct and should not be changed)`;
 }
 
 export function getSpeakingSuggestionsPrompt(
@@ -79,7 +80,7 @@ export function getSpeakingImprovedPrompt(
 Question: ${question}
 Answer: ${answer}
 
-Now, write an improved version of the response that uses more refined language. Maintain a conversational tone throughout. You may sprinkle in creative and humourous expressions (e.g. quotes, idioms, metaphors, etc.) to make it more engaging. However, refrain from incorporating too many advanced lexical features. Then, define all the new vocabulary and phrases that are not in the original. Only short definitions are required.
+Write an improved version of the response that uses more refined language. Maintain a conversational tone throughout. You may sprinkle in creative and humourous expressions (e.g. quotes, idioms, metaphors, etc.) to make it more engaging. However, refrain from incorporating too many advanced lexical features. Then, define all the new vocabulary and phrases that are not in the original. Only short definitions are required.
 
 Format your output as follows (without <> tags):
 <improved_version>

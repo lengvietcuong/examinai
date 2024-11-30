@@ -67,11 +67,11 @@ export async function getSpeakingExaminerResponse(messages: CoreMessage[]) {
   const isFeedbackNeededPrompt = getIsFeedbackNeededPrompt(question, answer);
   const [response, feedbackConsideration] = await Promise.all([
     generateText({
-      model: groq1("llama-3.1-8b-instant"),
+      model: groq1("llama3-8b-8192"),
       messages: mergeCoreMessages(messages), // Ensure messages alternate between "user" & "assistant"
     }),
     generateText({
-      model: groq1("llama-3.1-8b-instant"),
+      model: groq1("llama3-8b-8192"),
       prompt: isFeedbackNeededPrompt,
     }),
   ]);
@@ -181,7 +181,7 @@ export async function getWritingExaminerResponse(
 export async function getConversationName(context: string) {
   const prompt = `Assign a short title that best describes what this question is about (do not output anything else, including quotes): ${context}`;
   const response = await generateText({
-    model: groq1("llama-3.1-8b-instant"),
+    model: groq1("llama3-8b-8192"),
     prompt,
   });
   return response.text;

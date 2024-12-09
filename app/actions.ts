@@ -185,4 +185,4 @@ export async function getConversationName(context: string) {
     prompt,
   });
   return response.text;
-}
+} 

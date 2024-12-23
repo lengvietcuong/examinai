@@ -28,7 +28,7 @@ export default function ToggleSidebarButton({
               onClick={() => setIsDesktopSidebarOpen(!isDesktopSidebarOpen)}
             >
               <ArrowIcon
-                className={`size-10 stroke-muted-foreground/35 transition-all hover:cursor-pointer hover:stroke-muted-foreground ${
+                className={`size-6 stroke-muted-foreground/35 transition-all hover:cursor-pointer hover:stroke-muted-foreground ${
                   isDesktopSidebarOpen ? "" : "rotate-180"
                 }`}
               />

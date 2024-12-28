@@ -55,7 +55,7 @@ export async function getSpeakingExaminerResponse(messages: CoreMessage[]) {
 
   if (isGettingFirstQuestion || isPreviousVersion) {
     const response = await streamText({
-      model: groq1("llama3-70b-8192"),
+      model: groq1("llama-3.3-70b-versatile"),
       messages,
     });
     const textStream = createStreamableValue(response.textStream);
@@ -67,7 +67,7 @@ export async function getSpeakingExaminerResponse(messages: CoreMessage[]) {
   const isFeedbackNeededPrompt = getIsFeedbackNeededPrompt(question, answer);
   const [response, feedbackConsideration] = await Promise.all([
     generateText({
-      model: groq1("llama3-8b-8192"),
+      model: groq1("llama-3.3-70b-versatile"),
       messages: mergeCoreMessages(messages), // Ensure messages alternate between "user" & "assistant"
     }),
     generateText({
@@ -93,13 +93,13 @@ export async function getSpeakingExaminerResponse(messages: CoreMessage[]) {
 
   const [corrections, suggestions, improved] = await Promise.all([
     streamText({
-      model: groq2("llama3-70b-8192"),
+      model: groq2("llama-3.3-70b-versatile"),
       temperature: 0,
       seed: 1,
       prompt: correctionPrompt,
     }),
     streamText({
-      model: groq3("llama3-70b-8192"),
+      model: groq3("llama-3.3-70b-versatile"),
       prompt: suggestionsPrompt,
     }),
     streamText({
@@ -134,7 +134,7 @@ export async function getWritingExaminerResponse(
   // Stream the 4 types of feedback in parallel
   const [scores, corrections, suggestions, improved] = await Promise.all([
     streamText({
-      model: groq1("llama3-70b-8192"),
+      model: groq1("llama-3.3-70b-versatile"),
       temperature: 0,
       seed: 1,
       prompt: scoresPrompt,
@@ -148,11 +148,11 @@ export async function getWritingExaminerResponse(
       prompt: correctionPrompt,
     }),
     streamText({
-      model: groq3("llama3-70b-8192"),
+      model: groq3("llama-3.3-70b-versatile"),
       prompt: suggestionsPrompt,
     }),
     streamText({
-      model: groq4("llama3-70b-8192"),
+      model: groq4("llama-3.3-70b-versatile"),
       prompt: improvedPrompt,
     }),
   ]);

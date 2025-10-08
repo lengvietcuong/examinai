@@ -71,7 +71,7 @@ export async function getSpeakingExaminerResponse(messages: CoreMessage[]) {
       messages: mergeCoreMessages(messages), // Ensure messages alternate between "user" & "assistant"
     }),
     generateText({
-      model: groq1("llama3-8b-8192"),
+      model: groq1("llama-3.1-8b-instant"),
       prompt: isFeedbackNeededPrompt,
     }),
   ]);
@@ -181,7 +181,7 @@ export async function getWritingExaminerResponse(
 export async function getConversationName(context: string) {
   const prompt = `Assign a short title that best describes what this question is about (do not output anything else, including quotes): ${context}`;
   const response = await generateText({
-    model: groq1("llama3-8b-8192"),
+    model: groq1("llama-3.1-8b-instant"),
     prompt,
   });
   return response.text;

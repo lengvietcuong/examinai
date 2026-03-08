@@ -129,3 +129,69 @@
     font-family: var(--font-heading);
   }
 }
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes orb-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(16px, -12px, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.word-gradient,
+.word-gradient-alt {
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-flow 6s ease-in-out infinite;
+}
+
+.word-gradient {
+  background-image: linear-gradient(110deg, #fb7185, #f97316, #ef4444);
+}
+
+.word-gradient-alt {
+  background-image: linear-gradient(110deg, #2563eb, #7c3aed, #ec4899);
+}
+
+.hero-orb {
+  position: absolute;
+  z-index: 0;
+  border-radius: 9999px;
+  filter: blur(2px);
+  animation: orb-float 12s ease-in-out infinite;
+}
+
+.hero-orb--one {
+  top: -3rem;
+  right: -2rem;
+  height: 12rem;
+  width: 12rem;
+  background: radial-gradient(circle, rgba(248, 113, 113, 0.35), rgba(248, 113, 113, 0));
+}
+
+.hero-orb--two {
+  bottom: 4rem;
+  left: -4rem;
+  height: 16rem;
+  width: 16rem;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0));
+  animation-delay: 1.5s;
+}

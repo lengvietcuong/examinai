@@ -128,17 +128,14 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
   }
-}
-
-@keyframes gradient-flow {
-  0% {
-    background-position: 0% 50%;
+  button,
+  a,
+  [role="button"] {
+    cursor: pointer;
   }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
+  button,
+  [role="button"] {
+    font-family: var(--font-heading);
   }
 }
 
@@ -154,21 +151,20 @@
   }
 }
 
-.word-gradient,
-.word-gradient-alt {
-  background-size: 220% 220%;
+.word-gradient {
+  background-image: linear-gradient(110deg, #dc2626, #facc15, #ea580c);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: gradient-flow 6s ease-in-out infinite;
+  opacity: 0.9;
 }
 
-.word-gradient {
-  background-image: linear-gradient(110deg, #fb7185, #f97316, #ef4444);
-}
-
-.word-gradient-alt {
-  background-image: linear-gradient(110deg, #2563eb, #7c3aed, #ec4899);
+.ai-underline {
+  text-decoration: underline;
+  text-decoration-color: #dc2626;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 4px;
+  text-decoration-skip-ink: none;
 }
 
 .hero-orb {

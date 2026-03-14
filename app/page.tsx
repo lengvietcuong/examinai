@@ -197,6 +197,7 @@ export default function Home() {
             <Button
               size="lg"
               className="px-7 py-3 text-base font-semibold"
+              render={<a href="/chat" />}
             >
               {t.getStarted}
               <ArrowRight className="ml-1 size-4 transition-transform group-hover/button:translate-x-1" />

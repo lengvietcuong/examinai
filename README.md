@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Examinai
+
+AI-powered IELTS practice platform with writing assessment, speaking practice, and an IELTS knowledge assistant.
+
+## Features
+
+- **Writing Practice** — Timed IELTS Writing tests (Task 1 & 2) with multi-expert AI feedback covering task response, coherence, lexical resource, and grammar. Includes corrected and improved essays.
+- **Speaking Practice** — Live conversation with an AI examiner simulating IELTS Speaking Parts 1, 2, and 3 with real-time speech-to-text and text-to-speech.
+- **Knowledge Assistant** — Chat with an AI that can search a curated IELTS knowledge base covering rules, scoring, tips, and exam format.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router), React 19, TypeScript
+- **AI:** Vercel AI SDK v6, Fireworks AI (minimax, qwen3-vl, llama-70b), Deepgram TTS
+- **Database:** Supabase (PostgreSQL, Auth, Storage), Drizzle ORM
+- **UI:** Tailwind CSS 4, shadcn/ui, base-ui, Lottie animations
 
 ## Getting Started
 
-First, run the development server:
+### Environment Variables
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Create `.env.local`:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
+DATABASE_URL=
+FIREWORKS_AI_API_KEY=
+DEEPGRAM_API_KEY=
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Local Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+pnpm install
+pnpm dev
+```

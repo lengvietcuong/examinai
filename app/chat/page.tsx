@@ -428,17 +428,15 @@ function ChatPageInner() {
       setView("chat");
     }
 
-    // Save user message to DB
+    // Save user message to DB (fire-and-forget so streaming starts immediately)
     if (convId) {
-      try {
-        await fetch(`/api/conversations/${convId}/messages`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ role: "user", content: text }),
-        });
-      } catch {
+      fetch(`/api/conversations/${convId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: "user", content: text }),
+      }).catch(() => {
         // Non-critical: message still sent via useChat
-      }
+      });
     }
 
     sendMessage({ text });

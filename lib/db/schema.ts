@@ -5,6 +5,7 @@ import {
   varchar,
   text,
   integer,
+  boolean,
   timestamp,
   index,
 } from "drizzle-orm/pg-core";
@@ -40,6 +41,7 @@ export const profiles = pgTable("profiles", {
   avatarUrl: text("avatar_url"),
   language: varchar("language", { length: 5 }).default("en").notNull(), // "en" | "vi"
   theme: varchar("theme", { length: 10 }).default("light").notNull(), // "light" | "dark"
+  speakingAutoplay: boolean("speaking_autoplay").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -86,8 +88,8 @@ export const messages = pgTable(
 // ── Writing Questions ──────────────────────────────────────────────────────
 
 export const writingQuestions = pgTable("writing_questions", {
-  id: integer("id").primaryKey(),
-  title: varchar("title", { length: 256 }).notNull(),
+  id: uuid("id").primaryKey().defaultRandom(),
+  testTitle: varchar("test_title", { length: 256 }).notNull(),
   content: text("content").notNull(),
   imageUrl: text("image_url"), // Supabase Storage URL (Task 1 only)
   sourceUrl: text("source_url"),
@@ -100,7 +102,7 @@ export const writingQuestions = pgTable("writing_questions", {
 
 export const speakingQuestions = pgTable("speaking_questions", {
   id: integer("id").primaryKey(),
-  title: varchar("title", { length: 256 }).notNull(),
+  testTitle: varchar("test_title", { length: 256 }).notNull(),
   content: text("content").notNull(),
   sourceUrl: text("source_url"),
   partNumber: speakingPartNumberEnum("part_number").notNull(),

@@ -5,7 +5,8 @@ const RobotIcon = (props: React.SVGProps<SVGSVGElement>) => (
 		xmlns="http://www.w3.org/2000/svg"
 		width={800}
 		height={800}
-		viewBox="0 0 24 24"
+		viewBox="0 1 24 24"
+		fill="currentColor"
 		{...props}
 	>
 		<path

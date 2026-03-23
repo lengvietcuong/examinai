@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import RobotIcon from "@/components/icons/logo";
+import { USFlag, VietnamFlag } from "@/components/icons/flags";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabase/client";
 
 const TRANSLATIONS = {
   EN: {
@@ -32,7 +35,7 @@ const TRANSLATIONS = {
       </>
     ),
     heroDescription:
-      "Luyện tập và cải thiện kỹ năng Nói và Viết thông qua đánh giá chi tiết từ giám khảo.",
+      "Luyện tập và cải thiện kỹ năng Nói và Viết thông qua đánh giá chi tiết từ giám khảo trí tuệ nhân tạo.",
     getStarted: "Bắt đầu",
     questionBankTitle: "1,000+ Bộ đề",
     questionBankDescription:
@@ -47,9 +50,9 @@ type Language = keyof typeof TRANSLATIONS;
 type Translations = (typeof TRANSLATIONS)[Language];
 
 const LANGUAGES = [
-  { code: "EN" as Language, label: "American", flag: "🇺🇸" },
-  { code: "VI" as Language, label: "Vietnamese", flag: "🇻🇳" },
-];
+  { code: "EN" as Language, label: "American", flag: "us" },
+  { code: "VI" as Language, label: "Vietnamese", flag: "vi" },
+] as const;
 
 type LottieAssetPath =
   | "/animations/question-bank.lottie"
@@ -86,14 +89,18 @@ function LanguageSwitcher({
           key={lang.code}
           type="button"
           onClick={() => onLanguageChange(lang.code)}
-          className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-all ${
+          className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all ${
             language === lang.code
               ? "bg-foreground text-background shadow-sm"
               : "text-muted-foreground hover:bg-white"
           }`}
           aria-label={`Switch to ${lang.label}`}
         >
-          <span className="text-base leading-none">{lang.flag}</span>
+          {lang.flag === "us" ? (
+            <USFlag className="size-4 shrink-0 rounded-[2px]" />
+          ) : (
+            <VietnamFlag className="size-4 shrink-0 rounded-[2px]" />
+          )}
           <span>{lang.code}</span>
         </button>
       ))}
@@ -134,8 +141,44 @@ function FeatureCardFeedback({ t }: { t: Translations }) {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [language, setLanguage] = useState<Language>("EN");
+  const [animationKey, setAnimationKey] = useState(0);
+  const [authChecked, setAuthChecked] = useState(false);
   const t = TRANSLATIONS[language];
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        router.replace("/chat");
+      } else {
+        setAuthChecked(true);
+      }
+    });
+  }, [router]);
+
+  useEffect(() => {
+    const path = window.location.pathname.toLowerCase();
+    if (path.startsWith("/vi")) {
+      setLanguage("VI");
+    } else if (path.startsWith("/en")) {
+      setLanguage("EN");
+    }
+  }, []);
+
+  const handleLanguageChange = useCallback(
+    (lang: Language) => {
+      if (lang !== language) {
+        setLanguage(lang);
+        setAnimationKey((k) => k + 1);
+      }
+    },
+    [language],
+  );
+
+  if (!authChecked) {
+    return null;
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -155,9 +198,9 @@ export default function Home() {
               x2="0%"
               y2="100%"
             >
-              <stop offset="0%" stopColor="#ffe4e6" />
-              <stop offset="40%" stopColor="#fff7ed" />
-              <stop offset="100%" stopColor="#f8fafc" />
+              <stop offset="0%" stopColor="#ffe4e6" stopOpacity="0.7" />
+              <stop offset="40%" stopColor="#fff7ed" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#f8fafc" stopOpacity="0.7" />
             </linearGradient>
           </defs>
           {/* Diagonal from top-left to bottom-right with creative wavy curves */}
@@ -176,17 +219,20 @@ export default function Home() {
       <div className="hero-orb hero-orb--one" />
       <div className="hero-orb hero-orb--two" />
 
-      <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5 md:px-8">
+      <header className="relative z-20 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-5 md:px-10">
         <BrandMark />
         <LanguageSwitcher
           language={language}
-          onLanguageChange={setLanguage}
+          onLanguageChange={handleLanguageChange}
         />
       </header>
 
-      <main className="relative z-20 mx-auto grid w-full max-w-6xl items-start gap-10 px-5 pb-12 pt-4 md:px-8 md:pb-20 md:pt-10 lg:grid-cols-2">
+      <main className="relative z-20 mx-auto grid w-full max-w-7xl items-start gap-10 px-6 pb-12 pt-4 md:px-10 md:pb-20 md:pt-10 lg:grid-cols-2">
         <section className="max-w-2xl">
-          <h1 className="text-balance text-4xl leading-tight font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          <h1
+            key={animationKey}
+            className="text-balance text-5xl leading-tight font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl"
+          >
             {t.heroTitle}
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
@@ -196,7 +242,7 @@ export default function Home() {
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button
               size="lg"
-              className="px-7 py-3 text-base font-semibold"
+              className="font-heading px-7 py-3 text-base font-semibold"
               render={<a href="/chat" />}
             >
               {t.getStarted}

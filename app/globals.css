@@ -7,7 +7,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Arial", sans-serif;
+  --font-sans: "Inter", sans-serif;
   --font-heading: "Montserrat", sans-serif;
   --font-brand: "Comfortaa", cursive;
   --font-mono: var(--font-geist-mono);
@@ -87,7 +87,7 @@
 .dark {
   --background: #0f0f1a;
   --foreground: #f0f0f5;
-  --card: #1a1a2e;
+  --card: #1e1e33;
   --card-foreground: #f0f0f5;
   --popover: #1a1a2e;
   --popover-foreground: #f0f0f5;
@@ -108,7 +108,7 @@
   --chart-3: #fca5a5;
   --chart-4: #f0f0f5;
   --chart-5: #a0a0b0;
-  --sidebar: #1a1a2e;
+  --sidebar: #1e1e33;
   --sidebar-foreground: #f0f0f5;
   --sidebar-primary: #ef4444;
   --sidebar-primary-foreground: #ffffff;
@@ -152,19 +152,41 @@
 }
 
 .word-gradient {
-  background-image: linear-gradient(110deg, #dc2626, #facc15, #ea580c);
+  background-image: linear-gradient(110deg, #dc2626, #dc2626 20%, #facc15 45%, #ea580c 65%, #dc2626);
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   opacity: 0.9;
+  animation: gradient-sweep 1.2s ease-out 0.3s both;
+}
+
+@keyframes gradient-sweep {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 10% 50%;
+  }
 }
 
 .ai-underline {
-  text-decoration: underline;
-  text-decoration-color: #dc2626;
-  text-underline-offset: 6px;
-  text-decoration-thickness: 4px;
-  text-decoration-skip-ink: none;
+  text-decoration: none;
+  background-image: linear-gradient(#dc2626, #dc2626);
+  background-size: 0% 5px;
+  background-position: left bottom 3px;
+  background-repeat: no-repeat;
+  padding-bottom: 1px;
+  animation: underline-draw 0.6s ease-out 1.3s both;
+}
+
+@keyframes underline-draw {
+  0% {
+    background-size: 0% 5px;
+  }
+  100% {
+    background-size: 100% 5px;
+  }
 }
 
 .hero-orb {

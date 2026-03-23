@@ -159,6 +159,30 @@ function ChatPageInner() {
     }
   }, [status]);
 
+  // Detect if the AI is searching the knowledge base.
+  // Stay true until the assistant actually starts generating text (not just tool results).
+  const isSearchingKnowledge = useMemo(() => {
+    if (!isLoading) return false;
+    let hasToolCall = false;
+    let hasTextAfterTool = false;
+    for (const msg of messages) {
+      if (msg.role !== "assistant") continue;
+      for (const part of msg.parts) {
+        if (
+          part.type === "tool-searchIeltsKnowledge" ||
+          part.type === "tool-getIeltsDocument"
+        ) {
+          hasToolCall = true;
+          hasTextAfterTool = false;
+        }
+        if (hasToolCall && part.type === "text" && (part as any).text?.trim()) {
+          hasTextAfterTool = true;
+        }
+      }
+    }
+    return hasToolCall && !hasTextAfterTool;
+  }, [messages, isLoading]);
+
   // Map UIMessages to the shape ChatMessages expects.
   // Multi-step tool usage creates separate assistant UIMessages per step;
   // merge consecutive assistant messages so only one bubble is shown.
@@ -792,7 +816,7 @@ function ChatPageInner() {
                         </div>
                       </div>
                     ) : (
-                      <ChatMessages messages={displayMessages} isLoading={isLoading} />
+                      <ChatMessages messages={displayMessages} isLoading={isLoading} isSearchingKnowledge={isSearchingKnowledge} />
                     )}
                   </div>
                 </div>

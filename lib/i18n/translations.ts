@@ -40,6 +40,7 @@ export interface Translations {
     deleteConfirmation: string;
     untitledConversation: string;
     renameConversation: string;
+    searchingKnowledge: string;
   };
   writing: {
     startWriting: string;
@@ -167,6 +168,7 @@ export const translations: Record<Language, Translations> = {
       deleteConfirmation: "Are you sure you want to delete this conversation? This action cannot be undone.",
       untitledConversation: "Untitled Conversation",
       renameConversation: "Rename Conversation",
+      searchingKnowledge: "Searching knowledge base",
     },
     writing: {
       startWriting: "Start Writing",
@@ -292,6 +294,7 @@ export const translations: Record<Language, Translations> = {
       deleteConfirmation: "Bạn có chắc muốn xóa cuộc trò chuyện này? Sau khi xóa sẽ không thể khôi phục lại.",
       untitledConversation: "Chưa đặt tên",
       renameConversation: "Đổi tên cuộc trò chuyện",
+      searchingKnowledge: "Đang tìm kiếm tài liệu",
     },
     writing: {
       startWriting: "Bắt đầu viết",

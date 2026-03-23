@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Search } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "@/components/chat/message-bubble";
+import { useI18n } from "@/lib/i18n/provider";
 import RobotIcon from "@/components/icons/logo";
 
 interface ChatMessage {
@@ -14,14 +16,29 @@ interface ChatMessage {
 interface ChatMessagesProps {
   messages: ChatMessage[];
   isLoading: boolean;
+  isSearchingKnowledge?: boolean;
 }
 
-export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
+function AnimatedDots() {
+  const [count, setCount] = useState(1);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCount((prev) => (prev % 3) + 1);
+    }, 400);
+    return () => clearInterval(interval);
+  }, []);
+
+  return <span className="inline-block w-4 text-left">{".".repeat(count)}</span>;
+}
+
+export function ChatMessages({ messages, isLoading, isSearchingKnowledge }: ChatMessagesProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isLoading]);
+  }, [messages, isLoading, isSearchingKnowledge]);
 
   if (messages.length === 0 && !isLoading) return null;
 
@@ -42,7 +59,21 @@ export function ChatMessages({ messages, isLoading }: ChatMessagesProps) {
           );
         })}
 
-        {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
+        {isSearchingKnowledge && (
+          <div className="flex gap-3">
+            <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted">
+              <RobotIcon className="size-4 fill-foreground" />
+            </div>
+            <div className="rounded-2xl bg-muted px-4 py-2.5">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Search className="size-3.5 animate-pulse" />
+                <span>{t.chat.searchingKnowledge}<AnimatedDots /></span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isLoading && !isSearchingKnowledge && messages[messages.length - 1]?.role !== "assistant" && (
           <div className="flex gap-3">
             <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted">
               <RobotIcon className="size-4 fill-foreground" />

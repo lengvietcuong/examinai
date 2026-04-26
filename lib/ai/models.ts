@@ -13,7 +13,7 @@ function createFireworks() {
 }
 
 export function chatModel() {
-  return createFireworks().chat("accounts/fireworks/models/minimax-m2p5");
+  return createFireworks().chat("accounts/fireworks/models/minimax-m2p7");
 }
 
 export function visionModel() {

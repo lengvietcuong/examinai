@@ -1,7 +1,10 @@
 import { streamText, tool, stepCountIs, convertToModelMessages } from "ai";
 import { z } from "zod";
 import { chatModel } from "@/lib/ai/models";
-import { SPEAKING_SYSTEM_PROMPT } from "@/lib/ai/prompts";
+import {
+  SPEAKING_SYSTEM_PROMPT,
+  SPEAKING_FIRST_QUESTION_PROMPT,
+} from "@/lib/ai/prompts";
 import { getRandomSpeakingQuestions, addMessage } from "@/lib/db/queries";
 
 export const maxDuration = 60;
@@ -16,35 +19,39 @@ export async function POST(req: Request) {
     )
     .join("\n\n");
 
-  const systemPrompt = SPEAKING_SYSTEM_PROMPT.replace(
-    "{{QUESTIONS}}",
-    questionsContext,
-  );
+  const isFirstTurn =
+    messages.length === 1 && messages[0]?.role === "user";
+
+  const systemPrompt = (
+    isFirstTurn ? SPEAKING_FIRST_QUESTION_PROMPT : SPEAKING_SYSTEM_PROMPT
+  ).replace("{{QUESTIONS}}", questionsContext);
 
   const result = streamText({
     model: chatModel(),
     system: systemPrompt,
     messages: await convertToModelMessages(messages),
-    tools: {
-      fetchMoreQuestions: tool({
-        description:
-          "Fetch additional speaking questions when the user explicitly asks to continue practicing. Only use this when the user requests more questions after completing the current set.",
-        inputSchema: z.object({
-          partNumbers: z
-            .array(z.enum(["1", "2", "3"]))
-            .describe("Which parts to fetch questions for"),
-        }),
-        execute: async ({ partNumbers }) => {
-          const newQuestions =
-            await getRandomSpeakingQuestions(partNumbers);
-          return newQuestions.map((q) => ({
-            partNumber: q.partNumber,
-            title: q.testTitle,
-            content: q.content,
-          }));
+    tools: isFirstTurn
+      ? undefined
+      : {
+          fetchMoreQuestions: tool({
+            description:
+              "Fetch additional speaking questions when the user explicitly asks to continue practicing. Only use this when the user requests more questions after completing the current set.",
+            inputSchema: z.object({
+              partNumbers: z
+                .array(z.enum(["1", "2", "3"]))
+                .describe("Which parts to fetch questions for"),
+            }),
+            execute: async ({ partNumbers }) => {
+              const newQuestions =
+                await getRandomSpeakingQuestions(partNumbers);
+              return newQuestions.map((q) => ({
+                partNumber: q.partNumber,
+                title: q.testTitle,
+                content: q.content,
+              }));
+            },
+          }),
         },
-      }),
-    },
     stopWhen: stepCountIs(3),
     onFinish: async ({ text }) => {
       if (conversationId && text) {

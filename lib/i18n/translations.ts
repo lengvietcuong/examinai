@@ -26,6 +26,7 @@ export interface Translations {
   };
   chat: {
     howCanIHelp: string;
+    howCanIHelpSubtitle: string;
     writing: string;
     speaking: string;
     writingDescription: string;
@@ -154,6 +155,7 @@ export const translations: Record<Language, Translations> = {
     },
     chat: {
       howCanIHelp: "How can I help with your IELTS today?",
+      howCanIHelpSubtitle: "Click on the Speaking or Writing card to start practicing, or ask any question by sending a message",
       writing: "Writing",
       speaking: "Speaking",
       writingDescription: "Take a timed test or submit an existing essay for detailed feedback.",
@@ -280,6 +282,7 @@ export const translations: Record<Language, Translations> = {
     },
     chat: {
       howCanIHelp: "Mình có thể giúp gì cho bạn về IELTS?",
+      howCanIHelpSubtitle: "Chọn Nói hoặc Viết để bắt đầu luyện tập, hoặc nhắn tin để hỏi mình bất cứ điều gì nhé",
       writing: "Viết",
       speaking: "Nói",
       writingDescription: "Làm bài thi thử hoặc nộp bài viết có sẵn để nhận phản hồi chi tiết.",

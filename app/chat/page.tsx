@@ -761,6 +761,9 @@ function ChatPageInner() {
                           <h1 className="text-2xl font-bold tracking-tight text-foreground">
                             {t.chat.howCanIHelp}
                           </h1>
+                          <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+                            {t.chat.howCanIHelpSubtitle}
+                          </p>
                         </div>
 
                         <div className="grid gap-4 sm:grid-cols-2 mt-4 max-w-2xl mx-auto w-full">

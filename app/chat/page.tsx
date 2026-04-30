@@ -750,7 +750,7 @@ function ChatPageInner() {
           <main className="flex flex-1 flex-col relative min-w-0 bg-background/50 overflow-hidden">
             {(view === "default" || view === "chat") && (
               <>
-                <div className="flex-1 overflow-y-auto p-4 md:p-8">
+                <div className="flex-1 overflow-y-auto px-4 pt-4 md:px-8 md:pt-8">
                   <div className="mx-auto max-w-3xl flex flex-col h-full">
                     {view === "default" && messages.length === 0 ? (
                       <div className="flex flex-col h-full justify-center">
@@ -822,7 +822,7 @@ function ChatPageInner() {
                 </div>
 
                 {/* Input Area */}
-                <div className="shrink-0 px-4 pb-4 md:px-6 md:pb-6 bg-background">
+                <div className="shrink-0 px-3 pb-3 sm:px-4 sm:pb-4 bg-background">
                   <form onSubmit={handleSendMessage} className="mx-auto max-w-3xl relative">
                     <div className="relative flex items-center rounded-full border bg-background focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all overflow-hidden">
                       <Textarea

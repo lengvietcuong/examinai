@@ -805,7 +805,7 @@ export function WritingAssessment({
           className="mx-auto max-w-3xl relative"
         >
           <div
-            className={`relative flex items-center rounded-full border bg-background transition-all overflow-hidden ${
+            className={`relative flex items-center rounded-[22px] border bg-background transition-all overflow-hidden ${
               chatEnabled
                 ? "focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50"
                 : "opacity-50"

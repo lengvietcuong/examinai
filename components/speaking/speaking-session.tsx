@@ -1467,7 +1467,7 @@ export function SpeakingSession({ questions, onEnd, initialConversationId, initi
           </div>
 
           {/* Text input */}
-          <div className="relative flex items-center rounded-full border bg-background focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all overflow-hidden">
+          <div className="relative flex items-center rounded-[22px] border bg-background focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all overflow-hidden">
             <Textarea
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}

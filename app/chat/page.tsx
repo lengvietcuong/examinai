@@ -827,7 +827,7 @@ function ChatPageInner() {
                 {/* Input Area */}
                 <div className="shrink-0 px-3 pb-3 sm:px-4 sm:pb-4 bg-background">
                   <form onSubmit={handleSendMessage} className="mx-auto max-w-3xl relative">
-                    <div className="relative flex items-center rounded-full border bg-background focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all overflow-hidden">
+                    <div className="relative flex items-center rounded-[22px] border bg-background focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all overflow-hidden">
                       <Textarea
                         value={input}
                         onChange={(e) => setInput(e.target.value)}

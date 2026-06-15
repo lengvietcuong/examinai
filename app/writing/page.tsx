@@ -79,7 +79,24 @@ export default async function WritingPage({
           } : {}),
         } : null,
         done: true,
-        failedSections: {},
+        failedSections: {
+          ...(assistantMsg.failedSections &&
+          typeof assistantMsg.failedSections === "object"
+            ? assistantMsg.failedSections
+            : {}),
+          ...(assistantMsg.overview == null
+            ? { overview: "This section could not be generated." }
+            : {}),
+          ...(assistantMsg.taskResponseHighLevel == null
+            ? { scoring: "This section could not be generated." }
+            : {}),
+          ...(assistantMsg.correctedEssay == null
+            ? { languageAnalysis: "This section could not be generated." }
+            : {}),
+          ...(assistantMsg.improvedEssay == null
+            ? { improvement: "This section could not be generated." }
+            : {}),
+        },
       };
 
       // Collect follow-up chat messages (index 2+)

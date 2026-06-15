@@ -155,6 +155,23 @@ export async function addMessage(data: {
   return message;
 }
 
+export async function updateMessageContent(id: string, content: string) {
+  const [message] = await db
+    .update(messages)
+    .set({ content, updatedAt: new Date() })
+    .where(eq(messages.id, id))
+    .returning();
+
+  if (message) {
+    await db
+      .update(conversations)
+      .set({ updatedAt: new Date() })
+      .where(eq(conversations.id, message.conversationId));
+  }
+
+  return message;
+}
+
 // Profiles
 
 export async function getProfile(userId: string) {

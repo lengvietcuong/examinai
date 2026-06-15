@@ -13,7 +13,9 @@ import {
 import {
   createConversation,
   addMessage,
+  getMessages,
   upsertProfile,
+  updateMessageContent,
   updateConversationTitle,
 } from "@/lib/db/queries";
 
@@ -323,7 +325,7 @@ async function streamExpert<S extends z.ZodType>(config: {
 }
 
 export async function POST(req: Request) {
-  const { taskNumber, question, essay, imageUrl, wordCount, timeSpent, userId, sections: requestedSections } =
+  const { taskNumber, question, essay, imageUrl, wordCount, timeSpent, userId, conversationId: existingConversationId, sections: requestedSections } =
     await req.json();
 
   // Which sections to run — default to all four
@@ -363,6 +365,7 @@ export async function POST(req: Request) {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const results: Record<string, any> = {};
+      const failedSections: Record<string, string> = {};
       const messages = [{ role: "user" as const, content: userContent }];
       const isPartialRetry = requestedSections && requestedSections.length < 4;
 
@@ -384,7 +387,8 @@ export async function POST(req: Request) {
           ).then((data) => {
             results.overview = data;
           }).catch((err) => {
-            sendEvent("section_error", { section: "overview", message: err instanceof Error ? err.message : "Overview failed" });
+            failedSections.overview = err instanceof Error ? err.message : "Overview failed";
+            sendEvent("section_error", { section: "overview", message: failedSections.overview });
           })
         );
       }
@@ -405,7 +409,8 @@ export async function POST(req: Request) {
           ).then((data) => {
             results.scoring = data;
           }).catch((err) => {
-            sendEvent("section_error", { section: "scoring", message: err instanceof Error ? err.message : "Scoring failed" });
+            failedSections.scoring = err instanceof Error ? err.message : "Scoring failed";
+            sendEvent("section_error", { section: "scoring", message: failedSections.scoring });
           })
         );
       }
@@ -478,7 +483,8 @@ export async function POST(req: Request) {
           }).then((data) => {
             results.languageAnalysis = data;
           }).catch((err) => {
-            sendEvent("section_error", { section: "languageAnalysis", message: err instanceof Error ? err.message : "Language analysis failed" });
+            failedSections.languageAnalysis = err instanceof Error ? err.message : "Language analysis failed";
+            sendEvent("section_error", { section: "languageAnalysis", message: failedSections.languageAnalysis });
           })
         );
       }
@@ -499,7 +505,8 @@ export async function POST(req: Request) {
           ).then((data) => {
             results.improvement = data;
           }).catch((err) => {
-            sendEvent("section_error", { section: "improvement", message: err instanceof Error ? err.message : "Improvement failed" });
+            failedSections.improvement = err instanceof Error ? err.message : "Improvement failed";
+            sendEvent("section_error", { section: "improvement", message: failedSections.improvement });
           })
         );
       }
@@ -508,7 +515,53 @@ export async function POST(req: Request) {
 
       // Save the conversation and messages to the database (only on full assessment, not partial retry)
       let conversationId: string | null = null;
-      if (!isPartialRetry) {
+      if (isPartialRetry) {
+        conversationId = typeof existingConversationId === "string" ? existingConversationId : null;
+
+        if (conversationId) {
+          try {
+            const conversationMessages = await getMessages(conversationId);
+            const feedbackMessage = conversationMessages.find((message) => {
+              if (message.role !== "assistant") return false;
+              try {
+                return JSON.parse(message.content).type === "writing_feedback";
+              } catch {
+                return false;
+              }
+            });
+
+            if (feedbackMessage) {
+              const previousFeedback = JSON.parse(feedbackMessage.content);
+              const nextFailedSections = {
+                ...(previousFeedback.failedSections ?? {}),
+                ...failedSections,
+              };
+
+              for (const section of requestedSections as string[]) {
+                if (results[section]) {
+                  delete nextFailedSections[section];
+                }
+              }
+
+              await updateMessageContent(
+                feedbackMessage.id,
+                JSON.stringify({
+                  ...previousFeedback,
+                  ...results.overview,
+                  ...results.scoring,
+                  ...results.languageAnalysis,
+                  ...results.improvement,
+                  failedSections: nextFailedSections,
+                }),
+              );
+            }
+          } catch (saveError) {
+            console.error("[writing/assess] Failed to update conversation:", saveError);
+          }
+        }
+
+        sendEvent("done", { conversationId });
+      } else {
         try {
           if (userId) {
             await upsertProfile({ id: userId });
@@ -542,6 +595,7 @@ export async function POST(req: Request) {
             ...results.scoring,
             ...results.languageAnalysis,
             ...results.improvement,
+            failedSections,
           });
           await addMessage({
             conversationId: conversation.id,
@@ -573,8 +627,6 @@ export async function POST(req: Request) {
         }
 
         sendEvent("done", { conversationId, title });
-      } else {
-        sendEvent("done", {});
       }
 
       controller.close();

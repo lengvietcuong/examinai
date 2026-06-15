@@ -175,7 +175,7 @@ export default function WritingPageClient({
           if (item.assessment.done) return;
           const controller = new AbortController();
           controllers[idx] = controller;
-          streamAssessment(item.submission, idx, controller.signal);
+          streamAssessment(item.submission, idx, controller.signal, undefined, item.conversationId);
         });
         abortControllersRef.current = controllers;
         return;
@@ -223,7 +223,7 @@ export default function WritingPageClient({
             if (item.assessment.done) return;
             const controller = new AbortController();
             controllers[idx] = controller;
-            streamAssessment(item.submission, idx, controller.signal);
+            streamAssessment(item.submission, idx, controller.signal, undefined, item.conversationId);
           });
           abortControllersRef.current = controllers;
           return;
@@ -288,6 +288,7 @@ export default function WritingPageClient({
     index: number,
     signal: AbortSignal,
     sections?: string[],
+    conversationId?: string | null,
   ) {
     try {
       // Ensure we have the userId before making the request — the auth
@@ -305,6 +306,7 @@ export default function WritingPageClient({
         body: JSON.stringify({
           ...submission,
           userId: userIdRef.current,
+          ...(conversationId ? { conversationId } : {}),
           ...(sections ? { sections } : {}),
         }),
         signal,
@@ -561,6 +563,7 @@ export default function WritingPageClient({
               activeIndex,
               controller.signal,
               sections,
+              assessments[activeIndex].conversationId,
             );
           }}
           taskTabs={taskTabs}

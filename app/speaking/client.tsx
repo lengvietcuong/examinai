@@ -16,6 +16,35 @@ interface SavedConversation {
   }>;
 }
 
+const SPEAKING_SESSION_KEY = "examinai-speaking-active";
+
+function readSpeakingQuestions(): SpeakingQuestionData[] | null {
+  try {
+    const raw = localStorage.getItem(SPEAKING_SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { questions?: SpeakingQuestionData[] };
+    return Array.isArray(parsed.questions) ? parsed.questions : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeSpeakingQuestions(questions: SpeakingQuestionData[]) {
+  try {
+    localStorage.setItem(SPEAKING_SESSION_KEY, JSON.stringify({ questions }));
+  } catch {
+    // Persistence is best effort.
+  }
+}
+
+function clearSpeakingQuestions() {
+  try {
+    localStorage.removeItem(SPEAKING_SESSION_KEY);
+  } catch {
+    // Persistence is best effort.
+  }
+}
+
 export default function SpeakingPageClient({
   savedConversation,
 }: {
@@ -28,14 +57,25 @@ export default function SpeakingPageClient({
   const [initialized, setInitialized] = useState(!!savedConversation);
 
   useEffect(() => {
-    if (savedConversation) return;
+    if (savedConversation) {
+      clearSpeakingQuestions();
+      return;
+    }
 
     try {
       const stored = sessionStorage.getItem("speaking-questions");
       if (stored) {
         const parsed = JSON.parse(stored) as SpeakingQuestionData[];
         setQuestions(parsed);
+        writeSpeakingQuestions(parsed);
         sessionStorage.removeItem("speaking-questions");
+        setInitialized(true);
+        return;
+      }
+
+      const localQuestions = readSpeakingQuestions();
+      if (localQuestions?.length) {
+        setQuestions(localQuestions);
         setInitialized(true);
       } else {
         router.push("/chat");
@@ -57,7 +97,14 @@ export default function SpeakingPageClient({
     <div className="flex h-dvh flex-col bg-background">
       <SpeakingSession
         questions={questions}
-        onEnd={() => router.push("/chat")}
+        onEnd={() => {
+          clearSpeakingQuestions();
+          router.push("/chat");
+        }}
+        onConversationReady={(conversationId) => {
+          clearSpeakingQuestions();
+          router.replace(`/speaking?conversation_id=${conversationId}`);
+        }}
         initialConversationId={savedConversation?.conversationId}
         initialMessages={savedConversation?.messages}
       />

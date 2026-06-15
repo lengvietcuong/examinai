@@ -34,6 +34,25 @@ interface SavedConversation {
 
 type PageView = "test" | "assessment" | "submission";
 
+const WRITING_DRAFT_KEY = "examinai-writing-active";
+
+interface WritingDraft {
+  version: 1;
+  key: string;
+  status: "draft" | "submitted";
+  questions: WritingQuestion[];
+  essays: Record<string, string>;
+  activeTab: "1" | "2";
+  startedAt: number;
+  timeLeft: number;
+  submissions?: WritingSubmission[];
+  assessments?: Array<{
+    assessment: AssessmentData;
+    submission: WritingSubmission;
+    conversationId: string | null;
+  }>;
+}
+
 function createEmptyAssessment(): AssessmentData {
   return {
     overview: null,
@@ -43,6 +62,41 @@ function createEmptyAssessment(): AssessmentData {
     done: false,
     failedSections: {},
   };
+}
+
+function getDraftKey(questions: WritingQuestion[]): string {
+  return questions
+    .map((q) => q.id)
+    .sort()
+    .join(":");
+}
+
+function readWritingDraft(): WritingDraft | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(WRITING_DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as WritingDraft;
+    return parsed.version === 1 ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeWritingDraft(draft: WritingDraft) {
+  try {
+    localStorage.setItem(WRITING_DRAFT_KEY, JSON.stringify(draft));
+  } catch {
+    // Persistence is best effort.
+  }
+}
+
+function clearWritingDraft() {
+  try {
+    localStorage.removeItem(WRITING_DRAFT_KEY);
+  } catch {
+    // Persistence is best effort.
+  }
 }
 
 export default function WritingPageClient({
@@ -85,8 +139,10 @@ export default function WritingPageClient({
     savedConversation?.followUpMessages ?? [],
   );
   const [activeIndex, setActiveIndex] = useState(0);
+  const [restoredDraft, setRestoredDraft] = useState<WritingDraft | null>(null);
   const abortControllersRef = useRef<AbortController[]>([]);
   const userIdRef = useRef<string | null>(null);
+  const draftKeyRef = useRef(initialQuestions ? getDraftKey(initialQuestions) : null);
 
   // Get current user ID for saving conversations
   useEffect(() => {
@@ -95,21 +151,91 @@ export default function WritingPageClient({
     });
   }, []);
 
-  // Handle submission flow (no initialQuestions — data comes from sessionStorage)
+  // Restore test or assessment state after a page refresh.
   useEffect(() => {
-    if (initialQuestions || savedConversation) return;
+    if (savedConversation) {
+      clearWritingDraft();
+      return;
+    }
+
+    const storedDraft = readWritingDraft();
+
+    if (initialQuestions) {
+      const draftKey = getDraftKey(initialQuestions);
+      if (storedDraft?.key !== draftKey) return;
+
+      if (storedDraft.assessments?.length) {
+        setAssessments(storedDraft.assessments);
+        setActiveIndex(0);
+        setPageView("assessment");
+        setRestoredDraft(storedDraft);
+
+        const controllers: AbortController[] = [];
+        storedDraft.assessments.forEach((item, idx) => {
+          if (item.assessment.done) return;
+          const controller = new AbortController();
+          controllers[idx] = controller;
+          streamAssessment(item.submission, idx, controller.signal);
+        });
+        abortControllersRef.current = controllers;
+        return;
+      }
+
+      if (storedDraft.status === "submitted" && storedDraft.submissions?.length) {
+        setRestoredDraft(storedDraft);
+        startAssessment(storedDraft.submissions);
+        return;
+      }
+
+      setRestoredDraft(storedDraft);
+      return;
+    }
 
     try {
       const storedSubmission = sessionStorage.getItem("writing-submission");
       if (storedSubmission) {
         const submission = JSON.parse(storedSubmission) as WritingSubmission;
         sessionStorage.removeItem("writing-submission");
+        writeWritingDraft({
+          version: 1,
+          key: "manual",
+          status: "submitted",
+          questions: [],
+          essays: { [submission.taskNumber]: submission.essay },
+          activeTab: submission.taskNumber,
+          startedAt: Date.now(),
+          timeLeft: 0,
+          submissions: [submission],
+        });
         setInitialized(true);
         startAssessment([submission]);
         return;
       }
 
-      // No questions from server, no submission in sessionStorage → go home
+      if (storedDraft?.key === "manual" && storedDraft.status === "submitted") {
+        if (storedDraft.assessments?.length) {
+          setAssessments(storedDraft.assessments);
+          setPageView("assessment");
+          setInitialized(true);
+
+          const controllers: AbortController[] = [];
+          storedDraft.assessments.forEach((item, idx) => {
+            if (item.assessment.done) return;
+            const controller = new AbortController();
+            controllers[idx] = controller;
+            streamAssessment(item.submission, idx, controller.signal);
+          });
+          abortControllersRef.current = controllers;
+          return;
+        }
+
+        if (storedDraft.submissions?.length) {
+          setInitialized(true);
+          startAssessment(storedDraft.submissions);
+          return;
+        }
+      }
+
       router.push("/chat");
     } catch {
       router.push("/chat");
@@ -135,6 +261,18 @@ export default function WritingPageClient({
     setAssessments(initial);
     setActiveIndex(0);
     setPageView("assessment");
+    writeWritingDraft({
+      version: 1,
+      key: draftKeyRef.current ?? "manual",
+      status: "submitted",
+      questions,
+      essays: Object.fromEntries(valid.map((sub) => [sub.taskNumber, sub.essay])),
+      activeTab: valid[0].taskNumber,
+      startedAt: Date.now(),
+      timeLeft: 0,
+      submissions: valid,
+      assessments: initial,
+    });
 
     const controllers: AbortController[] = [];
     valid.forEach((sub, idx) => {
@@ -227,6 +365,7 @@ export default function WritingPageClient({
                   // Save the conversation ID returned from the server
                   if (data.conversationId) {
                     current.conversationId = data.conversationId;
+                    router.replace(`/writing?conversation_id=${data.conversationId}`);
                   }
                   break;
                 case "section_error": {
@@ -301,8 +440,36 @@ export default function WritingPageClient({
 
   function handleBack() {
     abortControllersRef.current.forEach((c) => c.abort());
+    clearWritingDraft();
     router.push("/chat");
   }
+
+  useEffect(() => {
+    if (savedConversation || assessments.length === 0) return;
+
+    writeWritingDraft({
+      version: 1,
+      key: draftKeyRef.current ?? "manual",
+      status: "submitted",
+      questions,
+      essays: Object.fromEntries(
+        assessments.map((item) => [item.submission.taskNumber, item.submission.essay]),
+      ),
+      activeTab: assessments[activeIndex]?.submission.taskNumber ?? "1",
+      startedAt: Date.now(),
+      timeLeft: 0,
+      submissions: assessments.map((item) => item.submission),
+      assessments,
+    });
+
+    if (
+      assessments.length === 1 &&
+      assessments[0].assessment.done &&
+      assessments[0].conversationId
+    ) {
+      clearWritingDraft();
+    }
+  }, [assessments, activeIndex, questions, savedConversation]);
 
   if (!initialized) {
     return (
@@ -407,6 +574,22 @@ export default function WritingPageClient({
       questions={questions}
       onSubmit={handleSubmit}
       onBack={handleBack}
+      initialEssays={restoredDraft?.essays}
+      initialActiveTab={restoredDraft?.activeTab}
+      initialStartedAt={restoredDraft?.startedAt}
+      onProgress={(progress) => {
+        if (!draftKeyRef.current) return;
+        writeWritingDraft({
+          version: 1,
+          key: draftKeyRef.current,
+          status: "draft",
+          questions,
+          essays: progress.essays,
+          activeTab: progress.activeTab,
+          startedAt: progress.startedAt,
+          timeLeft: progress.timeLeft,
+        });
+      }}
     />
   );
 }

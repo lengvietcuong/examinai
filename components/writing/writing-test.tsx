@@ -28,6 +28,15 @@ interface WritingTestProps {
   questions: WritingQuestion[];
   onSubmit: (submissions: WritingSubmission[]) => void;
   onBack: () => void;
+  initialEssays?: Record<string, string>;
+  initialActiveTab?: "1" | "2";
+  initialStartedAt?: number;
+  onProgress?: (progress: {
+    essays: Record<string, string>;
+    activeTab: "1" | "2";
+    startedAt: number;
+    timeLeft: number;
+  }) => void;
 }
 
 function formatTime(seconds: number): string {
@@ -45,16 +54,29 @@ function getTotalTime(questions: WritingQuestion[]): number {
   return 40 * 60;
 }
 
-export function WritingTest({ questions, onSubmit, onBack }: WritingTestProps) {
+export function WritingTest({
+  questions,
+  onSubmit,
+  onBack,
+  initialEssays,
+  initialActiveTab,
+  initialStartedAt,
+  onProgress,
+}: WritingTestProps) {
   const { t } = useI18n();
   const taskNumbers = [...new Set(questions.map((q) => q.taskNumber))].sort();
-  const [activeTab, setActiveTab] = useState<"1" | "2">(taskNumbers[0] as "1" | "2");
-  const [essays, setEssays] = useState<Record<string, string>>({});
-  const [timeLeft, setTimeLeft] = useState(getTotalTime(questions));
+  const firstTab = taskNumbers[0] as "1" | "2";
+  const [activeTab, setActiveTab] = useState<"1" | "2">(initialActiveTab ?? firstTab);
+  const [essays, setEssays] = useState<Record<string, string>>(initialEssays ?? {});
+  const [timeLeft, setTimeLeft] = useState(() => {
+    if (!initialStartedAt) return getTotalTime(questions);
+    const elapsed = Math.floor((Date.now() - initialStartedAt) / 1000);
+    return Math.max(getTotalTime(questions) - elapsed, 0);
+  });
   const [showTimeUpDialog, setShowTimeUpDialog] = useState(false);
   const [showBackDialog, setShowBackDialog] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const startTimeRef = useRef(Date.now());
+  const startTimeRef = useRef(initialStartedAt ?? Date.now());
 
   const buildSubmissions = useCallback((): WritingSubmission[] => {
     const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
@@ -69,6 +91,15 @@ export function WritingTest({ questions, onSubmit, onBack }: WritingTestProps) {
       timeSpent: elapsed,
     }));
   }, [questions, essays]);
+
+  useEffect(() => {
+    onProgress?.({
+      essays,
+      activeTab,
+      startedAt: startTimeRef.current,
+      timeLeft,
+    });
+  }, [essays, activeTab, timeLeft, onProgress]);
 
   useEffect(() => {
     intervalRef.current = setInterval(() => {

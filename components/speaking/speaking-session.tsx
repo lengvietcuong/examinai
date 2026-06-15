@@ -83,6 +83,7 @@ declare global {
 interface SpeakingSessionProps {
   questions: SpeakingQuestionData[];
   onEnd: () => void;
+  onConversationReady?: (conversationId: string) => void;
   initialConversationId?: string;
   initialMessages?: Array<{
     id: string;
@@ -635,7 +636,13 @@ function FeedbackCard({ feedback, originalResponse, onSpeak, playingAudioKey, lo
 }
 
 /* ─── Main session component ─── */
-export function SpeakingSession({ questions, onEnd, initialConversationId, initialMessages }: SpeakingSessionProps) {
+export function SpeakingSession({
+  questions,
+  onEnd,
+  onConversationReady,
+  initialConversationId,
+  initialMessages,
+}: SpeakingSessionProps) {
   const { t } = useI18n();
   const [isRecording, setIsRecording] = useState(false);
   const [textInput, setTextInput] = useState("");
@@ -763,6 +770,7 @@ export function SpeakingSession({ questions, onEnd, initialConversationId, initi
           if (res.ok) {
             const conv = await res.json();
             conversationIdRef.current = conv.id;
+            onConversationReady?.(conv.id);
 
             // Name the conversation after the first question's topic
             fetch("/api/chat/name", {

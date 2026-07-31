@@ -21,5 +21,5 @@ export function visionModel() {
 }
 
 export function namingModel() {
-  return createFireworks().chat("accounts/fireworks/models/llama-v3p3-70b-instruct");
+  return createFireworks().chat("accounts/fireworks/models/gpt-oss-20b");
 }

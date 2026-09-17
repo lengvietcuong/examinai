@@ -242,11 +242,11 @@ export default function Home() {
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button
               size="lg"
-              className="font-heading px-7 py-3 text-base font-semibold"
+              className="font-heading h-14 px-8 text-lg font-semibold shadow-lg shadow-primary/25 transition-all duration-200 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/30 active:scale-[0.98]"
               render={<a href="/chat" />}
             >
               {t.getStarted}
-              <ArrowRight className="ml-1 size-4 transition-transform group-hover/button:translate-x-1" />
+              <ArrowRight className="ml-1 size-5 transition-transform group-hover/button:translate-x-1" />
             </Button>
           </div>
         </section>

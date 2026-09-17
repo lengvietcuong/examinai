@@ -140,8 +140,26 @@ function parseFeedback(content: string): SpeakingFeedback | null {
   return null;
 }
 
-/* ─── Word-level diff (same as writing assessment) ─── */
-type DiffOp = { type: "equal" | "insert" | "delete"; text: string };
+/* ─── Word-level diff (casing & punctuation agnostic for speech) ─── */
+type DiffOp = {
+  type: "equal" | "insert" | "delete";
+  text: string;
+  origText?: string;
+};
+
+function normalizeToken(token: string): string {
+  return token.toLowerCase().replace(/[\p{P}\p{S}\s]+/gu, "");
+}
+
+function isQuasiEqual(a: string, b: string): boolean {
+  const normA = normalizeToken(a);
+  const normB = normalizeToken(b);
+  return normA.length > 0 && normA === normB;
+}
+
+function isPunctOnly(text: string): boolean {
+  return normalizeToken(text).length === 0;
+}
 
 function tokenize(text: string): string[] {
   return text.match(/\S+|\n/g) || [];
@@ -158,8 +176,19 @@ function computeDiff(oldText: string, newText: string): DiffOp[] {
   );
   for (let i = 1; i <= n; i++) {
     for (let j = 1; j <= m; j++) {
+      let matchScore = 0;
       if (oldTokens[i - 1] === newTokens[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
+        matchScore = 1001;
+      } else if (isQuasiEqual(oldTokens[i - 1], newTokens[j - 1])) {
+        matchScore = 1000;
+      }
+
+      if (matchScore > 0) {
+        dp[i][j] = Math.max(
+          dp[i - 1][j - 1] + matchScore,
+          dp[i - 1][j],
+          dp[i][j - 1],
+        );
       } else {
         dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
       }
@@ -170,11 +199,26 @@ function computeDiff(oldText: string, newText: string): DiffOp[] {
   let i = n;
   let j = m;
   while (i > 0 || j > 0) {
-    if (i > 0 && j > 0 && oldTokens[i - 1] === newTokens[j - 1]) {
-      ops.push({ type: "equal", text: oldTokens[i - 1] });
-      i--;
-      j--;
-    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+    if (i > 0 && j > 0) {
+      let matchScore = 0;
+      if (oldTokens[i - 1] === newTokens[j - 1]) {
+        matchScore = 1001;
+      } else if (isQuasiEqual(oldTokens[i - 1], newTokens[j - 1])) {
+        matchScore = 1000;
+      }
+      if (matchScore > 0 && dp[i][j] === dp[i - 1][j - 1] + matchScore) {
+        ops.push({
+          type: "equal",
+          text: newTokens[j - 1],
+          origText: oldTokens[i - 1],
+        });
+        i--;
+        j--;
+        continue;
+      }
+    }
+
+    if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
       ops.push({ type: "insert", text: newTokens[j - 1] });
       j--;
     } else {
@@ -190,6 +234,9 @@ function computeDiff(oldText: string, newText: string): DiffOp[] {
     const last = merged[merged.length - 1];
     if (last && last.type === op.type) {
       last.text += " " + op.text;
+      if (last.type === "equal") {
+        last.origText = (last.origText ?? last.text) + " " + (op.origText ?? op.text);
+      }
     } else {
       merged.push({ ...op });
     }
@@ -535,7 +582,7 @@ function FeedbackCard({ feedback, originalResponse, onSpeak, playingAudioKey, lo
             const leftSpans = diffOps
               .filter((op) => op.type === "equal" || op.type === "delete")
               .map((op, i) =>
-                op.type === "delete" ? (
+                op.type === "delete" && !isPunctOnly(op.text) ? (
                   <span
                     key={i}
                     className="bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400 rounded-sm px-0.5"
@@ -543,13 +590,13 @@ function FeedbackCard({ feedback, originalResponse, onSpeak, playingAudioKey, lo
                     {op.text}
                   </span>
                 ) : (
-                  <span key={i}>{op.text}</span>
+                  <span key={i}>{op.origText ?? op.text}</span>
                 ),
               );
             const rightSpans = diffOps
               .filter((op) => op.type === "equal" || op.type === "insert")
               .map((op, i) =>
-                op.type === "insert" ? (
+                op.type === "insert" && !isPunctOnly(op.text) ? (
                   <span
                     key={i}
                     className="bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400 rounded-sm px-0.5"

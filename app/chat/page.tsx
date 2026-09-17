@@ -674,7 +674,7 @@ function ChatPageInner() {
         onStart={handleStartSpeaking}
       />
 
-      <div className="flex h-screen bg-background">
+      <div className="flex h-screen h-dvh bg-background">
         {/* Desktop Sidebar */}
         {sidebarOpen && (
           <aside className="hidden md:flex w-64 shrink-0 flex-col border-r bg-sidebar">
@@ -750,41 +750,41 @@ function ChatPageInner() {
           <main className="flex flex-1 flex-col relative min-w-0 bg-background/50 overflow-hidden">
             {(view === "default" || view === "chat") && (
               <>
-                <div className="flex-1 overflow-y-auto px-4 pt-4 md:px-8 md:pt-8">
-                  <div className="mx-auto max-w-3xl flex flex-col h-full">
+                <div className="flex-1 min-h-0 overflow-y-auto px-4 pt-4 pb-4 sm:pb-6 md:px-8 md:pt-8 md:pb-8">
+                  <div className="mx-auto max-w-3xl flex flex-col min-h-full">
                     {view === "default" && messages.length === 0 ? (
-                      <div className="flex flex-col h-full justify-center">
-                        <div className="text-center mb-8">
-                          <div className="mx-auto mb-3 flex size-16 items-center justify-center rounded-full border">
-                            <RobotIcon className="size-10 text-foreground" />
+                      <div className="flex flex-col my-auto py-2 sm:py-6">
+                        <div className="text-center mb-5 sm:mb-8">
+                          <div className="mx-auto mb-3 flex size-13 sm:size-16 items-center justify-center rounded-full border bg-muted/30">
+                            <RobotIcon className="size-8 sm:size-10 text-foreground" />
                           </div>
-                          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
                             {t.chat.howCanIHelp}
                           </h1>
-                          <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+                          <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-muted-foreground max-w-md mx-auto px-2">
                             {t.chat.howCanIHelpSubtitle}
                           </p>
                         </div>
 
-                        <div className="grid gap-4 sm:grid-cols-2 mt-4 max-w-2xl mx-auto w-full">
+                        <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 mt-2 sm:mt-4 max-w-2xl mx-auto w-full">
                           {/* Writing Card */}
                           <Card
                             className="cursor-pointer hover:border-primary hover:shadow-md hover:bg-primary/[0.02] hover:ring-[3px] hover:ring-primary/20 group overflow-hidden border-[0.5px] rounded-2xl shadow-none py-0 transition-all"
                             onClick={() => setWritingModalOpen(true)}
                           >
                             <CardContent className="px-0 py-0">
-                              <div className="flex flex-col h-full">
-                                <div className="w-full flex items-start justify-center">
-                                  <div className="w-44 h-44">
+                              <div className="flex flex-row sm:flex-col h-full items-center sm:items-stretch">
+                                <div className="w-24 h-24 sm:w-full sm:h-44 shrink-0 flex items-center justify-center p-2 sm:p-0">
+                                  <div className="size-20 sm:size-44">
                                     <DotLottieReact src="/animations/writing.lottie" loop autoplay />
                                   </div>
                                 </div>
-                                <div className="px-6 pb-6">
-                                  <h3 className="font-semibold text-xl flex items-center gap-2">
-                                    <PenLine className="size-5 text-primary" />
-                                    {t.chat.writing}
+                                <div className="p-3.5 sm:px-6 sm:pb-6 flex-1 min-w-0">
+                                  <h3 className="font-semibold text-base sm:text-xl flex items-center gap-2">
+                                    <PenLine className="size-4.5 sm:size-5 text-primary shrink-0" />
+                                    <span>{t.chat.writing}</span>
                                   </h3>
-                                  <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2">
+                                  <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">
                                     {t.chat.writingDescription}
                                   </p>
                                 </div>
@@ -798,18 +798,18 @@ function ChatPageInner() {
                             onClick={() => setSpeakingModalOpen(true)}
                           >
                             <CardContent className="px-0 py-0">
-                              <div className="flex flex-col h-full">
-                                <div className="w-full flex items-start justify-center">
-                                  <div className="w-44 h-44">
+                              <div className="flex flex-row sm:flex-col h-full items-center sm:items-stretch">
+                                <div className="w-24 h-24 sm:w-full sm:h-44 shrink-0 flex items-center justify-center p-2 sm:p-0">
+                                  <div className="size-20 sm:size-44">
                                     <DotLottieReact src="/animations/speaking.lottie" loop autoplay />
                                   </div>
                                 </div>
-                                <div className="px-6 pb-6">
-                                  <h3 className="font-semibold text-xl flex items-center gap-2">
-                                    <Mic className="size-5 text-primary" />
-                                    {t.chat.speaking}
+                                <div className="p-3.5 sm:px-6 sm:pb-6 flex-1 min-w-0">
+                                  <h3 className="font-semibold text-base sm:text-xl flex items-center gap-2">
+                                    <Mic className="size-4.5 sm:size-5 text-primary shrink-0" />
+                                    <span>{t.chat.speaking}</span>
                                   </h3>
-                                  <p className="text-sm text-muted-foreground mt-1.5 line-clamp-2">
+                                  <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">
                                     {t.chat.speakingDescription}
                                   </p>
                                 </div>
@@ -825,7 +825,7 @@ function ChatPageInner() {
                 </div>
 
                 {/* Input Area */}
-                <div className="shrink-0 px-3 pb-3 sm:px-4 sm:pb-4 bg-background">
+                <div className="shrink-0 px-3 pt-2 pb-3 sm:px-4 sm:pt-3 sm:pb-4 bg-background">
                   <form onSubmit={handleSendMessage} className="mx-auto max-w-3xl relative">
                     <div className="relative flex items-center rounded-[22px] border bg-background focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all overflow-hidden">
                       <Textarea

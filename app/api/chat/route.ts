@@ -7,7 +7,9 @@ import {
   getIeltsKnowledgeByTitle,
   getMessages,
   addMessage,
+  getConversation,
 } from "@/lib/db/queries";
+import { getAuthUser } from "@/lib/supabase/server";
 
 export const maxDuration = 60;
 
@@ -55,6 +57,16 @@ function buildWritingContext(
 
 export async function POST(req: Request) {
   const { messages, conversationId } = await req.json();
+
+  if (conversationId) {
+    const conv = await getConversation(conversationId);
+    if (conv?.userId) {
+      const authUser = await getAuthUser(req);
+      if (!authUser || authUser.id !== conv.userId) {
+        return Response.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+  }
 
   // Build additional context from conversation history (e.g. writing submissions)
   let systemPrompt = GENERAL_CHAT_PROMPT;

@@ -17,7 +17,9 @@ import {
   upsertProfile,
   updateMessageContent,
   updateConversationTitle,
+  getConversation,
 } from "@/lib/db/queries";
+import { getAuthUser } from "@/lib/supabase/server";
 
 export const maxDuration = 120;
 
@@ -325,8 +327,32 @@ async function streamExpert<S extends z.ZodType>(config: {
 }
 
 export async function POST(req: Request) {
-  const { taskNumber, question, essay, imageUrl, wordCount, timeSpent, userId, conversationId: existingConversationId, sections: requestedSections } =
-    await req.json();
+  const {
+    taskNumber,
+    question,
+    essay,
+    imageUrl,
+    wordCount,
+    timeSpent,
+    userId: reqUserId,
+    conversationId: existingConversationId,
+    sections: requestedSections,
+  } = await req.json();
+
+  const authUser = await getAuthUser(req);
+  const userId =
+    authUser && reqUserId && authUser.id === reqUserId
+      ? authUser.id
+      : undefined;
+
+  if (existingConversationId) {
+    const conv = await getConversation(existingConversationId);
+    if (conv?.userId) {
+      if (!authUser || authUser.id !== conv.userId) {
+        return Response.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+  }
 
   // Which sections to run — default to all four
   const sectionsToRun: Set<string> = requestedSections

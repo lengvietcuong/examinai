@@ -25,6 +25,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import type { UIMessage } from "ai";
 import { useI18n } from "@/lib/i18n/provider";
+import { authFetch } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
@@ -404,6 +405,7 @@ export function WritingAssessment({
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
+        fetch: authFetch,
         body: () => ({ conversationId: conversationIdRef.current }),
       }),
     [],
@@ -490,7 +492,7 @@ export function WritingAssessment({
 
     // Save user message to DB
     try {
-      await fetch(`/api/conversations/${conversationIdRef.current}/messages`, {
+      await authFetch(`/api/conversations/${conversationIdRef.current}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role: "user", content: text }),

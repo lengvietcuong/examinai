@@ -23,7 +23,7 @@ import {
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 import { useI18n } from "@/lib/i18n/provider";
-import { supabase } from "@/lib/supabase/client";
+import { supabase, authFetch } from "@/lib/supabase/client";
 import type { WritingSubmission, SpeakingQuestionData } from "@/lib/types";
 
 import RobotIcon from "@/components/icons/logo";
@@ -113,6 +113,7 @@ function ChatPageInner() {
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
+        fetch: authFetch,
         body: () => ({ conversationId: activeConversationIdRef.current }),
       }),
     [],
@@ -129,7 +130,7 @@ function ChatPageInner() {
         const firstUserMsg = finishedMessages.find((m) => m.role === "user");
         if (!firstUserMsg) return;
         try {
-          const res = await fetch("/api/chat/name", {
+          const res = await authFetch("/api/chat/name", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -255,7 +256,7 @@ function ChatPageInner() {
   const loadConversations = useCallback(async (userId: string) => {
     setConversationsLoading(true);
     try {
-      const res = await fetch(`/api/conversations?userId=${userId}`);
+      const res = await authFetch(`/api/conversations?userId=${userId}`);
       if (res.ok) {
         const { conversations: convs } = await res.json();
         setConversations(convs ?? []);
@@ -284,7 +285,7 @@ function ChatPageInner() {
     try {
       setActiveConversationId(id);
       conversationNamedRef.current = true; // Existing conversations already have names
-      const res = await fetch(`/api/conversations/${id}/messages`);
+      const res = await authFetch(`/api/conversations/${id}/messages`);
       if (!res.ok) throw new Error();
       const { messages: msgs } = await res.json();
       setMessages(
@@ -303,7 +304,7 @@ function ChatPageInner() {
 
   async function handleDeleteConversation(id: string) {
     try {
-      await fetch("/api/conversations", {
+      await authFetch("/api/conversations", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
@@ -332,7 +333,7 @@ function ChatPageInner() {
       prev.map((c) => (c.id === id ? { ...c, title: trimmed } : c)),
     );
     try {
-      await fetch("/api/conversations", {
+      await authFetch("/api/conversations", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, title: trimmed }),
@@ -406,7 +407,7 @@ function ChatPageInner() {
   async function handleShare() {
     if (!activeConversationId) return;
     try {
-      const res = await fetch(`/api/conversations/${activeConversationId}/share`, {
+      const res = await authFetch(`/api/conversations/${activeConversationId}/share`, {
         method: "POST",
       });
       if (!res.ok) throw new Error();
@@ -432,7 +433,7 @@ function ChatPageInner() {
     if (view === "default") {
       if (!convId) {
         try {
-          const res = await fetch("/api/conversations", {
+          const res = await authFetch("/api/conversations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId: user?.id, type: "general" }),
@@ -454,7 +455,7 @@ function ChatPageInner() {
 
     // Save user message to DB (fire-and-forget so streaming starts immediately)
     if (convId) {
-      fetch(`/api/conversations/${convId}/messages`, {
+      authFetch(`/api/conversations/${convId}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role: "user", content: text }),

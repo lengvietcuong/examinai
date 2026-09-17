@@ -5,12 +5,27 @@ import {
   SPEAKING_SYSTEM_PROMPT,
   SPEAKING_FIRST_QUESTION_PROMPT,
 } from "@/lib/ai/prompts";
-import { getRandomSpeakingQuestions, addMessage } from "@/lib/db/queries";
+import {
+  getRandomSpeakingQuestions,
+  addMessage,
+  getConversation,
+} from "@/lib/db/queries";
+import { getAuthUser } from "@/lib/supabase/server";
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
   const { messages, questions, conversationId } = await req.json();
+
+  if (conversationId) {
+    const conv = await getConversation(conversationId);
+    if (conv?.userId) {
+      const authUser = await getAuthUser(req);
+      if (!authUser || authUser.id !== conv.userId) {
+        return Response.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+  }
 
   const questionsContext = questions
     .map(

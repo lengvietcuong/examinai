@@ -10,7 +10,7 @@ import {
 import { WritingSubmissionView } from "@/components/writing/writing-submission-view";
 import { Spinner } from "@/components/ui/spinner";
 import { useI18n } from "@/lib/i18n/provider";
-import { supabase } from "@/lib/supabase/client";
+import { supabase, authFetch } from "@/lib/supabase/client";
 import type { WritingSubmission } from "@/lib/types";
 
 interface WritingQuestion {
@@ -300,7 +300,7 @@ export default function WritingPageClient({
         }
       }
 
-      const res = await fetch("/api/writing/assess", {
+      const res = await authFetch("/api/writing/assess", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

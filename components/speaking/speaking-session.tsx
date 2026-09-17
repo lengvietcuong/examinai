@@ -26,7 +26,7 @@ import { useI18n } from "@/lib/i18n/provider";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/lib/supabase/client";
+import { supabase, authFetch } from "@/lib/supabase/client";
 import RobotIcon from "@/components/icons/logo";
 import { UserProfileMenu } from "@/components/user-profile-menu";
 import ReactMarkdown from "react-markdown";
@@ -725,6 +725,7 @@ export function SpeakingSession({
     () =>
       new DefaultChatTransport({
         api: "/api/speaking",
+        fetch: authFetch,
         body: () => ({ questions, conversationId: conversationIdRef.current }),
       }),
     [questions],
@@ -793,7 +794,7 @@ export function SpeakingSession({
 
       // Fetch autoplay preference
       try {
-        const res = await fetch(`/api/profile?userId=${data.user.id}`);
+        const res = await authFetch(`/api/profile?userId=${data.user.id}`);
         const profile = await res.json();
         if (profile && typeof profile.speakingAutoplay === "boolean") {
           setAutoplay(profile.speakingAutoplay);
@@ -805,7 +806,7 @@ export function SpeakingSession({
       // Create conversation if not loading a saved one
       if (!conversationIdRef.current) {
         try {
-          const res = await fetch("/api/conversations", {
+          const res = await authFetch("/api/conversations", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -820,7 +821,7 @@ export function SpeakingSession({
             onConversationReady?.(conv.id);
 
             // Name the conversation after the first question's topic
-            fetch("/api/chat/name", {
+            authFetch("/api/chat/name", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -830,7 +831,7 @@ export function SpeakingSession({
             }).catch(() => {});
 
             // Save the questions config as the first system message
-            await fetch(`/api/conversations/${conv.id}/messages`, {
+            await authFetch(`/api/conversations/${conv.id}/messages`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -843,7 +844,7 @@ export function SpeakingSession({
             });
 
             // Save the hidden "Begin" user message for data consistency
-            await fetch(`/api/conversations/${conv.id}/messages`, {
+            await authFetch(`/api/conversations/${conv.id}/messages`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ role: "user", content: "Begin" }),
@@ -983,7 +984,7 @@ export function SpeakingSession({
   async function handleAutoplayToggle(checked: boolean) {
     setAutoplay(checked);
     if (userId) {
-      fetch("/api/profile", {
+      authFetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, speakingAutoplay: checked }),
@@ -1190,7 +1191,7 @@ export function SpeakingSession({
 
     // Save user message to DB
     if (conversationIdRef.current) {
-      fetch(`/api/conversations/${conversationIdRef.current}/messages`, {
+      authFetch(`/api/conversations/${conversationIdRef.current}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role: "user", content: text }),

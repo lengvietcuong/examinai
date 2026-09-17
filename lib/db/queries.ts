@@ -190,6 +190,26 @@ export async function upsertProfile(data: {
   theme?: string;
   speakingAutoplay?: boolean;
 }) {
+  const updateSet: Record<string, unknown> = {
+    updatedAt: new Date(),
+  };
+
+  if (data.displayName !== undefined) {
+    updateSet.displayName = data.displayName;
+  }
+  if (data.avatarUrl !== undefined) {
+    updateSet.avatarUrl = data.avatarUrl;
+  }
+  if (data.language !== undefined) {
+    updateSet.language = data.language;
+  }
+  if (data.theme !== undefined) {
+    updateSet.theme = data.theme;
+  }
+  if (data.speakingAutoplay !== undefined) {
+    updateSet.speakingAutoplay = data.speakingAutoplay;
+  }
+
   const [profile] = await db
     .insert(profiles)
     .values({
@@ -202,14 +222,7 @@ export async function upsertProfile(data: {
     })
     .onConflictDoUpdate({
       target: profiles.id,
-      set: {
-        displayName: data.displayName,
-        avatarUrl: data.avatarUrl,
-        ...(data.language && { language: data.language }),
-        ...(data.theme && { theme: data.theme }),
-        ...(data.speakingAutoplay !== undefined && { speakingAutoplay: data.speakingAutoplay }),
-        updatedAt: new Date(),
-      },
+      set: updateSet,
     })
     .returning();
   return profile;

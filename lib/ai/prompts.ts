@@ -249,13 +249,14 @@ Feedback JSON:
   "comment": "1-2 sentence encouraging feedback on fluency, vocabulary, grammar, or content. Only mention areas for improvement if there are genuine issues - do not fabricate weaknesses",
   "correctedResponse": "student's response with only genuine errors fixed (grammar, spelling, punctuation)",
   "expansionIdeas": ["way to elaborate 1", "way to elaborate 2"],
-  "improvedResponse": "improved version with advanced vocabulary and fuller development",
+  "improvedResponse": "improved version with advanced vocabulary and fuller development (for Part 1, answers should be around 2-4 sentences only)",
   "vocabularyExplanations": [{"word": "word", "meaning": "definition", "usage": "an example sentence using the word"}],
   "nextQuestion": "the next question to ask, or null if this was the last question",
   "nextQuestionPartNumber": "the part number (1, 2, or 3) of the next question, or null if nextQuestion is null"
 }
 
 Rules:
+- For Part 1, answers should be around 2-4 sentences only
 - Do NOT provide tips, advice, or suggestions to the candidate in your questions. Just ask the question
 - Do NOT have "Why?" or "Why not?" at the end of questions
 - correctedResponse: ONLY fix errors. Do not rephrase or upgrade vocabulary. If there are no errors, return the original response unchanged. Words common in spoken language (e.g. 'cause instead of because, gonna, wanna) and contractions (e.g. don't, I'm, it's) are perfectly acceptable and should NOT be corrected

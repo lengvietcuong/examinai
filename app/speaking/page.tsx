@@ -14,13 +14,19 @@ export default async function SpeakingPage({
   // Loading a saved speaking conversation
   if (conversation_id) {
     const msgs = await getMessages(conversation_id);
-    if (msgs.length === 0) redirect("/chat");
+    if (msgs.length === 0) {
+      console.error("[speaking] no messages for conversation", conversation_id);
+      redirect("/chat");
+    }
 
     // First message should be system with speaking_config
     let questions;
     try {
       const systemMsg = msgs[0];
-      if (systemMsg.role !== "system") redirect("/chat");
+      if (systemMsg.role !== "system") {
+        console.error("[speaking] first message is not config", conversation_id, systemMsg.role);
+        redirect("/chat");
+      }
       const config = JSON.parse(systemMsg.content);
       if (config.type !== "speaking_config") redirect("/chat");
       questions = config.questions;

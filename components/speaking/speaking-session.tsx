@@ -818,7 +818,6 @@ export function SpeakingSession({
           if (res.ok) {
             const conv = await res.json();
             conversationIdRef.current = conv.id;
-            onConversationReady?.(conv.id);
 
             // Name the conversation after the first question's topic
             authFetch("/api/chat/name", {
@@ -831,7 +830,7 @@ export function SpeakingSession({
             }).catch(() => {});
 
             // Save the questions config as the first system message
-            await authFetch(`/api/conversations/${conv.id}/messages`, {
+            const configRes = await authFetch(`/api/conversations/${conv.id}/messages`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -843,15 +842,28 @@ export function SpeakingSession({
               }),
             });
 
+            if (!configRes.ok) {
+              console.error(
+                "[speaking] failed to save session config",
+                configRes.status,
+                await configRes.text().catch(() => ""),
+              );
+            }
+
             // Save the hidden "Begin" user message for data consistency
             await authFetch(`/api/conversations/${conv.id}/messages`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ role: "user", content: "Begin" }),
             });
+
+            // Only switch the URL once the config is stored, otherwise the
+            // server page finds an empty conversation and redirects home.
+            if (configRes.ok) onConversationReady?.(conv.id);
           }
-        } catch {
+        } catch (err) {
           // Non-critical: session still works without persistence
+          console.error("[speaking] failed to create conversation", err);
         }
       }
 

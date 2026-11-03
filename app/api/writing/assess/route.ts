@@ -293,6 +293,8 @@ async function streamExpert<S extends z.ZodType>(config: {
   maxOutputTokens: number;
   schema: S;
   eventName: string;
+  /** Fields that must be non-empty, otherwise the output was cut off. */
+  required?: string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   normalize: (raw: any, isFinal?: boolean) => any;
   sendEvent: (type: string, data: unknown) => void;
@@ -318,6 +320,17 @@ async function streamExpert<S extends z.ZodType>(config: {
       config.sendEvent(config.eventName, config.normalize(partial, false));
       lastSentTime = now;
     }
+  }
+
+  // A truncated or empty result must count as a failure so it is retried
+  const missing = (config.required ?? []).filter((key) => {
+    const value = latest?.[key];
+    return typeof value === "string" ? !value.trim() : !value;
+  });
+  if (!latest || missing.length > 0) {
+    throw new Error(
+      `${config.eventName} output incomplete (missing: ${missing.join(", ") || "everything"})`,
+    );
   }
 
   // Always send the final complete result
@@ -404,9 +417,10 @@ export async function POST(req: Request) {
               model,
               system: WRITING_EXPERT_1_PROMPT,
               messages,
-              maxOutputTokens: 2000,
+              maxOutputTokens: 6000,
               schema: overviewSchema,
               eventName: "overview",
+              required: ["overview"],
               normalize: normalizeOverview,
               sendEvent,
             })
@@ -427,9 +441,10 @@ export async function POST(req: Request) {
               model,
               system: WRITING_EXPERT_2_PROMPT,
               messages,
-              maxOutputTokens: 3000,
+              maxOutputTokens: 8000,
               schema: scoringSchema,
               eventName: "scoring",
+              required: ["taskResponseHighLevel", "coherenceHighLevel"],
               normalize: normalizeScoring,
               sendEvent,
             })
@@ -452,7 +467,7 @@ export async function POST(req: Request) {
               model,
               system: WRITING_EXPERT_3_CORRECTION_PROMPT,
               messages,
-              maxOutputTokens: 2000,
+              maxOutputTokens: 6000,
               temperature: 0,
               topP: 1,
                       output: Output.object({ schema: languageCorrectionSchema }),
@@ -482,7 +497,7 @@ export async function POST(req: Request) {
               model: chatModel(),
               system: WRITING_EXPERT_3_FEEDBACK_PROMPT,
               messages: feedbackMessages,
-              maxOutputTokens: 3000,
+              maxOutputTokens: 8000,
               temperature: 0,
               topP: 1,
                       output: Output.object({ schema: languageFeedbackSchema }),
@@ -525,9 +540,13 @@ export async function POST(req: Request) {
               model,
               system: improvementPrompt,
               messages,
-              maxOutputTokens: 4096,
+              maxOutputTokens: 12000,
               schema: improvementSchema,
               eventName: "improvement",
+              required:
+                taskNumber === "1"
+                  ? ["improvedEssay"]
+                  : ["improvedEssay", "alternativeEssay", "alternativeDirection"],
               normalize: (raw) => normalizeImprovement(raw, taskNumber, essay),
               sendEvent,
             })

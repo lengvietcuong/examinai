@@ -11,7 +11,7 @@ AI-powered IELTS practice platform with writing assessment, speaking practice, a
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router), React 19, TypeScript
-- **AI:** Vercel AI SDK v6, Fireworks AI (minimax, qwen3.8, llama-70b), Deepgram TTS
+- **AI:** Vercel AI SDK v6, Fireworks AI (MiniMax M3.1 Flash), Deepgram TTS
 - **Database:** Supabase (PostgreSQL, Auth, Storage), Drizzle ORM
 - **UI:** Tailwind CSS 4, shadcn/ui, base-ui, Lottie animations
 

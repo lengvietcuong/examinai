@@ -13,11 +13,11 @@ function createFireworks() {
 }
 
 export function chatModel() {
-  return createFireworks().chat("accounts/fireworks/models/minimax-m3");
+  return createFireworks().chat("accounts/fireworks/models/minimax-m3p1-flash");
 }
 
 export function visionModel() {
-  return createFireworks().chat("accounts/fireworks/models/qwen3p8-max");
+  return createFireworks().chat("accounts/fireworks/models/minimax-m3p1-flash");
 }
 
 export function namingModel() {

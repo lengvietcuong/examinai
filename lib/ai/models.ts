@@ -17,9 +17,9 @@ export function chatModel() {
 }
 
 export function visionModel() {
-  return createFireworks().chat("accounts/fireworks/models/qwen3p7-plus");
+  return createFireworks().chat("accounts/fireworks/models/qwen3p8-max");
 }
 
 export function namingModel() {
-  return createFireworks().chat("accounts/fireworks/models/gpt-oss-20b");
+  return createFireworks().chat("accounts/fireworks/models/gpt-oss-120b");
 }

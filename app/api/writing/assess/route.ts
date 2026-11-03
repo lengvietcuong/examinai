@@ -413,6 +413,7 @@ export async function POST(req: Request) {
           ).then((data) => {
             results.overview = data;
           }).catch((err) => {
+            console.error("[writing/assess] section failed:", "overview", err);
             failedSections.overview = err instanceof Error ? err.message : "Overview failed";
             sendEvent("section_error", { section: "overview", message: failedSections.overview });
           })
@@ -435,6 +436,7 @@ export async function POST(req: Request) {
           ).then((data) => {
             results.scoring = data;
           }).catch((err) => {
+            console.error("[writing/assess] section failed:", "scoring", err);
             failedSections.scoring = err instanceof Error ? err.message : "Scoring failed";
             sendEvent("section_error", { section: "scoring", message: failedSections.scoring });
           })
@@ -509,6 +511,7 @@ export async function POST(req: Request) {
           }).then((data) => {
             results.languageAnalysis = data;
           }).catch((err) => {
+            console.error("[writing/assess] section failed:", "languageAnalysis", err);
             failedSections.languageAnalysis = err instanceof Error ? err.message : "Language analysis failed";
             sendEvent("section_error", { section: "languageAnalysis", message: failedSections.languageAnalysis });
           })
@@ -531,6 +534,7 @@ export async function POST(req: Request) {
           ).then((data) => {
             results.improvement = data;
           }).catch((err) => {
+            console.error("[writing/assess] section failed:", "improvement", err);
             failedSections.improvement = err instanceof Error ? err.message : "Improvement failed";
             sendEvent("section_error", { section: "improvement", message: failedSections.improvement });
           })
